@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.scientificcms.contenttypes;
+package org.scientificcms.contenttypes.sciproject;
 
 import org.hibernate.envers.Audited;
 import org.librecms.assets.ContactableEntity;
@@ -19,7 +19,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import static org.scientificcms.contenttypes.SciProjectConstants.*;
+import static org.scientificcms.contenttypes.sciproject.SciProjectConstants.*;
 
 /**
  *
@@ -28,7 +28,7 @@ import static org.scientificcms.contenttypes.SciProjectConstants.*;
 @Entity
 @Audited
 @Table(name = "PROJECT_CONTACTS", schema = DB_SCHEMA)
-public class SciProjectContact implements Serializable{
+public class Contact implements Serializable{
     
     private static final long serialVersionUID = 1L;
     

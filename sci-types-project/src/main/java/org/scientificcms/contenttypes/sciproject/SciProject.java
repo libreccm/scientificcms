@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.scientificcms.contenttypes;
+package org.scientificcms.contenttypes.sciproject;
 
 import com.arsdigita.cms.contenttypes.ui.SciProjectPropertiesStep;
 import com.arsdigita.cms.ui.authoring.PageCreateForm;
@@ -30,7 +30,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import static org.scientificcms.contenttypes.SciProjectConstants.*;
+import static org.scientificcms.contenttypes.sciproject.SciProjectConstants.*;
 
 /**
  *
@@ -110,6 +110,9 @@ public class SciProject extends ContentItem implements Serializable {
     private LocalizedString fundingVolume;
     
     @OneToMany(mappedBy = "project")
-    private List<SciProjectContact> contacts;
+    private List<Contact> contacts;
+    
+    @OneToMany(mappedBy = "project")
+    private List<Membership> members;
 
 }
