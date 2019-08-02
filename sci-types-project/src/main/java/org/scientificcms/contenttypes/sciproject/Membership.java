@@ -138,15 +138,69 @@ public class Membership implements Serializable {
         if (!CcmObjects.equalsUsingUuid(member, other.getMember())) {
             return false;
         }
-        if (status != other.getStatus()) {
-            return false;
-        }
-        return true;
+        return status == other.getStatus();
     }
 
     public boolean canEqual(final Object obj) {
 
         return obj instanceof Membership;
+    }
+
+    @Override
+    public final String toString() {
+
+        return toString("");
+    }
+
+    public String toString(final String data) {
+
+        final String projectStr;
+        if (project == null) {
+            projectStr = "";
+        } else {
+            projectStr = String.format("objectId = %d,"
+                                           + "uuid = \"%s\", "
+                                           + "name = \"%s\"",
+                                       project.getObjectId(),
+                                       project.getUuid(),
+                                       project.getDisplayName());
+        }
+
+        final String memberStr;
+        if (member == null) {
+            memberStr = "";
+        } else {
+            memberStr = String.format("objectId = %d, "
+                                          + "uuid = \"%s\", "
+                                          + "name = \"%s\", "
+                                          + "surname = \"%s\", "
+                                          + "givenName = \"%s\", "
+                                          + "prefix = \"%s\", "
+                                          + "suffix = \"%s\"",
+                                      member.getObjectId(),
+                                      member.getUuid(),
+                                      member.getDisplayName(),
+                                      member.getPersonName().getSurname(),
+                                      member.getPersonName().getGivenName(),
+                                      member.getPersonName().getPrefix(),
+                                      member.getPersonName().getSuffix());
+        }
+
+        return String.format("%s{ "
+                                 + "membershipId = %d, "
+                                 + "role = \"%s\", "
+                                 + "status = \"%s\","
+                                 + "project = { %s }, "
+                                 + "member = { %s }%s"
+                                 + " }",
+                             super.toString(),
+                             membershipId,
+                             role,
+                             Objects.toString(status),
+                             projectStr,
+                             memberStr,
+                             data
+        );
     }
 
 }
