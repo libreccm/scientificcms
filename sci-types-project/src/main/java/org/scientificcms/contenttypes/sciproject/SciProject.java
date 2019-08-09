@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.AssociationOverride;
 import javax.persistence.CascadeType;
@@ -150,6 +151,13 @@ public class SciProject extends ContentItem implements Serializable {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<Membership> members;
 
+    public SciProject() {
+        super();
+
+        contacts = new ArrayList<>();
+        members = new ArrayList<>();
+    }
+
     public LocalDate getBegin() {
         return begin;
     }
@@ -199,7 +207,11 @@ public class SciProject extends ContentItem implements Serializable {
     }
 
     public List<Contact> getContacts() {
-        return Collections.unmodifiableList(contacts);
+        if (contacts == null) {
+            return null;
+        } else {
+            return Collections.unmodifiableList(contacts);
+        }
     }
 
     protected void addContact(final Contact contact) {
@@ -215,7 +227,11 @@ public class SciProject extends ContentItem implements Serializable {
     }
 
     public List<Membership> getMembers() {
-        return Collections.unmodifiableList(members);
+        if (members == null) {
+            return null;
+        } else {
+            return Collections.unmodifiableList(members);
+        }
     }
 
     protected void addMember(final Membership membership) {
@@ -228,6 +244,96 @@ public class SciProject extends ContentItem implements Serializable {
 
     protected void setMembers(final List<Membership> members) {
         this.members = new ArrayList<>(members);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = super.hashCode();
+        hash = 53 * hash + Objects.hashCode(begin);
+        hash = 53 * hash + Objects.hashCode(end);
+        hash = 53 * hash + Objects.hashCode(shortDescription);
+        hash = 53 * hash + Objects.hashCode(projectDescription);
+        hash = 53 * hash + Objects.hashCode(funding);
+        hash = 53 * hash + Objects.hashCode(fundingVolume);
+        hash = 53 * hash + Objects.hashCode(contacts);
+        hash = 53 * hash + Objects.hashCode(members);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+
+        if (!super.equals(obj)) {
+            return false;
+        }
+
+        if (!(obj instanceof SciProject)) {
+            return false;
+        }
+
+        final SciProject other = (SciProject) obj;
+        if (!other.canEqual(this)) {
+            return false;
+        }
+        if (!Objects.equals(begin, other.getBegin())) {
+            return false;
+        }
+        if (!Objects.equals(end, other.getEnd())) {
+            return false;
+        }
+        if (!Objects.equals(shortDescription, other.getShortDescription())) {
+            return false;
+        }
+        if (!Objects.equals(projectDescription,
+                            other.getProjectDescription())) {
+            return false;
+        }
+        if (!Objects.equals(funding, other.getFunding())) {
+            return false;
+        }
+        if (!Objects.equals(fundingVolume, other.getFundingVolume())) {
+            return false;
+        }
+        if (!Objects.equals(contacts, other.getContacts())) {
+            return false;
+        }
+        return Objects.equals(members, other.getMembers());
+    }
+
+    @Override
+    public boolean canEqual(final Object obj) {
+
+        return obj instanceof SciProject;
+    }
+
+    @Override
+    public String toString(final String data) {
+
+        return super.toString(String.format(
+            "begin = %s, "
+                + "end = %s"
+                + "shortDescription = %s, "
+                + "description = %s, "
+                + "funding = %s, "
+                + "fundingVolume = %s, "
+                + "contacts = %s, "
+                + "members = %s%s",
+            Objects.toString(begin),
+            Objects.toString(end),
+            Objects.toString(shortDescription),
+            Objects.toString(projectDescription),
+            Objects.toString(funding),
+            Objects.toString(fundingVolume),
+            Objects.toString(contacts),
+            Objects.toString(members),
+            data
+        ));
     }
 
 }
