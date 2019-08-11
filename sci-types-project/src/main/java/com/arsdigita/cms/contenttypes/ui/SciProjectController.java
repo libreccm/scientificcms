@@ -1,0 +1,71 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.arsdigita.cms.contenttypes.ui;
+
+import org.libreccm.configuration.ConfigurationManager;
+import org.scientificcms.contenttypes.sciproject.SciProject;
+import org.scientificcms.contenttypes.sciproject.SciProjectConfig;
+import org.scientificcms.contenttypes.sciproject.SciProjectRepository;
+
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+/**
+ *
+ * @author <a href="mailto:jens.pelzetter@googlemail.com">Jens Pelzetter</a>
+ */
+@RequestScoped
+class SciProjectController {
+
+    @Inject
+    private ConfigurationManager confManager;
+    
+    @Inject
+    private SciProjectRepository projectRepository;
+
+    public String getContactTypesBundleName() {
+        
+        final SciProjectConfig conf = confManager
+            .findConfiguration(SciProjectConfig.class);
+        
+        return conf.getContactTypesBundleName();
+    }
+    
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void save(final long projectId,
+                     final Locale selectedLocale,
+                     final Map<String, Object> data) {
+
+        final SciProject project = projectRepository
+            .findById(projectId, SciProject.class)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format("No SciProject with ID %d found.",
+                                  projectId))
+            );
+
+        final Date begin = (Date) data.get(SciProjectUiConstants.BEGIN);
+        final Date end = (Date) data.get(SciProjectUiConstants.END);
+        final String shortDesc = (String) data
+            .get(SciProjectUiConstants.PROJECT_SHORT_DESCRIPTION);
+
+        final LocalDate beginDate = LocalDate.from(begin.toInstant());
+        final LocalDate endDate = LocalDate.from(end.toInstant());
+
+        project.setBegin(beginDate);
+        project.setEnd(endDate);
+        project.getShortDescription().addValue(selectedLocale, shortDesc);
+
+        projectRepository.save(project);
+    }
+
+}
