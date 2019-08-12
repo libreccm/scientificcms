@@ -15,13 +15,22 @@ public final class SciProjectUiConstants {
 
     public static final String BEGIN = "begin";
 
-    public static final String EDIT_SHEET_NAME = "edit";
+    public static final String EDIT_CONTACT_SHEET_NAME = "edit";
+
+    public static final String EDIT_DESC_SHEET_NAME = "editProjectDesc";
+
+    public static final String EDIT_DESC_TEXT_SHEET_NAME = "editProjectDescText";
+
+    public static final String UPLOAD_DESC_TEXT_SHEET_NAME
+                               = "uploadProjectDescText";
 
     public static final String END = "end";
 
     public static final String NAME = "name";
 
     public static final String PROJECT_SHORT_DESCRIPTION = "shortDescription";
+
+    public static final String PROJECT_DESCRIPTION = "description";
 
     public static final String TITLE = "title";
 

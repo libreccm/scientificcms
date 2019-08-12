@@ -17,9 +17,15 @@ import org.libreccm.configuration.Setting;
 @Configuration
 public class SciProjectConfig {
 
-    @Setting()
+    @Setting
     private String contactTypesBundleName
                        = "org.scientificcms.contenttypes.sciproject.DefaultContactTypes";
+    
+    @Setting
+    private boolean enableSponsor = true;
+    
+    @Setting
+    private boolean enableFunding = true;
 
     public static SciProjectConfig getConfig() {
         final ConfigurationManager confManager = CdiUtil.createCdiUtil()
@@ -38,5 +44,23 @@ public class SciProjectConfig {
     public void setContactTypesBundleName(final String contactTypesBundle) {
         this.contactTypesBundleName = contactTypesBundle;
     }
+
+    public boolean isEnableSponsor() {
+        return enableSponsor;
+    }
+
+    public void setEnableSponsor(final boolean enableSponsor) {
+        this.enableSponsor = enableSponsor;
+    }
+
+    public boolean isEnableFunding() {
+        return enableFunding;
+    }
+
+    public void setEnableFunding(final boolean enableFunding) {
+        this.enableFunding = enableFunding;
+    }
+    
+    
 
 }

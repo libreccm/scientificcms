@@ -40,7 +40,7 @@ public class SciProjectPropertiesStep extends SimpleEditStep {
         super(itemModel, parent, selectedLanguageParam);
 
         segmentedPanel = new SegmentedPanel();
-        setDefaultEditKey(SciProjectUiConstants.EDIT_SHEET_NAME);
+        setDefaultEditKey(SciProjectUiConstants.EDIT_CONTACT_SHEET_NAME);
 
         addBasicProperties(itemModel, parent, selectedLanguageParam);
         addSteps(itemModel, parent);
@@ -124,7 +124,7 @@ public class SciProjectPropertiesStep extends SimpleEditStep {
             itemModel,
             parent,
             selectedLanguageParameter,
-            SciProjectUiConstants.EDIT_SHEET_NAME
+            SciProjectUiConstants.EDIT_CONTACT_SHEET_NAME
         );
 
         final BasicPageForm editBasicSheet = new SciProjectPropertyForm(
@@ -132,8 +132,7 @@ public class SciProjectPropertiesStep extends SimpleEditStep {
             this,
             selectedLanguageParameter);
 
-        basicProperties.add(
-            SciProjectUiConstants.EDIT_SHEET_NAME,
+        basicProperties.add(SciProjectUiConstants.EDIT_CONTACT_SHEET_NAME,
             new GlobalizedMessage("sciproject.ui.edit_basic_sheet",
                                   SciProjectConstants.SCI_PROJECT_BUNDLE
             ),
