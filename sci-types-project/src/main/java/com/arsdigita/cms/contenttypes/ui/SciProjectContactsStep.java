@@ -43,7 +43,7 @@ public class SciProjectContactsStep extends SimpleEditStep {
         super(itemModel, parent, selectedLanguageParam, parameterSuffix);
 
         final BasicItemForm addContactSheet = new SciProjectContactAddForm(
-            itemModel, this);
+            itemModel, this, selectedLanguageParam);
         
         add(SciProjectUiConstants.ADD_CONTACT_SHEET_NAME,
             new GlobalizedMessage(

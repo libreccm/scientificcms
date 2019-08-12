@@ -5,8 +5,11 @@
  */
 package com.arsdigita.cms.contenttypes.ui;
 
+import com.arsdigita.bebop.FormData;
 import com.arsdigita.bebop.FormProcessException;
 import com.arsdigita.bebop.Label;
+import com.arsdigita.bebop.PageState;
+import com.arsdigita.bebop.Text;
 import com.arsdigita.bebop.event.FormSectionEvent;
 import com.arsdigita.bebop.event.FormSubmissionListener;
 import com.arsdigita.bebop.event.PrintEvent;
@@ -27,6 +30,7 @@ import org.apache.logging.log4j.Logger;
 import org.libreccm.cdi.utils.CdiUtil;
 import org.librecms.CmsConstants;
 import org.librecms.assets.ContactableEntity;
+import org.scientificcms.contenttypes.sciproject.SciProject;
 import org.scientificcms.contenttypes.sciproject.SciProjectConstants;
 
 import java.util.ResourceBundle;
@@ -53,7 +57,7 @@ public class SciProjectContactAddForm
 
     private SciProjectContactsStep editStep;
 
-    private Label selectedContactLabel;
+    private Text selectedContactLabel;
 
     public SciProjectContactAddForm(final ItemSelectionModel itemModel,
                                     final SciProjectContactsStep editStep,
@@ -74,7 +78,7 @@ public class SciProjectContactAddForm
             SciProjectConstants.SCI_PROJECT_BUNDLE));
         add(searchWidget);
 
-        selectedContactLabel = new Label();
+        selectedContactLabel = new Text();
         add(selectedContactLabel);
 
         final ParameterModel contactTypeParam
@@ -127,21 +131,110 @@ public class SciProjectContactAddForm
     @Override
     public void init(final FormSectionEvent event) throws FormProcessException {
 
-        throw new UnsupportedOperationException("ToDo");
+        final FormData data = event.getFormData();
+        final PageState state = event.getPageState();
+
+        final ContactableEntity selectedContact = editStep.getSelectedContact();
+        final String selectedType = editStep.getSelectedContactType();
+
+        if (selectedContact == null) {
+            selectedContactLabel.setVisible(state, false);
+        } else {
+            data.put(SEARCH, selectedContact);
+            data.put(CONTACT_TYPE, selectedType);
+
+            searchWidget.setVisible(state, false);
+            selectedContactLabel.setText(selectedContact.getDisplayName());
+            selectedContactLabel.setVisible(state, true);
+        }
+
+        setVisible(state, true);
     }
 
     @Override
     public void process(final FormSectionEvent event) throws
         FormProcessException {
 
-        throw new UnsupportedOperationException("ToDo");
+        final FormData data = event.getFormData();
+        final PageState state = event.getPageState();
+        final SciProject project = (SciProject) getItemSelectionModel()
+            .getSelectedItem(state);
+
+        if (getSaveCancelSection().getSaveButton().isSelected(state)) {
+
+            final ContactableEntity selected = editStep.getSelectedContact();
+
+            if (selected == null) {
+                final ContactableEntity contact = (ContactableEntity) data
+                    .get(SEARCH);
+
+                final String type = (String) data.get(CONTACT_TYPE);
+
+                getController().addContact(project.getObjectId(),
+                                           contact.getObjectId(),
+                                           type);
+            } else {
+
+                final String type = (String) data.get(CONTACT_TYPE);
+
+                getController().updateContactType(project.getObjectId(),
+                                                  selected.getObjectId(),
+                                                  type);
+            }
+        }
+
+        init(event);
     }
 
     @Override
     public void submitted(final FormSectionEvent event) throws
         FormProcessException {
 
-        throw new UnsupportedOperationException("ToDo");
+        final PageState state = event.getPageState();
+        if (getSaveCancelSection().getCancelButton().isSelected(state)) {
+
+            editStep.setSelectedContact(null);
+            editStep.setSelectedContactType(null);
+
+            init(event);
+        }
+    }
+
+    @Override
+    public void validate(final FormSectionEvent event)
+        throws FormProcessException {
+
+        final PageState state = event.getPageState();
+        final FormData data = event.getFormData();
+
+        if (editStep.getSelectedContact() == null
+                && (data.get(SEARCH) == null)) {
+
+            data.addError(new GlobalizedMessage(
+                "cms.contenttypes.ui.sciproject.select_contact.no_contact_selected",
+                SciProjectConstants.SCI_PROJECT_BUNDLE));
+
+            return;
+        }
+
+        if (editStep.getSelectedContact() == null) {
+
+            final SciProject project = (SciProject) getItemSelectionModel()
+                .getSelectedItem(state);
+
+            final ContactableEntity selected = (ContactableEntity) data
+                .get(SEARCH);
+
+            if (getController().hasContact(project.getObjectId(),
+                                           selected.getObjectId())) {
+
+                data.addError(new GlobalizedMessage(
+                    "cms.contenttypes.ui.sciproject.select_contact.already_added",
+                    SciProjectConstants.SCI_PROJECT_BUNDLE
+                ));
+            }
+        }
+
     }
 
     private SciProjectController getController() {
