@@ -21,7 +21,7 @@ import org.scientificcms.contenttypes.sciproject.SciProjectConstants;
  * @author <a href="mailto:jens.pelzetter@googlemail.com">Jens Pelzetter</a>
  */
 public class SciProjectContactsStep extends SimpleEditStep {
-    
+
     private ContactableEntity selectedContact;
     private String selectedContactType;
 
@@ -44,19 +44,20 @@ public class SciProjectContactsStep extends SimpleEditStep {
 
         final BasicItemForm addContactSheet = new SciProjectContactAddForm(
             itemModel, this, selectedLanguageParam);
-        
+
         add(SciProjectUiConstants.ADD_CONTACT_SHEET_NAME,
             new GlobalizedMessage(
                 "cms.contenttypes.ui.genericorgaunit.add_contact",
                 SciProjectConstants.SCI_PROJECT_BUNDLE),
             new WorkflowLockedComponentAccess(addContactSheet, itemModel),
             addContactSheet.getSaveCancelSection().getCancelButton());
-        
-        final SciProjectContactsTable contactsTable 
-            = new SciProjectContactsTable(itemModel, this);
+
+        final SciProjectContactsTable contactsTable
+                                          = new SciProjectContactsTable(
+                itemModel, this);
         setDisplayComponent(contactsTable);
     }
-    
+
     public ContactableEntity getSelectedContact() {
         return selectedContact;
     }
@@ -72,6 +73,5 @@ public class SciProjectContactsStep extends SimpleEditStep {
     public void setSelectedContactType(final String selectedContactType) {
         this.selectedContactType = selectedContactType;
     }
-}
 
 }
