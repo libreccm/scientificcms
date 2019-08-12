@@ -16,9 +16,13 @@ import org.scientificcms.contenttypes.sciproject.SciProjectRepository;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -30,6 +34,10 @@ import javax.transaction.Transactional;
  */
 @RequestScoped
 class SciProjectController {
+
+    public static final String CONTACT_NAME = "name";
+    public static final String CONTACT_TYPE = "contactType";
+    public static final String CONTACT_ID = "contactId";
 
     @Inject
     private ConfigurationManager confManager;
@@ -49,6 +57,57 @@ class SciProjectController {
             .findConfiguration(SciProjectConfig.class);
 
         return conf.getContactTypesBundleName();
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public List<Map<String, Object>> getContacts(final long forProjectId) {
+
+        final SciProject project = projectRepository
+            .findById(forProjectId, SciProject.class)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format("No SciProject with ID %d found.",
+                                  forProjectId))
+            );
+
+        return project
+            .getContacts()
+            .stream()
+            .map(this::buildContactEntry)
+            .collect(Collectors.toList());
+    }
+
+    private Map<String, Object> buildContactEntry(final Contact fromContact) {
+
+        Objects.requireNonNull(fromContact);
+
+        final Map<String, Object> result = new HashMap<>();
+        result.put(CONTACT_ID, fromContact.getContactId());
+        result.put(CONTACT_TYPE, fromContact.getContactType());
+        result.put(CONTACT_NAME, fromContact.getContactable().getDisplayName());
+
+        return result;
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public Optional<Contact> findContact(final long projectId,
+                                         final Object key) {
+
+        final SciProject project = projectRepository
+            .findById(projectId, SciProject.class)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format("No SciProject with ID %d found.",
+                                  projectId))
+            );
+
+        final long contactId = (long) key;
+
+        return project
+            .getContacts()
+            .stream()
+            .filter(contact -> contact.getContactId() == contactId)
+            .findAny();
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
@@ -102,6 +161,99 @@ class SciProjectController {
 
             contact.get().setContactType(contactType);
 
+            projectRepository.save(project);
+        }
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void removeContact(final long projectId, final long contactId) {
+
+        final SciProject project = projectRepository
+            .findById(projectId, SciProject.class)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format("No SciProject with ID %d found.",
+                                  projectId))
+            );
+
+        final Optional<Contact> contact = project
+            .getContacts()
+            .stream()
+            .filter(current -> current.getContactId() == contactId)
+            .findAny();
+
+        if (contact.isPresent()) {
+            projectMananger.removeContact(contact.get().getContactable(),
+                                          project);
+        }
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void swapWithPrevious(final long projectId, final long contactId) {
+
+        final SciProject project = projectRepository
+            .findById(projectId, SciProject.class)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format("No SciProject with ID %d found.",
+                                  projectId))
+            );
+
+        final List<Contact> contacts = project.getContacts();
+        Contact contact = null;
+        int index = -1;
+        for (int i = 0; i < contacts.size(); i++) {
+
+            if (contacts.get(i).getContactId() == contactId) {
+                contact = contacts.get(i);
+                index = i;
+                break;
+            }
+        }
+
+        if (index > 0 && contact != null) {
+            final long order = contact.getOrder();
+            final Contact prevContact = contacts.get(index - 1);
+            final long prevOrder = prevContact.getOrder();
+            
+            contact.setOrder(prevOrder);
+            prevContact.setOrder(order);
+            
+            projectRepository.save(project);
+        }
+    }
+    
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void swapWithNext(final long projectId, final long contactId) {
+
+        final SciProject project = projectRepository
+            .findById(projectId, SciProject.class)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format("No SciProject with ID %d found.",
+                                  projectId))
+            );
+
+        final List<Contact> contacts = project.getContacts();
+        Contact contact = null;
+        int index = -1;
+        for (int i = 0; i < contacts.size(); i++) {
+
+            if (contacts.get(i).getContactId() == contactId) {
+                contact = contacts.get(i);
+                index = i;
+                break;
+            }
+        }
+
+        if (index < contacts.size() && contact != null) {
+            final long order = contact.getOrder();
+            final Contact nextContact = contacts.get(index + 1);
+            final long nextOrder = nextContact.getOrder();
+            
+            contact.setOrder(nextOrder);
+            nextContact.setOrder(order);
+            
             projectRepository.save(project);
         }
     }
