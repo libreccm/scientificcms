@@ -6,6 +6,7 @@
 package com.arsdigita.cms.contenttypes.ui;
 
 import org.libreccm.configuration.ConfigurationManager;
+import org.libreccm.l10n.LocalizedString;
 import org.librecms.assets.ContactableEntity;
 import org.librecms.assets.ContactableEntityRepository;
 import org.scientificcms.contenttypes.sciproject.Contact;
@@ -280,6 +281,26 @@ class SciProjectController {
             .getContacts()
             .stream()
             .anyMatch(current -> filterContact(current, project, contactable));
+    }
+    
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void updateDescription(final long projectId,
+                                  final String descriptionText,
+                                  final Locale language) {
+        
+        final SciProject project = projectRepository
+            .findById(projectId, SciProject.class)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format("No SciProject with ID %d found.",
+                                  projectId))
+            );
+
+        final LocalizedString desc = project.getDescription();
+        desc.addValue(Objects.requireNonNull(language), 
+                      descriptionText);
+        
+        projectRepository.save(project);
     }
 
     @Transactional(Transactional.TxType.REQUIRED)

@@ -23,13 +23,14 @@ import org.scientificcms.contenttypes.sciproject.SciProjectConstants;
 public class SciProjectDescriptionStep extends SimpleEditStep {
 
     private final SegmentedPanel segmentedPanel;
+    private final StringParameter selectedLanguageParam;
 
     public SciProjectDescriptionStep(
         final ItemSelectionModel itemModel,
         final AuthoringKitWizard parent,
-        final StringParameter selectedLanguageParameter) {
+        final StringParameter selectedLanguageParam) {
 
-        super(itemModel, parent, selectedLanguageParameter);
+        super(itemModel, parent, selectedLanguageParam);
 
         segmentedPanel = new SegmentedPanel();
         setDefaultEditKey(SciProjectUiConstants.EDIT_DESC_SHEET_NAME);
@@ -37,6 +38,7 @@ public class SciProjectDescriptionStep extends SimpleEditStep {
         addSteps(itemModel, parent);
 
         setDisplayComponent(segmentedPanel);
+        this.selectedLanguageParam = selectedLanguageParam;
     }
 
     protected SegmentedPanel getSegmentedPanel() {
@@ -46,7 +48,9 @@ public class SciProjectDescriptionStep extends SimpleEditStep {
     protected void addSteps(final ItemSelectionModel itemModel,
                             final AuthoringKitWizard parent) {
 
-        addStep(new SciProjectDescriptionTextStep(item, parent),
+        addStep(new SciProjectDescriptionTextStep(itemModel,
+                                                  parent,
+                                                  selectedLanguageParam),
                 "sciproject.ui.steps.description.title");
 
         final SciProjectConfig config = SciProjectConfig.getConfig();

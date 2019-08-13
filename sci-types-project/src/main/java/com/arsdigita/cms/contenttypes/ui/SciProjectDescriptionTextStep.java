@@ -40,7 +40,7 @@ public class SciProjectDescriptionTextStep extends SimpleEditStep {
         super(itemModel, parent, selectedLanguageParam, suffix);
 
         final BasicItemForm descTextEditSheet
-                                = new SciProjectDescriptionTextForm(
+                                = new SciProjectDescriptionTextEditForm(
                 itemModel, selectedLanguageParam);
         add(SciProjectUiConstants.EDIT_DESC_TEXT_SHEET_NAME,
             new GlobalizedMessage("sciproject.ui.desc.text.edit",
@@ -55,6 +55,7 @@ public class SciProjectDescriptionTextStep extends SimpleEditStep {
         add(SciProjectUiConstants.UPLOAD_DESC_TEXT_SHEET_NAME,
             new GlobalizedMessage("sciproject.ui.desc.upload",
                                   SciProjectConstants.SCI_PROJECT_BUNDLE),
+            new WorkflowLockedComponentAccess(uploadDescForm, itemModel),
             uploadDescForm.getSaveCancelSection().getCancelButton());
 
         setDisplayComponent(

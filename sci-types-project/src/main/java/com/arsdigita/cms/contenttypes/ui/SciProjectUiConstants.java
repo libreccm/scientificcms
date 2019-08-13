@@ -32,6 +32,8 @@ public final class SciProjectUiConstants {
 
     public static final String PROJECT_DESCRIPTION = "description";
 
+    public static final String SPONSOR_STEP = "SciProjectSponsorStep";
+    
     public static final String TITLE = "title";
 
     private SciProjectUiConstants() {
