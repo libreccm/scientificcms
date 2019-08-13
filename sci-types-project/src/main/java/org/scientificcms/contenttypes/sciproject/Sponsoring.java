@@ -73,7 +73,7 @@ public class Sponsoring implements Serializable {
         return order;
     }
 
-    protected void setOrder(final long order) {
+    public void setOrder(final long order) {
         this.order = order;
     }
 

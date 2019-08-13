@@ -9,11 +9,14 @@ import org.libreccm.configuration.ConfigurationManager;
 import org.libreccm.l10n.LocalizedString;
 import org.librecms.assets.ContactableEntity;
 import org.librecms.assets.ContactableEntityRepository;
+import org.librecms.assets.Organization;
+import org.librecms.contentsection.AssetRepository;
 import org.scientificcms.contenttypes.sciproject.Contact;
 import org.scientificcms.contenttypes.sciproject.SciProject;
 import org.scientificcms.contenttypes.sciproject.SciProjectConfig;
 import org.scientificcms.contenttypes.sciproject.SciProjectMananger;
 import org.scientificcms.contenttypes.sciproject.SciProjectRepository;
+import org.scientificcms.contenttypes.sciproject.Sponsoring;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -37,8 +40,19 @@ import javax.transaction.Transactional;
 class SciProjectController {
 
     public static final String CONTACT_NAME = "name";
+
     public static final String CONTACT_TYPE = "contactType";
+
     public static final String CONTACT_ID = "contactId";
+    
+    public static final String SPONSOR_ID = "sponsorId";
+    
+    public static final String SPONSOR_NAME = "name";
+    
+    public static final String SPONSOR_FUNDING_CODE = "fundingCode";
+
+    @Inject
+    private AssetRepository assetRepository;
 
     @Inject
     private ConfigurationManager confManager;
@@ -190,7 +204,8 @@ class SciProjectController {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public void swapWithPrevious(final long projectId, final long contactId) {
+    public void swapWithPreviousContact(final long projectId, 
+                                        final long contactId) {
 
         final SciProject project = projectRepository
             .findById(projectId, SciProject.class)
@@ -216,16 +231,17 @@ class SciProjectController {
             final long order = contact.getOrder();
             final Contact prevContact = contacts.get(index - 1);
             final long prevOrder = prevContact.getOrder();
-            
+
             contact.setOrder(prevOrder);
             prevContact.setOrder(order);
-            
+
             projectRepository.save(project);
         }
     }
-    
+
     @Transactional(Transactional.TxType.REQUIRED)
-    public void swapWithNext(final long projectId, final long contactId) {
+    public void swapWithNextContact(final long projectId, 
+                                    final long contactId) {
 
         final SciProject project = projectRepository
             .findById(projectId, SciProject.class)
@@ -251,10 +267,10 @@ class SciProjectController {
             final long order = contact.getOrder();
             final Contact nextContact = contacts.get(index + 1);
             final long nextOrder = nextContact.getOrder();
-            
+
             contact.setOrder(nextOrder);
             nextContact.setOrder(order);
-            
+
             projectRepository.save(project);
         }
     }
@@ -282,12 +298,12 @@ class SciProjectController {
             .stream()
             .anyMatch(current -> filterContact(current, project, contactable));
     }
-    
+
     @Transactional(Transactional.TxType.REQUIRED)
     public void updateDescription(final long projectId,
                                   final String descriptionText,
                                   final Locale language) {
-        
+
         final SciProject project = projectRepository
             .findById(projectId, SciProject.class)
             .orElseThrow(
@@ -297,12 +313,226 @@ class SciProjectController {
             );
 
         final LocalizedString desc = project.getDescription();
-        desc.addValue(Objects.requireNonNull(language), 
+        desc.addValue(Objects.requireNonNull(language),
                       descriptionText);
-        
+
         projectRepository.save(project);
     }
+    
+    @Transactional(Transactional.TxType.REQUIRED) 
+    public Optional<Sponsoring> findSponsoring(final long projectId, 
+                                               final Object key) {
+        
+         final SciProject project = projectRepository
+            .findById(projectId, SciProject.class)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format("No SciProject with ID %d found.",
+                                  projectId))
+            );
 
+        final long sponsoringId = (long) key;
+        
+        return project
+            .getSponsoring()
+            .stream()
+            .filter(sponsoring -> sponsoring.getSponsoringId() == sponsoringId)
+            .findAny();
+    }
+    
+    @Transactional(Transactional.TxType.REQUIRED)
+    public List<Map<String, Object>> getSponsors(final long forProjectId) {
+        
+          final SciProject project = projectRepository
+            .findById(forProjectId, SciProject.class)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format("No SciProject with ID %d found.",
+                                  forProjectId))
+            );
+
+        return project
+            .getSponsoring()
+            .stream()
+            .map(this::buildSponsorEntry)
+            .collect(Collectors.toList());
+    }
+    
+    private Map<String, Object> buildSponsorEntry(final Sponsoring sponsoring) {
+        
+        Objects.requireNonNull(sponsoring);
+        
+        final Map<String, Object> result = new HashMap<>();
+        result.put(SPONSOR_ID, sponsoring.getSponsoringId());
+        result.put(SPONSOR_NAME, sponsoring.getSponsor().getName());
+        result.put(SPONSOR_FUNDING_CODE, sponsoring.getFundingCode());
+        
+        return result;
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void addSponsor(final long projectId,
+                           final long sponsorId,
+                           final String withFundingCode) {
+
+        final SciProject project = projectRepository
+            .findById(projectId, SciProject.class)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format("No SciProject with ID %d found.",
+                                  projectId))
+            );
+
+        final Organization sponsor = assetRepository
+            .findById(sponsorId, Organization.class)
+            .orElseThrow(() -> new IllegalArgumentException(
+            String.format("No Organization with ID %d found.", sponsorId)));
+
+        projectMananger.addSponsor(sponsor, project, withFundingCode);
+    }
+
+    public void removeSponsor(final long projectId, final long sponsoringId) {
+
+        final SciProject project = projectRepository
+            .findById(projectId, SciProject.class)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format("No SciProject with ID %d found.",
+                                  projectId))
+            );
+
+        final Optional<Sponsoring> sponsoring = project
+            .getSponsoring()
+            .stream()
+            .filter(current -> current.getSponsoringId() == sponsoringId)
+            .findAny();
+
+        if (sponsoring.isPresent()) {
+            projectMananger.removeSponsor(sponsoring.get().getSponsor(),
+                                          project);
+        }
+    }
+
+    public boolean hasSponsor(final long projectId, final long sponsorId) {
+
+        final SciProject project = projectRepository
+            .findById(projectId, SciProject.class)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format("No SciProject with ID %d found.",
+                                  projectId))
+            );
+
+        final Organization sponsor = assetRepository
+            .findById(sponsorId, Organization.class)
+            .orElseThrow(() -> new IllegalArgumentException(
+            String.format("No Organization with ID %d found.", sponsorId)));
+
+        return project
+            .getSponsoring()
+            .stream()
+            .anyMatch(sponsoring -> sponsoring.getSponsor().equals(sponsor));
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void updateFundingCode(final long projectId,
+                                  final long sponsorId,
+                                  final String fundingCode) {
+
+        final SciProject project = projectRepository
+            .findById(projectId, SciProject.class)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format("No SciProject with ID %d found.",
+                                  projectId))
+            );
+
+        final Optional<Sponsoring> result = project
+            .getSponsoring()
+            .stream()
+            .filter(
+                sponsoring -> sponsoring.getSponsor().getObjectId() == sponsorId
+            )
+            .findAny();
+
+        if (result.isPresent()) {
+
+            final Sponsoring sponsoring = result.get();
+            sponsoring.setFundingCode(fundingCode);
+            projectRepository.save(project);
+        }
+    }
+    
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void swapWithPrevSponsoring(final long projectId,
+                                       final long sponsoringId) {
+        final SciProject project = projectRepository
+            .findById(projectId, SciProject.class)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format("No SciProject with ID %d found.",
+                                  projectId))
+            );
+        
+        final List<Sponsoring> sponsoringList = project.getSponsoring();
+        Sponsoring sponsoring = null;
+        int index = -1;
+        for (int i = 0; i < sponsoringList.size(); i++) {
+            
+            if (sponsoringList.get(i).getSponsoringId() == sponsoringId) {
+                sponsoring = sponsoringList.get(i);
+                index = i;
+                break;
+            }
+        }
+        
+        if (index > 0 && sponsoring != null) {
+            final long order = sponsoring.getOrder();
+            final Sponsoring prevSponsoring = sponsoringList.get(index - 1);
+            final long prevOrder = prevSponsoring.getOrder();
+            
+            sponsoring.setOrder(prevOrder);
+            prevSponsoring.setOrder(order);
+            
+            projectRepository.save(project);
+        }
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void swapWithNextSponsoring(final long projectId,
+                                       final long sponsoringId) {
+        final SciProject project = projectRepository
+            .findById(projectId, SciProject.class)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format("No SciProject with ID %d found.",
+                                  projectId))
+            );
+        
+          final List<Sponsoring> sponsoringList = project.getSponsoring();
+        Sponsoring sponsoring = null;
+        int index = -1;
+        for (int i = 0; i < sponsoringList.size(); i++) {
+            
+            if (sponsoringList.get(i).getSponsoringId() == sponsoringId) {
+                sponsoring = sponsoringList.get(i);
+                index = i;
+                break;
+            }
+        }
+        
+        if (index > 0 && sponsoring != null) {
+            final long order = sponsoring.getOrder();
+            final Sponsoring nextSponsoring = sponsoringList.get(index + 1);
+            final long nextOrder = nextSponsoring.getOrder();
+            
+            sponsoring.setOrder(nextOrder);
+            nextSponsoring.setOrder(order);
+            
+            projectRepository.save(project);
+        }
+    }
+    
     @Transactional(Transactional.TxType.REQUIRED)
     public void save(final long projectId,
                      final Locale selectedLocale,

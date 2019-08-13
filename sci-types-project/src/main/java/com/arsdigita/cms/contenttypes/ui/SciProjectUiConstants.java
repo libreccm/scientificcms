@@ -21,8 +21,7 @@ public final class SciProjectUiConstants {
 
     public static final String EDIT_DESC_TEXT_SHEET_NAME = "editProjectDescText";
 
-    public static final String UPLOAD_DESC_TEXT_SHEET_NAME
-                               = "uploadProjectDescText";
+    public static final String FUNDING_CODE = "fundingCode";
 
     public static final String END = "end";
 
@@ -33,8 +32,13 @@ public final class SciProjectUiConstants {
     public static final String PROJECT_DESCRIPTION = "description";
 
     public static final String SPONSOR_STEP = "SciProjectSponsorStep";
-    
+
+    public static final String SPONSOR_SEARCH = "setSponsor";
+
     public static final String TITLE = "title";
+
+    public static final String UPLOAD_DESC_TEXT_SHEET_NAME
+                                   = "uploadProjectDescText";
 
     private SciProjectUiConstants() {
         // Nothing

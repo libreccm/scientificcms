@@ -23,6 +23,7 @@ import org.scientificcms.contenttypes.sciproject.SciProjectConstants;
 public class SciProjectDescriptionStep extends SimpleEditStep {
 
     private final SegmentedPanel segmentedPanel;
+
     private final StringParameter selectedLanguageParam;
 
     public SciProjectDescriptionStep(
@@ -56,7 +57,9 @@ public class SciProjectDescriptionStep extends SimpleEditStep {
         final SciProjectConfig config = SciProjectConfig.getConfig();
 
         if (config.isEnableSponsor()) {
-            addStep(new SciProjectSponsorStep(itemModel, parent),
+            addStep(new SciProjectSponsorsStep(itemModel,
+                                               parent,
+                                               selectedLanguageParam),
                     "sciproject.ui.steps.sponsor.title");
         }
 

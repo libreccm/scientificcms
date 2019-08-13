@@ -5,7 +5,6 @@
  */
 package com.arsdigita.cms.contenttypes.ui;
 
-import com.arsdigita.bebop.BoxPanel;
 import com.arsdigita.bebop.Component;
 import com.arsdigita.bebop.ControlLink;
 import com.arsdigita.bebop.FormProcessException;
@@ -21,20 +20,17 @@ import com.arsdigita.bebop.table.TableColumnModel;
 import com.arsdigita.bebop.table.TableModel;
 import com.arsdigita.bebop.table.TableModelBuilder;
 import com.arsdigita.cms.ItemSelectionModel;
+import com.arsdigita.cms.ui.authoring.SimpleEditStep;
 import com.arsdigita.globalization.GlobalizedMessage;
 import com.arsdigita.util.LockableImpl;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.libreccm.cdi.utils.CdiUtil;
-import org.libreccm.configuration.ConfigurationManager;
 import org.libreccm.security.PermissionChecker;
-import org.librecms.CmsConstants;
 import org.librecms.contentsection.privileges.ItemPrivileges;
 import org.scientificcms.contenttypes.sciproject.Contact;
 import org.scientificcms.contenttypes.sciproject.SciProject;
-import org.scientificcms.contenttypes.sciproject.SciProjectConfig;
 import org.scientificcms.contenttypes.sciproject.SciProjectConstants;
+import org.scientificcms.contenttypes.sciproject.Sponsoring;
 
 import java.util.Iterator;
 import java.util.List;
@@ -45,80 +41,83 @@ import java.util.Optional;
  *
  * @author <a href="mailto:jens.pelzetter@googlemail.com">Jens Pelzetter</a>
  */
-public class SciProjectContactsTable
-    extends Table
-    implements TableActionListener {
+public class SciProjectSponsorSheet
+    extends Table implements TableActionListener {
 
-    private static final Logger LOGGER = LogManager
-        .getLogger(SciProjectContactsTable.class);
+    private final String TABLE_COL_EDIT = "table_col_edit";
 
-    private final static String TABLE_COL_EDIT = "table_col_edit";
-    private final static String TABLE_COL_EDIT_ASSOC = "table_col_edit_assoc";
-    private final static String TABLE_COL_DEL = "table_col_del";
-    private final static String TABLE_COL_UP = "table_col_up";
-    private final static String TABLE_COL_DOWN = "table_col_down";
+    private final String TABLE_COL_EDIT_ASSOC = "table_col_edit_assoc";
+
+    private final String TABLE_COL_DEL = "table_col_del";
+
+    private final String TABLE_COL_UP = "table_col_up";
+
+    private final String TABLE_COL_DOWN = "table_col_down";
+
+    private final String SELECTED_PROJECT
+                             = "selected_project_sponsor_association_project";
+
+    private final String SELECTED_SPONSOR
+                             = "selected_project_sponsor_association_sponsor";
 
     private final ItemSelectionModel itemModel;
-    private final SciProjectContactsStep editStep;
 
-    public SciProjectContactsTable(final ItemSelectionModel itemModel,
-                                   final SciProjectContactsStep editStep) {
+    private final SciProjectSponsorsStep editStep;
+
+    public SciProjectSponsorSheet(final ItemSelectionModel itemModel,
+                                  final SciProjectSponsorsStep editStep) {
 
         super();
-
         this.itemModel = itemModel;
         this.editStep = editStep;
 
         setEmptyView(new Label(new GlobalizedMessage(
-            "cms.contenttypes.ui.sciproject.contacts.none",
+            "sciproject.ui.sponsor_none",
             SciProjectConstants.SCI_PROJECT_BUNDLE)));
 
         final TableColumnModel columnModel = getColumnModel();
         columnModel.add(new TableColumn(
             0,
-            new GlobalizedMessage(
-                "cms.contenttypes.ui.sciproject.contact.type",
-                SciProjectConstants.SCI_PROJECT_BUNDLE)));
-        columnModel.add(new TableColumn(
-            1,
-            new GlobalizedMessage(
-                "cms.contenttypes.ui.sciproject.contact.title",
-                SciProjectConstants.SCI_PROJECT_BUNDLE),
+            new GlobalizedMessage("sciproject.ui.sponsor_name",
+                                  SciProjectConstants.SCI_PROJECT_BUNDLE),
             TABLE_COL_EDIT));
         columnModel.add(new TableColumn(
+            1,
+            new GlobalizedMessage("sciproject.ui.sponsor_fundingcode",
+                                  SciProjectConstants.SCI_PROJECT_BUNDLE)));
+        columnModel.add(new TableColumn(
             2,
-            new GlobalizedMessage(
-                "cms.contenttypes.ui.sciproject.contact.edit",
-                SciProjectConstants.SCI_PROJECT_BUNDLE),
+            new GlobalizedMessage("sciproject.ui.sponsor_edit_assoc",
+                                  SciProjectConstants.SCI_PROJECT_BUNDLE),
             TABLE_COL_EDIT_ASSOC));
         columnModel.add(new TableColumn(
             3,
-            new GlobalizedMessage(
-                "cms.contenttypes.ui.sciproject.contact.action",
-                SciProjectConstants.SCI_PROJECT_BUNDLE),
+            new GlobalizedMessage("sciproject.ui.sponsor_remove",
+                                  SciProjectConstants.SCI_PROJECT_BUNDLE),
             TABLE_COL_DEL));
         columnModel.add(new TableColumn(
             4,
             new GlobalizedMessage(
-                "cms.contenttypes.ui.sciproject.contact.up",
+                "sciproject.ui.sponsor.up",
                 SciProjectConstants.SCI_PROJECT_BUNDLE),
             TABLE_COL_UP));
         columnModel.add(new TableColumn(
             5,
             new GlobalizedMessage(
-                "cms.contenttypes.ui.sciproject.contact.down",
+                "sciproject.ui.sponsor.down",
                 SciProjectConstants.SCI_PROJECT_BUNDLE),
             TABLE_COL_DOWN));
 
-        setModelBuilder(new SciProjectContactsTableModelBuilder(itemModel));
+        setModelBuilder(new ModelBuilder(itemModel));
 
-        columnModel.get(1).setCellRenderer(new EditCellRenderer());
+        columnModel.get(0).setCellRenderer(new EditCellRenderer());
         columnModel.get(2).setCellRenderer(new EditAssocCellRenderer());
         columnModel.get(3).setCellRenderer(new DeleteCellRenderer());
         columnModel.get(4).setCellRenderer(new UpCellRenderer());
         columnModel.get(5).setCellRenderer(new DownCellRenderer());
 
         addTableActionListener(this);
+
     }
 
     @Override
@@ -131,28 +130,27 @@ public class SciProjectContactsTable
         final CdiUtil cdiUtil = CdiUtil.createCdiUtil();
         final SciProjectController controller = cdiUtil
             .findBean(SciProjectController.class);
-        final Contact contact = controller.findContact(selected.getObjectId(),
-                                                       event.getRowKey())
+        final Sponsoring sponsoring = controller
+            .findSponsoring(selected.getObjectId(), event.getRowKey())
             .get();
-        
-        final TableColumn column = getColumnModel()
-            .get(event.getColumn().intValue());
-        
+
+        final TableColumn column = getColumnModel().get(event.getColumn());
+
         if (TABLE_COL_EDIT_ASSOC.equals(column.getHeaderKey())) {
-            editStep.setSelectedContact(contact.getContactable());
-            editStep.setSelectedContactType(contact.getContactType());
-            
+            editStep.setSelectedSponsor(sponsoring.getSponsor());
+            editStep.setSelectedSponsorFundingCode(sponsoring.getFundingCode());
+
             editStep.showComponent(state,
                                    SciProjectUiConstants.ADD_CONTACT_SHEET_NAME);
-        } else if(TABLE_COL_DEL.equals(column.getHeaderKey())) {
+        } else if (TABLE_COL_DEL.equals(column.getHeaderKey())) {
             controller.removeContact(selected.getObjectId(),
-                                  contact.getContactId());
-        } else if(TABLE_COL_UP.equals(column.getHeaderKey())) {
+                                     sponsoring.getSponsoringId());
+        } else if (TABLE_COL_UP.equals(column.getHeaderKey())) {
             controller.swapWithPreviousContact(selected.getObjectId(),
-                                        contact.getContactId());
-        } else if(TABLE_COL_DOWN.equals(column.getHeaderKey())) {
+                                        sponsoring.getSponsoringId());
+        } else if (TABLE_COL_DOWN.equals(column.getHeaderKey())) {
             controller.swapWithNextContact(selected.getObjectId(),
-                                        contact.getContactId());
+                                    sponsoring.getSponsoringId());
         }
     }
 
@@ -162,15 +160,12 @@ public class SciProjectContactsTable
         // Nothing
     }
 
-    private class SciProjectContactsTableModelBuilder
-        extends LockableImpl
-        implements TableModelBuilder {
+    private class ModelBuilder
+        extends LockableImpl implements TableModelBuilder {
 
         private final ItemSelectionModel itemModel;
 
-        public SciProjectContactsTableModelBuilder(
-            final ItemSelectionModel itemModel) {
-
+        public ModelBuilder(final ItemSelectionModel itemModel) {
             this.itemModel = itemModel;
         }
 
@@ -178,32 +173,30 @@ public class SciProjectContactsTable
         public TableModel makeModel(final Table table, final PageState state) {
 
             table.getRowSelectionModel().clearSelection(state);
-            final SciProject selected = (SciProject) itemModel
-                .getSelectedItem(state);
-
-            return new SciProjectContactsTableModel(table, state, selected);
+            final SciProject project = (SciProject) itemModel
+                .getSelectedObject(state);
+            return new Model(table, state, project);
         }
 
     }
 
-    private class SciProjectContactsTableModel implements TableModel {
+    private class Model implements TableModel {
 
         private final Table table;
-        private final List<Map<String, Object>> data;
-        private final Iterator<Map<String, Object>> iterator;
+
+        private final Iterator<Map<String, Object>> sponsors;
+
         private Map<String, Object> currentRow;
 
-        public SciProjectContactsTableModel(final Table table,
-                                            final PageState state,
-                                            final SciProject selected) {
-
+        public Model(final Table table, final PageState state,
+                     final SciProject project) {
             this.table = table;
 
             final CdiUtil cdiUtil = CdiUtil.createCdiUtil();
             final SciProjectController controller = cdiUtil
                 .findBean(SciProjectController.class);
-            data = controller.getContacts(selected.getObjectId());
-            iterator = data.iterator();
+
+            sponsors = controller.getSponsors(project.getObjectId()).iterator();
         }
 
         @Override
@@ -214,9 +207,8 @@ public class SciProjectContactsTable
         @Override
         public boolean nextRow() {
 
-            if (iterator.hasNext()) {
-
-                currentRow = iterator.next();
+            if (sponsors.hasNext()) {
+                currentRow = sponsors.next();
                 return true;
             } else {
                 return false;
@@ -225,28 +217,20 @@ public class SciProjectContactsTable
 
         @Override
         public Object getElementAt(final int columnIndex) {
-
             switch (columnIndex) {
-                case 0: {
-                    final CdiUtil cdiUtil = CdiUtil.createCdiUtil();
-                    final ConfigurationManager confManager = cdiUtil
-                        .findBean(ConfigurationManager.class);
-                    final SciProjectConfig config = confManager
-                        .findConfiguration(SciProjectConfig.class);
-                    final String type = (String) currentRow
-                        .get(SciProjectController.CONTACT_TYPE);
-                    return new GlobalizedMessage(type,
-                                                 config
-                                                     .getContactTypesBundleName());
-                }
+                case 0:
+                    return currentRow.get(SciProjectController.SPONSOR_NAME);
                 case 1:
-                    return currentRow.get(SciProjectController.CONTACT_NAME);
+                    return currentRow
+                        .get(SciProjectController.SPONSOR_FUNDING_CODE);
                 case 2:
                     return new Label(new GlobalizedMessage(
-                        "cms.ui.edit_assoc", CmsConstants.CMS_BUNDLE));
+                        "sciproject.ui.sponsor.edit_assoc",
+                        SciProjectConstants.SCI_PROJECT_BUNDLE));
                 case 3:
                     return new Label(new GlobalizedMessage(
-                        "cms.ui.delete", CmsConstants.CMS_BUNDLE));
+                        "sciproject.ui.sponsor.remove",
+                        SciProjectConstants.SCI_PROJECT_BUNDLE));
                 default:
                     return null;
             }
@@ -254,7 +238,7 @@ public class SciProjectContactsTable
 
         @Override
         public Object getKeyAt(final int columnIndex) {
-            return currentRow.get(SciProjectController.CONTACT_ID);
+            return currentRow.get(SciProjectController.SPONSOR_ID);
         }
 
     }
@@ -264,63 +248,23 @@ public class SciProjectContactsTable
         implements TableCellRenderer {
 
         @Override
-        public Component getComponent(
-            Table table,
-            PageState state,
-            Object value,
-            boolean isSelected,
-            Object key,
-            int row,
-            int col) {
+        public Component getComponent(final Table table,
+                                      final PageState state,
+                                      final Object value,
+                                      final boolean isSelected,
+                                      final Object key,
+                                      final int row,
+                                      final int column) {
 
-//            final CdiUtil cdiUtil = CdiUtil.createCdiUtil();
-//            final PermissionChecker permissionChecker = cdiUtil
-//                .findBean(PermissionChecker.class);
-//
-//            final SciProject selected = (SciProject) itemModel
-//                .getSelectedItem(state);
-//            final boolean canEdit = permissionChecker
-//                .isPermitted(ItemPrivileges.EDIT, selected);
-//
-//            if (canEdit) {
-//                final SciProjectController controller = cdiUtil
-//                    .findBean(SciProjectController.class);
-//                final ContentItemManager itemManager = cdiUtil
-//                    .findBean(ContentItemManager.class);
-//                final ContentSectionManager sectionManager = cdiUtil
-//                    .findBean(ContentSectionManager.class);
-//                final Optional<Contact> contact = controller
-//                    .findContact(selected.getObjectId(), key);
-//
-//                final ContentSection section = itemManager
-//                    .getItemFolder(selected)
-//                    .get()
-//                    .getSection();
-//                final ItemResolver resolver = sectionManager
-//                    .getItemResolver(section);
-//            } else {
-//
-//            }
             final SciProject selected = (SciProject) itemModel
                 .getSelectedItem(state);
             final CdiUtil cdiUtil = CdiUtil.createCdiUtil();
             final SciProjectController controller = cdiUtil
                 .findBean(SciProjectController.class);
-            final Optional<Contact> contact = controller
-                .findContact(selected.getObjectId(), key);
-            final String name = contact.get().getContactable().getDisplayName();
-            final String type = contact.get().getContactType();
+            final Optional<Sponsoring> sponsoring = controller
+                .findSponsoring(selected.getObjectId(), key);
 
-            final Label typeLabel = new Label(new GlobalizedMessage(
-                type, controller.getContactTypesBundleName()));
-
-            final Text nameText = new Text(name);
-
-            final BoxPanel panel = new BoxPanel(BoxPanel.HORIZONTAL);
-            panel.add(nameText);
-            panel.add(typeLabel);
-
-            return panel;
+            return new Text(sponsoring.get().getSponsor().getName());
         }
 
     }
@@ -330,14 +274,13 @@ public class SciProjectContactsTable
         implements TableCellRenderer {
 
         @Override
-        public Component getComponent(
-            Table table,
-            PageState state,
-            Object value,
-            boolean isSelected,
-            Object key,
-            int row,
-            int col) {
+        public Component getComponent(final Table table,
+                                      final PageState state,
+                                      final Object value,
+                                      final boolean isSelected,
+                                      final Object key,
+                                      final int row,
+                                      final int col) {
 
             final CdiUtil cdiUtil = CdiUtil.createCdiUtil();
             final PermissionChecker permissionChecker = cdiUtil

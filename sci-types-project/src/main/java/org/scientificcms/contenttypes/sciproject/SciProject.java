@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 
 import org.hibernate.envers.Audited;
 import org.libreccm.l10n.LocalizedString;
+import org.librecms.assets.Organization;
 import org.librecms.contentsection.ContentItem;
 import org.librecms.contenttypes.AuthoringKit;
 import org.librecms.contenttypes.AuthoringStep;
@@ -151,6 +152,9 @@ public class SciProject extends ContentItem implements Serializable {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<Membership> members;
 
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    private List<Sponsoring> sponsoring;
+
     public SciProject() {
         super();
 
@@ -245,6 +249,30 @@ public class SciProject extends ContentItem implements Serializable {
     protected void setMembers(final List<Membership> members) {
         this.members = new ArrayList<>(members);
     }
+    
+    public List<Sponsoring> getSponsoring() {
+        
+        if (sponsoring == null) {
+            return null;
+        } else {
+            return Collections.unmodifiableList(sponsoring);
+        }
+    }
+    
+    protected void addSponsor(final Sponsoring sponsor) {
+        
+        sponsoring.add(sponsor);
+    }
+    
+    protected void removeSponsor(final Sponsoring sponsor) {
+        
+        sponsoring.remove(sponsor);
+    }
+    
+    protected void setSponsoring(final List<Sponsoring> sponsoring) {
+        
+        this.sponsoring = new ArrayList<>(sponsoring);
+    } 
 
     @Override
     public int hashCode() {
@@ -257,6 +285,7 @@ public class SciProject extends ContentItem implements Serializable {
         hash = 53 * hash + Objects.hashCode(fundingVolume);
         hash = 53 * hash + Objects.hashCode(contacts);
         hash = 53 * hash + Objects.hashCode(members);
+        hash = 53 * hash + Objects.hashCode(sponsoring);
         return hash;
     }
 
@@ -303,7 +332,10 @@ public class SciProject extends ContentItem implements Serializable {
         if (!Objects.equals(contacts, other.getContacts())) {
             return false;
         }
-        return Objects.equals(members, other.getMembers());
+        if (!Objects.equals(members, other.getMembers())) {
+            return false;
+        } 
+        return Objects.equals(sponsoring, other.getSponsoring());
     }
 
     @Override
@@ -323,7 +355,8 @@ public class SciProject extends ContentItem implements Serializable {
                 + "funding = %s, "
                 + "fundingVolume = %s, "
                 + "contacts = %s, "
-                + "members = %s%s",
+                + "members = %s,"
+                + "sponsoring = %s%s",
             Objects.toString(begin),
             Objects.toString(end),
             Objects.toString(shortDescription),
@@ -332,6 +365,7 @@ public class SciProject extends ContentItem implements Serializable {
             Objects.toString(fundingVolume),
             Objects.toString(contacts),
             Objects.toString(members),
+            Objects.toString(sponsoring),
             data
         ));
     }

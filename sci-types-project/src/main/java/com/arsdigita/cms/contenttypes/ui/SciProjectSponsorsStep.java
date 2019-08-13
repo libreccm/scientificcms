@@ -20,26 +20,27 @@ import org.scientificcms.contenttypes.sciproject.SciProjectConstants;
  *
  * @author <a href="mailto:jens.pelzetter@googlemail.com">Jens Pelzetter</a>
  */
-public class SciProjectSponsorStep extends SimpleEditStep {
+public class SciProjectSponsorsStep extends SimpleEditStep {
 
     private Organization selectedSponsor;
+
     private String selectedSponsorFundingCode;
 
-    public SciProjectSponsorStep(final ItemSelectionModel itemModel,
+    public SciProjectSponsorsStep(final ItemSelectionModel itemModel,
                                  final AuthoringKitWizard parent,
                                  final StringParameter selectedLanguageParam) {
         this(itemModel, parent, selectedLanguageParam, null);
     }
 
-    public SciProjectSponsorStep(final ItemSelectionModel itemModel,
+    public SciProjectSponsorsStep(final ItemSelectionModel itemModel,
                                  final AuthoringKitWizard parent,
                                  final StringParameter selectedLanguageParam,
                                  final String prefix) {
 
         super(itemModel, parent, selectedLanguageParam, prefix);
 
-        final BasicItemForm sponsorForm = new SciProjectSponsorForm(itemModel,
-                                                                    this);
+        final BasicItemForm sponsorForm = new SciProjectSponsorForm(
+            itemModel, this, selectedLanguageParam);
         add(SciProjectUiConstants.SPONSOR_STEP,
             new GlobalizedMessage("sciproject.ui.sponsor.add",
                                   SciProjectConstants.SCI_PROJECT_BUNDLE),

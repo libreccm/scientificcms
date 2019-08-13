@@ -6,6 +6,7 @@
 package org.scientificcms.contenttypes.sciproject;
 
 import org.librecms.assets.ContactableEntity;
+import org.librecms.assets.Organization;
 import org.librecms.assets.Person;
 
 import java.io.Serializable;
@@ -119,10 +120,51 @@ public class SciProjectMananger implements Serializable {
                                                    person,
                                                    fromProject))
             .findFirst();
-        
+
         if (result.isPresent()) {
             final Membership remove = result.get();
             fromProject.removeMembership(remove);
+            sciProjectRepository.save(fromProject);
+        }
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void addSponsor(final Organization sponsor,
+                           final SciProject toProject,
+                           final String withFundingCode) {
+
+        Objects.requireNonNull(sponsor, "Can't add null as sponsor.");
+        Objects.requireNonNull(toProject,
+                               "Can't add a sponsor to project null.");
+
+        final Sponsoring sponsoring = new Sponsoring();
+        sponsoring.setFundingCode(withFundingCode);
+        sponsoring.setOrder(toProject.getSponsoring().size());
+        sponsoring.setProject(toProject);
+        sponsoring.setSponsor(sponsor);
+
+        toProject.addSponsor(sponsoring);
+
+        sciProjectRepository.save(toProject);
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void removeSponsor(final Organization sponsor,
+                              final SciProject fromProject) {
+
+        Objects.requireNonNull(sponsor, "Can't remove null as sponsor.");
+        Objects.requireNonNull(fromProject,
+                               "Can't remove a sponsor from project null.");
+
+        final Optional<Sponsoring> result = fromProject
+            .getSponsoring()
+            .stream()
+            .filter(sponsoring -> sponsoring.getSponsor().equals(sponsor))
+            .findFirst();
+
+        if (result.isPresent()) {
+            final Sponsoring sponsoring = result.get();
+            fromProject.removeSponsor(sponsoring);
             sciProjectRepository.save(fromProject);
         }
     }
