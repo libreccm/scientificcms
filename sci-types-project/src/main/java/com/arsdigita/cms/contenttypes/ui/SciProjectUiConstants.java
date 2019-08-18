@@ -21,6 +21,10 @@ public final class SciProjectUiConstants {
 
     public static final String EDIT_DESC_TEXT_SHEET_NAME = "editProjectDescText";
 
+    public static final String FUNDING = "funding";
+
+    public static final String FUNDING_VOLUME = "fundingVolume";
+
     public static final String FUNDING_CODE = "fundingCode";
 
     public static final String END = "end";

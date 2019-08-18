@@ -5,25 +5,24 @@
  */
 package org.scientificcms.contenttypes.sciproject;
 
+import nl.jqno.equalsverifier.Warning;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.libreccm.categorization.Category;
 import org.libreccm.core.CcmObject;
 import org.libreccm.l10n.LocalizedString;
-import org.libreccm.security.Group;
-import org.libreccm.security.Role;
 import org.libreccm.security.SecurityEntitiesPrefabProvider;
-import org.libreccm.security.User;
 import org.libreccm.tests.categories.UnitTest;
 import org.libreccm.testutils.EqualsVerifier;
 import org.libreccm.workflow.Workflow;
 import org.librecms.assets.ContactableEntity;
+import org.librecms.assets.Organization;
 import org.librecms.assets.Person;
 import org.librecms.assets.PostalAddress;
-import org.librecms.contentsection.AttachmentList;
 import org.librecms.contentsection.ContentItem;
 import org.librecms.contentsection.ContentSection;
 import org.librecms.contentsection.ContentType;
+import org.librecms.contentsection.ItemAttachment;
 import org.librecms.lifecycle.Lifecycle;
 
 import java.util.Arrays;
@@ -151,18 +150,6 @@ public class EqualsAndHashCodeTest extends EqualsVerifier {
 
         verifier.withPrefabValues(ContentItem.class, item1, item2);
 
-        final AttachmentList attachmentList1 = new AttachmentList();
-        attachmentList1.setListId(701);
-        attachmentList1.setName("list1");
-
-        final AttachmentList attachmentList2 = new AttachmentList();
-        attachmentList2.setListId(702);
-        attachmentList2.setName("list2");
-
-        verifier.withPrefabValues(AttachmentList.class,
-                                  attachmentList1,
-                                  attachmentList2);
-
         final Lifecycle lifecycle1 = new Lifecycle();
         lifecycle1.setLifecycleId(801);
         lifecycle1.setStarted(true);
@@ -206,6 +193,28 @@ public class EqualsAndHashCodeTest extends EqualsVerifier {
         category2.setName("category2");
 
         verifier.withPrefabValues(Category.class, category1, category2);
+        
+        final Organization organization1 = new Organization();
+        organization1.setName("orga1");
+        
+        final Organization organization2 = new Organization();
+        organization1.setName("orga2");
+        
+        verifier.withPrefabValues(Organization.class, 
+                                  organization1, 
+                                  organization2);
+        
+        final ItemAttachment<?> itemAttachment1 = new ItemAttachment<>();
+        itemAttachment1.setUuid("927ac9de-029d-4233-9015-1135eb861c34");
+        
+        final ItemAttachment<?> itemAttachment2 = new ItemAttachment<>();
+        itemAttachment2.setUuid("d1bd98a1-75c2-4e61-8f9f-2e2eadd30812");
+        
+        verifier.withPrefabValues(ItemAttachment.class,
+                                  itemAttachment1, 
+                                  itemAttachment2);
+        
+        verifier.suppress(Warning.REFERENCE_EQUALITY);
     }
 
 }

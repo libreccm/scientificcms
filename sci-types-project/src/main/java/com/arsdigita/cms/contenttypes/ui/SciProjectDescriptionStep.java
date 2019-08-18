@@ -64,7 +64,9 @@ public class SciProjectDescriptionStep extends SimpleEditStep {
         }
 
         if (config.isEnableFunding()) {
-            addStep(new SciProjectFundingStep(itemModel, parent),
+            addStep(new SciProjectFundingStep(itemModel,
+                                              parent,
+                                              selectedLanguageParam),
                     "sciproject.ui.steps.funding.title");
         }
     }

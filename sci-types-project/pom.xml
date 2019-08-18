@@ -20,7 +20,7 @@
     <groupId>org.scientificcms</groupId>
     <artifactId>sci-types-project</artifactId>
 
-    <name>sci-types-project</name>
+    <name>ScientificCMS SciProject Content Type</name>
 
     <dependencies>
         <dependency>

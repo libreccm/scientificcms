@@ -20,12 +20,21 @@ public class SciProjectConfig {
     @Setting
     private String contactTypesBundleName
                        = "org.scientificcms.contenttypes.sciproject.DefaultContactTypes";
-    
+
     @Setting
     private boolean enableSponsor = true;
-    
+
     @Setting
     private boolean enableFunding = true;
+
+    @Setting
+    private boolean enableFundingDhtml = true;
+
+    @Setting
+    private boolean enableFundingVolume = true;
+    
+    @Setting
+    private int fundingVolumeLength = 128;
 
     public static SciProjectConfig getConfig() {
         final ConfigurationManager confManager = CdiUtil.createCdiUtil()
@@ -59,6 +68,30 @@ public class SciProjectConfig {
 
     public void setEnableFunding(final boolean enableFunding) {
         this.enableFunding = enableFunding;
+    }
+
+    public boolean isEnableFundingDhtml() {
+        return enableFundingDhtml;
+    }
+
+    public void setEnableFundingDhtml(boolean enableFundingDhtml) {
+        this.enableFundingDhtml = enableFundingDhtml;
+    }
+
+    public boolean isEnableFundingVolume() {
+        return enableFundingVolume;
+    }
+
+    public void setEnableFundingVolume(final boolean enableFundingVolume) {
+        this.enableFundingVolume = enableFundingVolume;
+    }
+
+    public int getFundingVolumeLength() {
+        return fundingVolumeLength;
+    }
+
+    public void setFundingVolumeLength(final int fundingVolumeLength) {
+        this.fundingVolumeLength = fundingVolumeLength;
     }
     
     

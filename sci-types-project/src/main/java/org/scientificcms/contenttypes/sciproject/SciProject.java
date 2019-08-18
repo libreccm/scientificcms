@@ -12,7 +12,6 @@ import javax.persistence.Entity;
 
 import org.hibernate.envers.Audited;
 import org.libreccm.l10n.LocalizedString;
-import org.librecms.assets.Organization;
 import org.librecms.contentsection.ContentItem;
 import org.librecms.contenttypes.AuthoringKit;
 import org.librecms.contenttypes.AuthoringStep;
