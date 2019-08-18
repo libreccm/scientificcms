@@ -22,6 +22,10 @@ public class SciProjectConfig {
                        = "org.scientificcms.contenttypes.sciproject.DefaultContactTypes";
 
     @Setting
+    private String memberRolesBundleName
+                       = "org.scientificcms.contenttypes.sciproject.MemberRoles";
+
+    @Setting
     private boolean enableSponsor = true;
 
     @Setting
@@ -32,7 +36,7 @@ public class SciProjectConfig {
 
     @Setting
     private boolean enableFundingVolume = true;
-    
+
     @Setting
     private int fundingVolumeLength = 128;
 
@@ -52,6 +56,14 @@ public class SciProjectConfig {
 
     public void setContactTypesBundleName(final String contactTypesBundle) {
         this.contactTypesBundleName = contactTypesBundle;
+    }
+
+    public String getMemberRolesBundleName() {
+        return memberRolesBundleName;
+    }
+
+    public void setMemberRolesBundleName(final String memberRolesBundleName) {
+        this.memberRolesBundleName = memberRolesBundleName;
     }
 
     public boolean isEnableSponsor() {
@@ -93,7 +105,5 @@ public class SciProjectConfig {
     public void setFundingVolumeLength(final int fundingVolumeLength) {
         this.fundingVolumeLength = fundingVolumeLength;
     }
-    
-    
 
 }

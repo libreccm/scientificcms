@@ -5,6 +5,8 @@
  */
 package org.scientificcms.contenttypes.sciproject;
 
+import com.arsdigita.cms.contenttypes.ui.SciProjectDescriptionStep;
+import com.arsdigita.cms.contenttypes.ui.SciProjectMembersStep;
 import com.arsdigita.cms.contenttypes.ui.SciProjectPropertiesStep;
 import com.arsdigita.cms.ui.authoring.PageCreateForm;
 
@@ -58,7 +60,24 @@ import static org.scientificcms.contenttypes.sciproject.SciProjectConstants.*;
             descriptionBundle = SciProjectConstants.SCI_PROJECT_BUNDLE,
             descriptionKey = "cms.contenttypes.shared.basic_properties"
                                  + ".description",
-            order = 1)
+            order = 1
+        ),
+        @AuthoringStep(
+            component = SciProjectMembersStep.class,
+            labelBundle = SciProjectConstants.SCI_PROJECT_BUNDLE,
+            labelKey = "sciproject.membersstep.label",
+            descriptionBundle = SciProjectConstants.SCI_PROJECT_BUNDLE,
+            descriptionKey = "sciproject.membersstep.description",
+            order = 2
+        ),
+        @AuthoringStep(
+            component = SciProjectDescriptionStep.class,
+            labelBundle = SciProjectConstants.SCI_PROJECT_BUNDLE,
+            labelKey = "sciproject.descriptionstep.label",
+            descriptionBundle = SciProjectConstants.SCI_PROJECT_BUNDLE,
+            descriptionKey = "sciproject.descriptionstep.description",
+            order = 3
+        )
     })
 @NamedQueries({
     @NamedQuery(
@@ -248,30 +267,30 @@ public class SciProject extends ContentItem implements Serializable {
     protected void setMembers(final List<Membership> members) {
         this.members = new ArrayList<>(members);
     }
-    
+
     public List<Sponsoring> getSponsoring() {
-        
+
         if (sponsoring == null) {
             return null;
         } else {
             return Collections.unmodifiableList(sponsoring);
         }
     }
-    
+
     protected void addSponsor(final Sponsoring sponsor) {
-        
+
         sponsoring.add(sponsor);
     }
-    
+
     protected void removeSponsor(final Sponsoring sponsor) {
-        
+
         sponsoring.remove(sponsor);
     }
-    
+
     protected void setSponsoring(final List<Sponsoring> sponsoring) {
-        
+
         this.sponsoring = new ArrayList<>(sponsoring);
-    } 
+    }
 
     @Override
     public int hashCode() {
@@ -333,7 +352,7 @@ public class SciProject extends ContentItem implements Serializable {
         }
         if (!Objects.equals(members, other.getMembers())) {
             return false;
-        } 
+        }
         return Objects.equals(sponsoring, other.getSponsoring());
     }
 

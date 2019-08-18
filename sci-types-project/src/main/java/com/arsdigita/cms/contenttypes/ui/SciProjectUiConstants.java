@@ -13,6 +13,8 @@ public final class SciProjectUiConstants {
 
     public static final String ADD_CONTACT_SHEET_NAME = "addContact";
 
+    public static final String ADD_MEMBER_SHEET_NAME = "addMember";
+    
     public static final String BEGIN = "begin";
 
     public static final String EDIT_CONTACT_SHEET_NAME = "edit";
@@ -31,6 +33,12 @@ public final class SciProjectUiConstants {
 
     public static final String NAME = "name";
 
+    public static final String MEMBER_ROLE = "memberRole";
+    
+    public static final String MEMBER_SEARCH = "memberSearch";
+    
+    public static final String MEMBER_STATUS = "memberStatus";
+    
     public static final String PROJECT_SHORT_DESCRIPTION = "shortDescription";
 
     public static final String PROJECT_DESCRIPTION = "description";

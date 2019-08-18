@@ -53,12 +53,17 @@ public class SciProjectContactsTable
         .getLogger(SciProjectContactsTable.class);
 
     private final static String TABLE_COL_EDIT = "table_col_edit";
+
     private final static String TABLE_COL_EDIT_ASSOC = "table_col_edit_assoc";
+
     private final static String TABLE_COL_DEL = "table_col_del";
+
     private final static String TABLE_COL_UP = "table_col_up";
+
     private final static String TABLE_COL_DOWN = "table_col_down";
 
     private final ItemSelectionModel itemModel;
+
     private final SciProjectContactsStep editStep;
 
     public SciProjectContactsTable(final ItemSelectionModel itemModel,
@@ -122,8 +127,8 @@ public class SciProjectContactsTable
     }
 
     @Override
-    public void cellSelected(final TableActionEvent event) throws
-        FormProcessException {
+    public void cellSelected(final TableActionEvent event)
+        throws FormProcessException {
 
         final PageState state = event.getPageState();
         final SciProject selected = (SciProject) itemModel
@@ -134,25 +139,25 @@ public class SciProjectContactsTable
         final Contact contact = controller.findContact(selected.getObjectId(),
                                                        event.getRowKey())
             .get();
-        
+
         final TableColumn column = getColumnModel()
             .get(event.getColumn().intValue());
-        
+
         if (TABLE_COL_EDIT_ASSOC.equals(column.getHeaderKey())) {
             editStep.setSelectedContact(contact.getContactable());
             editStep.setSelectedContactType(contact.getContactType());
-            
+
             editStep.showComponent(state,
                                    SciProjectUiConstants.ADD_CONTACT_SHEET_NAME);
-        } else if(TABLE_COL_DEL.equals(column.getHeaderKey())) {
+        } else if (TABLE_COL_DEL.equals(column.getHeaderKey())) {
             controller.removeContact(selected.getObjectId(),
-                                  contact.getContactId());
-        } else if(TABLE_COL_UP.equals(column.getHeaderKey())) {
+                                     contact.getContactId());
+        } else if (TABLE_COL_UP.equals(column.getHeaderKey())) {
             controller.swapWithPreviousContact(selected.getObjectId(),
-                                        contact.getContactId());
-        } else if(TABLE_COL_DOWN.equals(column.getHeaderKey())) {
+                                               contact.getContactId());
+        } else if (TABLE_COL_DOWN.equals(column.getHeaderKey())) {
             controller.swapWithNextContact(selected.getObjectId(),
-                                        contact.getContactId());
+                                           contact.getContactId());
         }
     }
 
@@ -189,8 +194,9 @@ public class SciProjectContactsTable
     private class SciProjectContactsTableModel implements TableModel {
 
         private final Table table;
-        private final List<Map<String, Object>> data;
+
         private final Iterator<Map<String, Object>> iterator;
+
         private Map<String, Object> currentRow;
 
         public SciProjectContactsTableModel(final Table table,
@@ -202,8 +208,7 @@ public class SciProjectContactsTable
             final CdiUtil cdiUtil = CdiUtil.createCdiUtil();
             final SciProjectController controller = cdiUtil
                 .findBean(SciProjectController.class);
-            data = controller.getContacts(selected.getObjectId());
-            iterator = data.iterator();
+            iterator = controller.getContacts(selected.getObjectId()).iterator();
         }
 
         @Override
@@ -265,13 +270,13 @@ public class SciProjectContactsTable
 
         @Override
         public Component getComponent(
-            Table table,
-            PageState state,
-            Object value,
-            boolean isSelected,
-            Object key,
-            int row,
-            int col) {
+            final Table table,
+            final PageState state,
+            final Object value,
+            final boolean isSelected,
+            final Object key,
+            final int row,
+            final int col) {
 
 //            final CdiUtil cdiUtil = CdiUtil.createCdiUtil();
 //            final PermissionChecker permissionChecker = cdiUtil
@@ -331,13 +336,13 @@ public class SciProjectContactsTable
 
         @Override
         public Component getComponent(
-            Table table,
-            PageState state,
-            Object value,
-            boolean isSelected,
-            Object key,
-            int row,
-            int col) {
+            final Table table,
+            final PageState state,
+            final Object value,
+            final boolean isSelected,
+            final Object key,
+            final int row,
+            final int col) {
 
             final CdiUtil cdiUtil = CdiUtil.createCdiUtil();
             final PermissionChecker permissionChecker = cdiUtil
@@ -363,13 +368,13 @@ public class SciProjectContactsTable
 
         @Override
         public Component getComponent(
-            Table table,
-            PageState state,
-            Object value,
-            boolean isSelected,
-            Object key,
-            int row,
-            int col) {
+            final Table table,
+            final PageState state,
+            final Object value,
+            final boolean isSelected,
+            final Object key,
+            final int row,
+            final int col) {
 
             final CdiUtil cdiUtil = CdiUtil.createCdiUtil();
             final PermissionChecker permissionChecker = cdiUtil

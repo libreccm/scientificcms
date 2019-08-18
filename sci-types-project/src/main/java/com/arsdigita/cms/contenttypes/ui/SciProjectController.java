@@ -10,8 +10,12 @@ import org.libreccm.l10n.LocalizedString;
 import org.librecms.assets.ContactableEntity;
 import org.librecms.assets.ContactableEntityRepository;
 import org.librecms.assets.Organization;
+import org.librecms.assets.Person;
+import org.librecms.assets.PersonRepository;
 import org.librecms.contentsection.AssetRepository;
 import org.scientificcms.contenttypes.sciproject.Contact;
+import org.scientificcms.contenttypes.sciproject.Membership;
+import org.scientificcms.contenttypes.sciproject.MembershipStatus;
 import org.scientificcms.contenttypes.sciproject.SciProject;
 import org.scientificcms.contenttypes.sciproject.SciProjectConfig;
 import org.scientificcms.contenttypes.sciproject.SciProjectMananger;
@@ -45,6 +49,14 @@ class SciProjectController {
 
     public static final String CONTACT_ID = "contactId";
 
+    public static final String MEMBER_NAME = "memberName";
+
+    public static final String MEMBER_ROLE = "memberRole";
+
+    public static final String MEMBER_STATUS = "memberStatus";
+
+    public static final String MEMBERSHIP_ID = "membershipId";
+
     public static final String SPONSOR_ID = "sponsorId";
 
     public static final String SPONSOR_NAME = "name";
@@ -61,6 +73,9 @@ class SciProjectController {
     private ContactableEntityRepository contactableRepository;
 
     @Inject
+    private PersonRepository personRepository;
+
+    @Inject
     private SciProjectMananger projectMananger;
 
     @Inject
@@ -72,6 +87,14 @@ class SciProjectController {
             .findConfiguration(SciProjectConfig.class);
 
         return conf.getContactTypesBundleName();
+    }
+
+    public String getMemberRolesBundleName() {
+
+        final SciProjectConfig conf = confManager
+            .findConfiguration(SciProjectConfig.class);
+
+        return conf.getMemberRolesBundleName();
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
@@ -297,6 +320,186 @@ class SciProjectController {
             .getContacts()
             .stream()
             .anyMatch(current -> filterContact(current, project, contactable));
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public List<Map<String, Object>> getMembers(final long projectId) {
+
+        final SciProject project = projectRepository
+            .findById(projectId, SciProject.class)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format("No SciProject with ID %d found.",
+                                  projectId))
+            );
+
+        return project
+            .getMembers()
+            .stream()
+            .map(this::buildMembershipEntry)
+            .collect(Collectors.toList());
+    }
+
+    private Map<String, Object> buildMembershipEntry(
+        final Membership membership) {
+
+        Objects.requireNonNull(membership);
+
+        final Map<String, Object> result = new HashMap<>();
+        result.put(MEMBERSHIP_ID, membership.getMembershipId());
+        result.put(
+            MEMBER_NAME,
+            String.format(
+                "%s, %s",
+                membership.getMember().getPersonName().getSurname(),
+                membership.getMember().getPersonName().getGivenName()
+            )
+        );
+        result.put(MEMBER_ROLE, membership.getRole());
+        result.put(MEMBER_STATUS, membership.getStatus().toString());
+
+        return result;
+
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public Optional<Membership> findMembership(final long projectId,
+                                               final Object key) {
+
+        final SciProject project = projectRepository
+            .findById(projectId, SciProject.class)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format("No SciProject with ID %d found.",
+                                  projectId))
+            );
+
+        final long membershipId = (long) key;
+
+        return project
+            .getMembers()
+            .stream()
+            .filter(membership -> membership.getMembershipId() == membershipId)
+            .findAny();
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void addMember(final long projectId,
+                          final long memberId,
+                          final String role,
+                          final String status) {
+
+        final SciProject project = projectRepository
+            .findById(projectId, SciProject.class)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format("No SciProject with ID %d found.",
+                                  projectId))
+            );
+
+        final Person member = personRepository
+            .findById(memberId)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format("No Person with ID %d found.",
+                                  memberId)
+                )
+            );
+
+        final MembershipStatus membershipStatus = MembershipStatus
+            .valueOf(status);
+
+        projectMananger.addMember(member, project, role, membershipStatus);
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void updateMembership(final long projectId,
+                                 final long memberId,
+                                 final String role,
+                                 final String status) {
+
+        final SciProject project = projectRepository
+            .findById(projectId, SciProject.class)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format("No SciProject with ID %d found.",
+                                  projectId))
+            );
+
+        final Person member = personRepository
+            .findById(memberId)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format("No Person with ID %d found.",
+                                  memberId)
+                )
+            );
+
+        final MembershipStatus membershipStatus = MembershipStatus
+            .valueOf(status);
+
+        final Optional<Membership> membership = project
+            .getMembers()
+            .stream()
+            .filter(current -> filterMembership(current, project, member))
+            .findAny();
+
+        if (membership.isPresent()) {
+
+            membership.get().setRole(role);
+            membership.get().setStatus(membershipStatus);
+
+            projectRepository.save(project);
+        }
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void removeMember(final long projectId, final long membershipId) {
+
+        final SciProject project = projectRepository
+            .findById(projectId, SciProject.class)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format("No SciProject with ID %d found.",
+                                  projectId))
+            );
+
+        final Optional<Membership> membership = project
+            .getMembers()
+            .stream()
+            .filter(current -> current.getMembershipId() == membershipId)
+            .findAny();
+        
+        if (membership.isPresent()) {
+            projectMananger.removeMember(membership.get().getMember(), project);
+        }
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public boolean hasMember(final long projectId,
+                             final long memberId) {
+
+        final SciProject project = projectRepository
+            .findById(projectId, SciProject.class)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format("No SciProject with ID %d found.",
+                                  projectId))
+            );
+
+        final Person member = personRepository
+            .findById(memberId)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format("No Person with ID %d found.",
+                                  memberId)
+                )
+            );
+
+        return project
+            .getMembers()
+            .stream()
+            .anyMatch(current -> filterMembership(current, project, member));
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
@@ -598,6 +801,14 @@ class SciProjectController {
 
         return contact.getProject().equals(project)
                    && contact.getContactable().equals(contactable);
+    }
+
+    private boolean filterMembership(final Membership membership,
+                                     final SciProject project,
+                                     final Person member) {
+
+        return membership.getProject().equals(project)
+                   && membership.getMember().equals(member);
     }
 
 }
