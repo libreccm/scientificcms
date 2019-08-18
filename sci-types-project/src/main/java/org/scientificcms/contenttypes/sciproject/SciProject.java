@@ -35,6 +35,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import static org.scientificcms.contenttypes.sciproject.SciProjectConstants.*;
@@ -164,13 +165,16 @@ public class SciProject extends ContentItem implements Serializable {
     )
     private LocalizedString fundingVolume;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
+    @OrderBy("order ASC")
     private List<Contact> contacts;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @OrderBy("member.personName ASC")
     private List<Membership> members;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @OrderBy("order ASC")
     private List<Sponsoring> sponsoring;
 
     public SciProject() {
