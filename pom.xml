@@ -43,6 +43,7 @@
     <modules>
         <module>sci-types-project</module>
     <module>scientificcms</module>
+    <module>sci-publications</module>
   </modules>
 
     <reporting>
