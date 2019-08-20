@@ -14,7 +14,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import static org.scientificcms.SciPublicationsConstants.*;
+import static org.scientificcms.publications.SciPublicationsConstants.*;
 
 /**
  * An asset for storing the informations about a publisher required to create

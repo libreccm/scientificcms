@@ -18,7 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Table;
 
-import static org.scientificcms.SciPublicationsConstants.*;
+import static org.scientificcms.publications.SciPublicationsConstants.*;
 
 /**
  * Asset for storing informations about a journal.
