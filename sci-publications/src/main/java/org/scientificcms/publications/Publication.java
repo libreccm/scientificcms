@@ -5,6 +5,7 @@
  */
 package org.scientificcms.publications;
 
+import org.hibernate.envers.Audited;
 import org.libreccm.l10n.LocalizedString;
 
 import java.io.Serializable;
@@ -13,10 +14,14 @@ import java.util.Objects;
 
 import javax.persistence.AssociationOverride;
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Table;
 
 import static org.scientificcms.publications.SciPublicationsConstants.*;
 
@@ -25,10 +30,20 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
  *
  * @author <a href="mailto:jens.pelzetter@googlemail.com">Jens Pelzetter</a>
  */
-@Embeddable
-public class BasicPublicationProperties implements Serializable {
+@Entity
+@Table(name = "PUBLICATIONS", schema = DB_SCHEMA)
+@Audited
+public class Publication implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @Id
+    @Column(name = "PUBLICATION_ID")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long publicationId;
+
+    @Column(name = "UUID", unique = true, nullable = false)
+    private String uuid;
 
     @Column(name = "YEAR_OF_PUBLICATION")
     private Integer yearOfPublication;
@@ -85,6 +100,22 @@ public class BasicPublicationProperties implements Serializable {
 
     @Column(name = "LANGUAGE_OF_PUBLICATION")
     private Locale languageOfPublication;
+
+    public long getPublicationId() {
+        return publicationId;
+    }
+
+    protected void setPublicationId(final long publicationId) {
+        this.publicationId = publicationId;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    protected void setUuid(final String uuid) {
+        this.uuid = uuid;
+    }
 
     public Integer getYearOfPublication() {
         return yearOfPublication;
@@ -153,6 +184,8 @@ public class BasicPublicationProperties implements Serializable {
     @Override
     public int hashCode() {
         int hash = 5;
+        hash = 97 * hash + (int) (publicationId ^ (publicationId >>> 32));
+        hash = 97 * hash + Objects.hashCode(uuid);
         hash = 97 * hash + Objects.hashCode(yearOfPublication);
         hash = 97 * hash + Objects.hashCode(title);
         hash = 97 * hash + Objects.hashCode(shortDescription);
@@ -172,12 +205,18 @@ public class BasicPublicationProperties implements Serializable {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof BasicPublicationProperties)) {
+        if (!(obj instanceof Publication)) {
             return false;
         }
-        final BasicPublicationProperties other
-                                             = (BasicPublicationProperties) obj;
+        final Publication other
+                              = (Publication) obj;
         if (!other.canEqual(this)) {
+            return false;
+        }
+        if (publicationId != other.getPublicationId()) {
+            return false;
+        }
+        if (!Objects.equals(uuid, other.getUuid())) {
             return false;
         }
         if (!Objects.equals(yearOfPublication, other.getYearOfPublication())) {
@@ -208,12 +247,14 @@ public class BasicPublicationProperties implements Serializable {
 
     public boolean canEqual(final Object obj) {
 
-        return obj instanceof BasicPublicationProperties;
+        return obj instanceof Publication;
     }
 
     public String toString(final String data) {
 
         return String.format("%s{ "
+                                 + "publicationId = %d, "
+                                 + "uuid = \"%s\""
                                  + "yearOfPublication = %d, "
                                  + "title = %s, "
                                  + "shortDescription = %s, "
@@ -224,6 +265,8 @@ public class BasicPublicationProperties implements Serializable {
                                  + "languageOfPublication = \"%s\"%d"
                                  + " }",
                              super.toString(),
+                             publicationId,
+                             uuid,
                              yearOfPublication,
                              Objects.toString(title),
                              Objects.toString(shortDescription),
@@ -234,10 +277,10 @@ public class BasicPublicationProperties implements Serializable {
                              Objects.toString(languageOfPublication),
                              data);
     }
-    
+
     @Override
     public final String toString() {
-        
+
         return toString("");
     }
 

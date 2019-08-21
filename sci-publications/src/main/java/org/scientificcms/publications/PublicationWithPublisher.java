@@ -5,8 +5,8 @@
  */
 package org.scientificcms.publications;
 
+import org.hibernate.envers.Audited;
 import org.libreccm.l10n.LocalizedString;
-import org.scientificcms.publications.assets.Publisher;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -15,9 +15,12 @@ import javax.persistence.AssociationOverride;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
+import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 import static org.scientificcms.publications.SciPublicationsConstants.*;
 
@@ -25,12 +28,14 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
  *
  * @author <a href="mailto:jens.pelzetter@googlemail.com">Jens Pelzetter</a>
  */
-@Embeddable
-public class PublicationWithPublisherProperties implements Serializable {
+@Entity
+@Table(name = "PUBLICATIONS_WITH_PUBLISHER")
+@Audited
+public class PublicationWithPublisher extends Publication {
 
     private static final long serialVersionUID = 1L;
 
-    @OneToOne
+    @ManyToOne
     private Publisher publisher;
 
     @Column(name = "ISBN10", length = 13)
@@ -139,11 +144,11 @@ public class PublicationWithPublisherProperties implements Serializable {
         if (!super.equals(obj)) {
             return false;
         }
-        if (!(obj instanceof PublicationWithPublisherProperties)) {
+        if (!(obj instanceof PublicationWithPublisher)) {
             return false;
         }
-        final PublicationWithPublisherProperties other
-                                                     = (PublicationWithPublisherProperties) obj;
+        final PublicationWithPublisher other
+                                           = (PublicationWithPublisher) obj;
         if (!other.canEqual(this)) {
             return false;
         }
@@ -168,10 +173,12 @@ public class PublicationWithPublisherProperties implements Serializable {
         return Objects.equals(edition, other.getEdition());
     }
 
+    @Override
     public boolean canEqual(final Object obj) {
-        return obj instanceof PublicationWithPublisherProperties;
+        return obj instanceof PublicationWithPublisher;
     }
 
+    @Override
     public String toString(final String data) {
 
         return (String.format("%s{ "
@@ -192,11 +199,6 @@ public class PublicationWithPublisherProperties implements Serializable {
                               numberOfPages,
                               Objects.toString(edition),
                               data));
-    }
-
-    @Override
-    public String toString() {
-        return toString("");
     }
 
 }

@@ -5,7 +5,7 @@
  */
 package org.scientificcms.publications.contenttypes;
 
-import org.scientificcms.publications.assets.CollectedVolume;
+import org.scientificcms.publications.assets.CollectedVolumeAsset;
 
 import java.util.Objects;
 
@@ -22,62 +22,63 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
  */
 @Entity
 @Table(name = "COLLECTED_VOLUME_ITEMS", schema = DB_SCHEMA)
-public class CollectedVolumeItem extends Publication {
+public class CollectedVolumeItem {
+//    extends Publication {
 
     private static final long serialVersionUID = 1L;
-
-    @OneToOne
-    @JoinColumn(name = "DATA_ID")
-    private CollectedVolume publicationData;
-
-    public CollectedVolume getPublicationData() {
-        return publicationData;
-    }
-
-    protected void setPublicationData(final CollectedVolume publicationData) {
-        this.publicationData = publicationData;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = super.hashCode();
-        hash = 43 * hash + Objects.hashCode(publicationData);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        if (!(obj instanceof CollectedVolumeItem)) {
-            return false;
-        }
-        final CollectedVolumeItem other = (CollectedVolumeItem) obj;
-        if (!other.canEqual(this)) {
-            return false;
-        }
-        return Objects.equals(publicationData, other.getPublicationData());
-    }
-
-    @Override
-    public boolean canEqual(final Object obj) {
-
-        return obj instanceof CollectedVolumeItem;
-    }
-
-    @Override
-    public String toString(final String data) {
-
-        return super.toString(String.format("data = %s%s",
-                                            Objects.toString(publicationData),
-                                            data));
-    }
+//
+//    @OneToOne
+//    @JoinColumn(name = "DATA_ID")
+//    private CollectedVolumeAsset publicationData;
+//
+//    public CollectedVolumeAsset getPublicationData() {
+//        return publicationData;
+//    }
+//
+//    protected void setPublicationData(final CollectedVolumeAsset publicationData) {
+//        this.publicationData = publicationData;
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        int hash = super.hashCode();
+//        hash = 43 * hash + Objects.hashCode(publicationData);
+//        return hash;
+//    }
+//
+//    @Override
+//    public boolean equals(final Object obj) {
+//        if (this == obj) {
+//            return true;
+//        }
+//        if (obj == null) {
+//            return false;
+//        }
+//        if (!super.equals(obj)) {
+//            return false;
+//        }
+//        if (!(obj instanceof CollectedVolumeItem)) {
+//            return false;
+//        }
+//        final CollectedVolumeItem other = (CollectedVolumeItem) obj;
+//        if (!other.canEqual(this)) {
+//            return false;
+//        }
+//        return Objects.equals(publicationData, other.getPublicationData());
+//    }
+//
+//    @Override
+//    public boolean canEqual(final Object obj) {
+//
+//        return obj instanceof CollectedVolumeItem;
+//    }
+//
+//    @Override
+//    public String toString(final String data) {
+//
+//        return super.toString(String.format("data = %s%s",
+//                                            Objects.toString(publicationData),
+//                                            data));
+//    }
 
 }
