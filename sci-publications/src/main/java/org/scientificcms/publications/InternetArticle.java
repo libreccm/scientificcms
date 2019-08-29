@@ -5,6 +5,7 @@
  */
 package org.scientificcms.publications;
 
+import org.hibernate.envers.Audited;
 import org.librecms.assets.Organization;
 
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
  */
 @Entity
 @Table(name = "INTERNET_ARTICLES", schema = DB_SCHEMA)
+@Audited
 public class InternetArticle extends Publication {
 
     private static final long serialVersionUID = 1L;

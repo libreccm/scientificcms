@@ -26,7 +26,7 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
  * @author <a href="mailto:jens.pelzetter@googlemail.com">Jens Pelzetter</a>
  */
 @Entity
-@Table(name = "JOURNALS", schema = DB_SCHEMA)
+@Table(name = "JOURNAL_ASSETS", schema = DB_SCHEMA)
 @Audited
 public class JournalAsset extends Asset {
 

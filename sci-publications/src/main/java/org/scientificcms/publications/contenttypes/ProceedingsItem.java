@@ -5,6 +5,7 @@
  */
 package org.scientificcms.publications.contenttypes;
 
+import org.scientificcms.publications.PublicationWithPublisher;
 import org.scientificcms.publications.assets.ProceedingsAsset;
 
 import java.util.Objects;
@@ -22,7 +23,17 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
  */
 @Entity
 @Table(name = "PROCEEDINGS_ITEMS", schema = DB_SCHEMA)
-public class ProceedingsItem {
+public class ProceedingsItem extends AbstractPublicationWithPublisherItem<PublicationWithPublisher>{
+
+    @Override
+    public PublicationWithPublisher getPublication() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void setPublication(PublicationWithPublisher publication) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 //    extends Publication {
 
 //    private static final long serialVersionUID = 1L;

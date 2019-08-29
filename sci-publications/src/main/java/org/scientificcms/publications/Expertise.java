@@ -5,6 +5,7 @@
  */
 package org.scientificcms.publications;
 
+import org.hibernate.envers.Audited;
 import org.librecms.assets.Organization;
 
 import java.util.Objects;
@@ -23,6 +24,7 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
  */
 @Entity
 @Table(name = "EXPERTISES", schema = DB_SCHEMA)
+@Audited
 public class Expertise extends Publication {
 
     private static final long serialVersionUID = 1L;

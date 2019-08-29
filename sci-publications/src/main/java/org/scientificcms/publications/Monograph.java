@@ -5,6 +5,8 @@
  */
 package org.scientificcms.publications;
 
+import org.hibernate.envers.Audited;
+
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -19,6 +21,7 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
  */
 @Entity
 @Table(name = "MONOGRAPHS", schema = DB_SCHEMA)
+@Audited
 public class Monograph extends PublicationWithPublisher {
 
     private static final long serialVersionUID = 1L;
