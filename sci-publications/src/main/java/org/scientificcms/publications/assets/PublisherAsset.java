@@ -7,11 +7,13 @@ package org.scientificcms.publications.assets;
 
 import org.hibernate.envers.Audited;
 import org.librecms.contentsection.Asset;
+import org.scientificcms.publications.Publisher;
 
 import java.util.Objects;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import static org.scientificcms.publications.SciPublicationsConstants.*;
@@ -27,83 +29,58 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
 @Audited
 public class PublisherAsset extends Asset {
 
-//    private static final long serialVersionUID = 1L;
-//
-//    /**
-//     * Name of the publisher. The title of the asset is only for internal use,
-//     * this property should be used for name of the publisher which is displayed
-//     * on public pages.
-//     */
-//    @Column(name = "NAME", length = 2048, nullable = false)
-//    private String name;
-//
-//    /**
-//     * The place of the publisher.
-//     */
-//    @Column(name = "PLACE", length = 2048)
-//    private String place;
-//
-//    public String getName() {
-//        return name;
-//    }
-//
-//    public void setName(final String name) {
-//        this.name = name;
-//    }
-//
-//    public String getPlace() {
-//        return place;
-//    }
-//
-//    public void setPlace(final String place) {
-//        this.place = place;
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        int hash = super.hashCode();
-//        hash = 29 * hash + Objects.hashCode(name);
-//        hash = 29 * hash + Objects.hashCode(place);
-//        return hash;
-//    }
-//
-//    @Override
-//    public boolean equals(final Object obj) {
-//        if (this == obj) {
-//            return true;
-//        }
-//        if (obj == null) {
-//            return false;
-//        }
-//        if (!super.equals(obj)) {
-//            return false;
-//        }
-//        if (!(obj instanceof PublisherAsset)) {
-//            return false;
-//        }
-//        final PublisherAsset other = (PublisherAsset) obj;
-//        if (!other.canEqual(this)) {
-//            return false;
-//        }
-//        if (!Objects.equals(name, other.getName())) {
-//            return false;
-//        }
-//        return Objects.equals(place, other.getPlace());
-//    }
-//
-//    @Override
-//    public boolean canEqual(final Object obj) {
-//        return obj instanceof PublisherAsset;
-//    }
-//
-//    @Override
-//    public String toString(final String data) {
-//        return super.toString(String.format(
-//            ", name = \"%s\", "
-//                + "place = \"%s\"%s",
-//            name,
-//            place,
-//            data));
-//    }
+    private static final long serialVersionUID = 1L;
+
+    @OneToOne
+    @JoinColumn(name = "PUBLISHER_ID")
+    private Publisher publisher;
+
+    public Publisher getPublisher() {
+        return publisher;
+    }
+
+    protected void setPublisher(final Publisher publisher) {
+        this.publisher = publisher;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = super.hashCode();
+        hash = 97 * hash + Objects.hashCode(publisher);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!super.canEqual(this)) {
+            return false;
+        }
+        if (!(obj instanceof PublisherAsset)) {
+            return false;
+        }
+        final PublisherAsset other = (PublisherAsset) obj;
+        if (!other.canEqual(this)) {
+            return false;
+        }
+        return Objects.equals(this.publisher, other.getPublisher());
+    }
+
+    @Override
+    public boolean canEqual(final Object obj) {
+        return obj instanceof PublisherAsset;
+    }
+
+    @Override
+    public String toString(final String data) {
+        return super.toString(String.format(", publisher = %s%s",
+                                            Objects.toString(publisher),
+                                            data));
+    }
 
 }

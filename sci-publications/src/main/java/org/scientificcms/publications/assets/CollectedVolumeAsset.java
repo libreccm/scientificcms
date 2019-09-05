@@ -5,13 +5,15 @@
  */
 package org.scientificcms.publications.assets;
 
+import org.hibernate.envers.Audited;
 import org.librecms.contentsection.Asset;
-import org.scientificcms.publications.Publication;
-import org.scientificcms.publications.PublicationWithPublisher;
+import org.scientificcms.publications.CollectedVolume;
 
 import java.util.Objects;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import static org.scientificcms.publications.SciPublicationsConstants.*;
@@ -22,89 +24,61 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
  */
 @Entity
 @Table(name = "COLLECTED_VOLUMES", schema = DB_SCHEMA)
+@Audited
 public class CollectedVolumeAsset extends Asset {
 
-//    private static final long serialVersionUID = 1L;
-//
-//    private Publication basicProperties;
-//
-//    private PublicationWithPublisher withPublisherProperties;
-//
-//    public CollectedVolumeAsset() {
-//
-//        super();
-//
-//        basicProperties = new Publication();
-//        withPublisherProperties = new PublicationWithPublisher();
-//    }
-//
-//    public Publication getBasicProperties() {
-//        return basicProperties;
-//    }
-//
-//    protected void setBasicProperties(
-//        final Publication basicProperties) {
-//        this.basicProperties = basicProperties;
-//    }
-//
-//    public PublicationWithPublisher getWithPublisherProperties() {
-//        return withPublisherProperties;
-//    }
-//
-//    protected void setWithPublisherProperties(
-//        final PublicationWithPublisher withPublisherProperties) {
-//        this.withPublisherProperties = withPublisherProperties;
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        int hash = super.hashCode();
-//        hash = 19 * hash + Objects.hashCode(basicProperties);
-//        hash = 19 * hash + Objects.hashCode(withPublisherProperties);
-//        return hash;
-//    }
-//
-//    @Override
-//    public boolean equals(final Object obj) {
-//        if (this == obj) {
-//            return true;
-//        }
-//        if (obj == null) {
-//            return false;
-//        }
-//        if (!super.equals(obj)) {
-//            return false;
-//        }
-//        if (!(obj instanceof CollectedVolumeAsset)) {
-//            return false;
-//        }
-//        final CollectedVolumeAsset other = (CollectedVolumeAsset) obj;
-//        if (!other.canEqual(this)) {
-//            return false;
-//        }
-//        if (!Objects.equals(basicProperties, other.getBasicProperties())) {
-//            return false;
-//        }
-//        return Objects.equals(withPublisherProperties,
-//                              other.getWithPublisherProperties());
-//    }
-//
-//    @Override
-//    public boolean canEqual(final Object obj) {
-//
-//        return obj instanceof CollectedVolumeAsset;
-//    }
-//
-//    @Override
-//    public String toString(final String data) {
-//
-//        return super.toString(String.format(
-//            "basicProperties = %s, "
-//                + "withPublisherProperties = %s%s",
-//            Objects.toString(basicProperties),
-//            Objects.toString(
-//                withPublisherProperties),
-//            data));
-//    }
-//
+    private static final long serialVersionUID = 1L;
+
+    @OneToOne
+    @JoinColumn(name = "COLLECTED_VOLUME_ID")
+    private CollectedVolume collectedVolume;
+
+    public CollectedVolume getCollectedVolume() {
+        return collectedVolume;
+    }
+
+    protected void setCollectedVolume(final CollectedVolume collectedVolume) {
+        this.collectedVolume = collectedVolume;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = super.hashCode();
+        hash = 29 * hash + Objects.hashCode(collectedVolume);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof CollectedVolumeAsset)) {
+            return false;
+        }
+        final CollectedVolumeAsset other = (CollectedVolumeAsset) obj;
+        if (!other.canEqual(this)) {
+            return false;
+        }
+        return Objects.equals(this.collectedVolume, other.getCollectedVolume());
+    }
+
+    @Override
+    public boolean canEqual(final Object obj) {
+        return obj instanceof CollectedVolumeAsset;
+    }
+
+    @Override
+    public String toString(final String data) {
+        return super.toString(String.format("collectedVolume = %s%s",
+                                            Objects.toString(collectedVolume),
+                                            data));
+    }
+
 }

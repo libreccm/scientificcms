@@ -5,15 +5,15 @@
  */
 package org.scientificcms.publications.assets;
 
+import org.hibernate.envers.Audited;
 import org.librecms.contentsection.Asset;
-import org.scientificcms.publications.Publication;
-import org.scientificcms.publications.PublicationWithPublisher;
+import org.scientificcms.publications.Proceedings;
 
-import java.time.LocalDate;
 import java.util.Objects;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import static org.scientificcms.publications.SciPublicationsConstants.*;
@@ -24,158 +24,61 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
  */
 @Entity
 @Table(name = "PROCEEDINGS", schema = DB_SCHEMA)
+@Audited
 public class ProceedingsAsset extends Asset {
 
-//    private static final long serialVersionUID = 1L;
-//
-//    private Publication basicProperties;
-//
-//    private PublicationWithPublisher withPublisherProperties;
-//
-//    @Column(name = "NAME_OF_CONFERENCE", length = 1024)
-//    private String nameOfConference;
-//
-//    @Column(name = "PLACE_OF_CONFERENCE", length = 1024)
-//    private String placeOfConference;
-//
-//    @Column(name = "START_DATE_OF_CONFERENCE")
-//    private LocalDate startDateOfConference;
-//
-//    @Column(name = "END_DATE_OF_CONFERENCE")
-//    private LocalDate endDateOfConference;
-//
-//    public ProceedingsAsset() {
-//
-//        super();
-//
-//        basicProperties = new Publication();
-//        withPublisherProperties = new PublicationWithPublisher();
-//    }
-//
-//    public Publication getBasicProperties() {
-//        return basicProperties;
-//    }
-//
-//    protected void setBasicProperties(
-//        final Publication basicProperties) {
-//        this.basicProperties = basicProperties;
-//    }
-//
-//    public PublicationWithPublisher getWithPublisherProperties() {
-//        return withPublisherProperties;
-//    }
-//
-//    protected void setWithPublisherProperties(
-//        final PublicationWithPublisher withPublisherProperties) {
-//        this.withPublisherProperties = withPublisherProperties;
-//    }
-//
-//    public String getNameOfConference() {
-//        return nameOfConference;
-//    }
-//
-//    public void setNameOfConference(final String nameOfConference) {
-//        this.nameOfConference = nameOfConference;
-//    }
-//
-//    public String getPlaceOfConference() {
-//        return placeOfConference;
-//    }
-//
-//    public void setPlaceOfConference(final String placeOfConference) {
-//        this.placeOfConference = placeOfConference;
-//    }
-//
-//    public LocalDate getStartDateOfConference() {
-//        return startDateOfConference;
-//    }
-//
-//    public void setStartDateOfConference(final LocalDate startDateOfConference) {
-//        this.startDateOfConference = startDateOfConference;
-//    }
-//
-//    public LocalDate getEndDateOfConference() {
-//        return endDateOfConference;
-//    }
-//
-//    public void setEndDateOfConference(final LocalDate endDateOfConference) {
-//        this.endDateOfConference = endDateOfConference;
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        int hash = super.hashCode();
-//        hash = 19 * hash + Objects.hashCode(basicProperties);
-//        hash = 19 * hash + Objects.hashCode(withPublisherProperties);
-//        hash = 19 * hash + Objects.hashCode(nameOfConference);
-//        hash = 19 * hash + Objects.hashCode(placeOfConference);
-//        hash = 19 * hash + Objects.hashCode(startDateOfConference);
-//        hash = 19 * hash + Objects.hashCode(endDateOfConference);
-//        return hash;
-//    }
-//
-//    @Override
-//    public boolean equals(final Object obj) {
-//        if (this == obj) {
-//            return true;
-//        }
-//        if (obj == null) {
-//            return false;
-//        }
-//        if (!super.equals(obj)) {
-//            return false;
-//        }
-//        if (!(obj instanceof ProceedingsAsset)) {
-//            return false;
-//        }
-//        final ProceedingsAsset other = (ProceedingsAsset) obj;
-//        if (!other.canEqual(this)) {
-//            return false;
-//        }
-//        if (!Objects.equals(basicProperties, other.getBasicProperties())) {
-//            return false;
-//        }
-//        if (!Objects.equals(withPublisherProperties,
-//                            other.getWithPublisherProperties())) {
-//            return false;
-//        }
-//        if (!Objects.equals(nameOfConference, other.getNameOfConference())) {
-//            return false;
-//        }
-//        if (!Objects.equals(placeOfConference, other.getPlaceOfConference())) {
-//            return false;
-//        }
-//        if (!Objects.equals(startDateOfConference,
-//                            other.getStartDateOfConference())) {
-//            return false;
-//        }
-//        return Objects.equals(endDateOfConference,
-//                              other.getEndDateOfConference());
-//    }
-//
-//    @Override
-//    public boolean canEqual(final Object obj) {
-//
-//        return obj instanceof ProceedingsAsset;
-//    }
-//
-//    @Override
-//    public String toString(final String data) {
-//
-//        return super.toString(String.format(
-//            "basicProperties = %s, "
-//                + "withPublisherProperties = %s, "
-//                + "nameOfConference = \"%s\", "
-//                + "placeOfConference = \"%s\", "
-//                + "startDateOfConference = \"%s\", "
-//                + "endDateOfConference = \"%s\"%s",
-//            Objects.toString(basicProperties),
-//            Objects.toString(withPublisherProperties),
-//            nameOfConference,
-//            placeOfConference,
-//            Objects.toString(startDateOfConference),
-//            Objects.toString(endDateOfConference),
-//            data));
-//    }
+    private static final long serialVersionUID = 1L;
+
+    @OneToOne
+    @JoinColumn(name = "PROCEEDINGS_ID")
+    private Proceedings proceedings;
+
+    public Proceedings getProceedings() {
+        return proceedings;
+    }
+
+    public void setProceedings(Proceedings proceedings) {
+        this.proceedings = proceedings;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = super.hashCode();
+        hash = 59 * hash + Objects.hashCode(proceedings);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof ProceedingsAsset)) {
+            return false;
+        }
+        final ProceedingsAsset other = (ProceedingsAsset) obj;
+        if (!other.canEqual(this)) {
+            return false;
+        }
+        return Objects.equals(this.proceedings, other.getProceedings());
+    }
+
+    @Override
+    public boolean canEqual(final Object obj) {
+        return obj instanceof ProceedingsAsset;
+    }
+
+    @Override
+    public String toString(final String data) {
+        return super.toString(String.format(", proceeeings = %s%s",
+                                            Objects.toString(proceedings),
+                                            data));
+    }
 
 }
