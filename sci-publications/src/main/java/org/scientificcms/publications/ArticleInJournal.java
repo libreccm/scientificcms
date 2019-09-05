@@ -39,11 +39,11 @@ public class ArticleInJournal extends Publication {
     @Column(name = "ISSUE")
     private String issue;
 
-    @Column(name = "PAGES_FROM")
-    private Integer pagesFrom;
+    @Column(name = "START_PAGE")
+    private Integer startPage;
 
-    @Column(name = "PAGES_TO")
-    private Integer pagesTo;
+    @Column(name = "END_PAGE")
+    private Integer endPage;
 
     @Column(name = "PUBLICATION_DATE")
     private LocalDate publicationDate;
@@ -72,20 +72,20 @@ public class ArticleInJournal extends Publication {
         this.issue = issue;
     }
 
-    public Integer getPagesFrom() {
-        return pagesFrom;
+    public Integer getStartPage() {
+        return startPage;
     }
 
-    public void setPagesFrom(final Integer pagesFrom) {
-        this.pagesFrom = pagesFrom;
+    public void setStartPage(final Integer startPage) {
+        this.startPage = startPage;
     }
 
-    public Integer getPagesTo() {
-        return pagesTo;
+    public Integer getEndPage() {
+        return endPage;
     }
 
-    public void setPagesTo(final Integer pagesTo) {
-        this.pagesTo = pagesTo;
+    public void setEndPage(final Integer endPage) {
+        this.endPage = endPage;
     }
 
     public LocalDate getPublicationDate() {
@@ -102,8 +102,8 @@ public class ArticleInJournal extends Publication {
         hash = 67 * hash + Objects.hashCode(journal);
         hash = 67 * hash + Objects.hashCode(volume);
         hash = 67 * hash + Objects.hashCode(issue);
-        hash = 67 * hash + Objects.hashCode(pagesFrom);
-        hash = 67 * hash + Objects.hashCode(pagesTo);
+        hash = 67 * hash + Objects.hashCode(startPage);
+        hash = 67 * hash + Objects.hashCode(endPage);
         hash = 67 * hash + Objects.hashCode(publicationDate);
         return hash;
     }
@@ -135,10 +135,10 @@ public class ArticleInJournal extends Publication {
         if (!Objects.equals(issue, other.getIssue())) {
             return false;
         }
-        if (!Objects.equals(pagesFrom, other.getPagesFrom())) {
+        if (!Objects.equals(startPage, other.getStartPage())) {
             return false;
         }
-        if (!Objects.equals(pagesTo, other.getPagesTo())) {
+        if (!Objects.equals(endPage, other.getEndPage())) {
             return false;
         }
         return Objects.equals(publicationDate, other.getPublicationDate());
@@ -154,14 +154,14 @@ public class ArticleInJournal extends Publication {
         return super.toString(String.format(", journal = %s, "
                                                 + "volume = %d, "
                                                 + "issue = \"%s\", "
-                                                + "pagesFrom = %d, "
-                                                + "pagesTo = %d, "
+                                                + "startPage = %d, "
+                                                + "endPage = %d, "
                                                 + "publicationDate = %s%s",
                                             Objects.toString(journal),
                                             volume,
                                             issue,
-                                            pagesFrom,
-                                            pagesTo,
+                                            startPage,
+                                            endPage,
                                             Objects.toString(publicationDate),
                                             data));
     }

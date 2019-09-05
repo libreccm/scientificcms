@@ -32,11 +32,11 @@ public class ArticleInCollectedVolume extends Publication {
     @JoinColumn(name = "COLLECTED_VOLUME_ID")
     private CollectedVolume collectedVolume;
 
-    @Column(name = "PAGES_FROM")
-    private Integer pagesFrom;
+    @Column(name = "START_PAGE")
+    private Integer startPage;
 
-    @Column(name = "PAGES_TO")
-    private Integer pagesTo;
+    @Column(name = "END_PAGE")
+    private Integer endPage;
 
     @Column(name = "CHAPTER", length = 1024)
     private String chapter;
@@ -49,20 +49,20 @@ public class ArticleInCollectedVolume extends Publication {
         this.collectedVolume = collectedVolume;
     }
 
-    public Integer getPagesFrom() {
-        return pagesFrom;
+    public Integer getStartPage() {
+        return startPage;
     }
 
-    public void setPagesFrom(final Integer pagesFrom) {
-        this.pagesFrom = pagesFrom;
+    public void setStartPage(final Integer startPage) {
+        this.startPage = startPage;
     }
 
-    public Integer getPagesTo() {
-        return pagesTo;
+    public Integer getEndPage() {
+        return endPage;
     }
 
-    public void setPagesTo(final Integer pagesTo) {
-        this.pagesTo = pagesTo;
+    public void setEndPage(final Integer endPage) {
+        this.endPage = endPage;
     }
 
     public String getChapter() {
@@ -77,8 +77,8 @@ public class ArticleInCollectedVolume extends Publication {
     public int hashCode() {
         int hash = super.hashCode();
         hash = 47 * hash + Objects.hashCode(collectedVolume);
-        hash = 47 * hash + Objects.hashCode(pagesFrom);
-        hash = 47 * hash + Objects.hashCode(pagesTo);
+        hash = 47 * hash + Objects.hashCode(startPage);
+        hash = 47 * hash + Objects.hashCode(endPage);
         hash = 47 * hash + Objects.hashCode(chapter);
         return hash;
     }
@@ -107,10 +107,10 @@ public class ArticleInCollectedVolume extends Publication {
         if (!Objects.equals(collectedVolume, other.getCollectedVolume())) {
             return false;
         }
-        if (!Objects.equals(pagesFrom, other.getPagesFrom())) {
+        if (!Objects.equals(startPage, other.getStartPage())) {
             return false;
         }
-        return Objects.equals(pagesTo, other.getPagesTo());
+        return Objects.equals(endPage, other.getEndPage());
     }
 
     @Override
@@ -123,12 +123,12 @@ public class ArticleInCollectedVolume extends Publication {
 
         return super.toString(String.format(", collectedVolume = %s, "
                                                 + "chapter = \"%s\", "
-                                                + "pagesFrom = %d, "
-                                                + "pagesTo = %d%s",
+                                                + "startPage = %d, "
+                                                + "endPage = %d%s",
                                             Objects.toString(collectedVolume),
                                             chapter,
-                                            pagesFrom,
-                                            pagesTo,
+                                            startPage,
+                                            endPage,
                                             data));
     }
 
