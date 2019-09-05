@@ -51,7 +51,7 @@ public class Proceedings extends PublicationWithPublisher {
     @JoinColumn(name = "ORGANIZER_ID")
     private Organization organizer;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "proceedings")
     private List<InProceedings> papers;
 
     public Proceedings() {
