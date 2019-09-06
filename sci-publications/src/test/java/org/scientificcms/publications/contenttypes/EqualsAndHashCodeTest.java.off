@@ -3,27 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.scientificcms.publications.assets;
+package org.scientificcms.publications.contenttypes;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.libreccm.categorization.Category;
-import org.libreccm.core.CcmObject;
-import org.libreccm.l10n.LocalizedString;
-import org.libreccm.security.SecurityEntitiesPrefabProvider;
 import org.libreccm.tests.categories.UnitTest;
 import org.libreccm.testutils.EqualsVerifier;
-import org.libreccm.workflow.Workflow;
-import org.librecms.assets.Organization;
-import org.librecms.contentsection.ContentItem;
-import org.librecms.contentsection.ContentSection;
-import org.librecms.contentsection.ContentType;
-import org.librecms.contentsection.ItemAttachment;
-import org.librecms.lifecycle.Lifecycle;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Locale;
 
 /**
  *
@@ -37,8 +25,17 @@ public class EqualsAndHashCodeTest extends EqualsVerifier {
     public static Collection<Class<?>> data() {
 
         return Arrays.asList(new Class<?>[]{
-            JournalAsset.class,
-            PublisherAsset.class
+            ArticleInCollectedVolumeItem.class,
+            ArticleInJournalItem.class,
+            CollectedVolumeItem.class,
+            ExpertiseItem.class,
+            GreyLiteratureItem.class,
+            InProceedingsItem.class,
+            InternetArticleItem.class,
+            MonographItem.class,
+            ProceedingsItem.class,
+            TalkItem.class,
+            WorkingPaperItem.class
         });
     }
 

@@ -100,6 +100,13 @@ public class Publication implements Serializable {
 
     @Column(name = "LANGUAGE_OF_PUBLICATION")
     private Locale languageOfPublication;
+    
+    public Publication() {
+        title = new LocalizedString();
+        shortDescription = new LocalizedString();
+        publicationAbstract = new LocalizedString();
+        misc = new LocalizedString();
+    }
 
     public long getPublicationId() {
         return publicationId;
