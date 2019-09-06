@@ -58,7 +58,7 @@ public class PublisherAsset extends Asset {
         if (obj == null) {
             return false;
         }
-        if (!super.canEqual(this)) {
+        if (!super.equals(obj)) {
             return false;
         }
         if (!(obj instanceof PublisherAsset)) {

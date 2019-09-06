@@ -27,6 +27,32 @@ public abstract class AbstractPublicationWithPublisherItem<T extends Publication
     private static final long serialVersionUID = 1L;
 
     @Override
+    public int hashCode() {
+        int hash = super.hashCode();
+        hash = 23 * hash;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof AbstractPublicationWithPublisherItem)) {
+            return false;
+        }
+        final AbstractPublicationWithPublisherItem<?> other
+                                                          = (AbstractPublicationWithPublisherItem<?>) obj;
+        return other.canEqual(this);
+    }
+
+    @Override
     public boolean canEqual(final Object obj) {
         return obj instanceof AbstractPublicationWithPublisherItem;
     }

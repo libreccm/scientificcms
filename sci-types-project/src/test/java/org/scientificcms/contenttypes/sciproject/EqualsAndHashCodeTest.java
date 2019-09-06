@@ -5,6 +5,7 @@
  */
 package org.scientificcms.contenttypes.sciproject;
 
+import nl.jqno.equalsverifier.EqualsVerifierApi;
 import nl.jqno.equalsverifier.Warning;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -52,8 +53,7 @@ public class EqualsAndHashCodeTest extends EqualsVerifier {
     }
 
     @Override
-    protected void addPrefabValues(
-        final nl.jqno.equalsverifier.EqualsVerifier<?> verifier) {
+    protected void addPrefabValues(final EqualsVerifierApi<?> verifier) {
 
         final Contact contact1 = new Contact();
         contact1.setContactId(10);
@@ -193,27 +193,27 @@ public class EqualsAndHashCodeTest extends EqualsVerifier {
         category2.setName("category2");
 
         verifier.withPrefabValues(Category.class, category1, category2);
-        
+
         final Organization organization1 = new Organization();
         organization1.setName("orga1");
-        
+
         final Organization organization2 = new Organization();
         organization1.setName("orga2");
-        
-        verifier.withPrefabValues(Organization.class, 
-                                  organization1, 
+
+        verifier.withPrefabValues(Organization.class,
+                                  organization1,
                                   organization2);
-        
+
         final ItemAttachment<?> itemAttachment1 = new ItemAttachment<>();
         itemAttachment1.setUuid("927ac9de-029d-4233-9015-1135eb861c34");
-        
+
         final ItemAttachment<?> itemAttachment2 = new ItemAttachment<>();
         itemAttachment2.setUuid("d1bd98a1-75c2-4e61-8f9f-2e2eadd30812");
-        
+
         verifier.withPrefabValues(ItemAttachment.class,
-                                  itemAttachment1, 
+                                  itemAttachment1,
                                   itemAttachment2);
-        
+
         verifier.suppress(Warning.REFERENCE_EQUALITY);
     }
 

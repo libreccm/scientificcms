@@ -10,6 +10,7 @@ import org.hibernate.envers.Audited;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -41,6 +42,7 @@ public class CollectedVolume extends PublicationWithPublisher {
         return Collections.unmodifiableList(articles);
     }
 
+
     protected void addArticle(final ArticleInCollectedVolume article) {
         articles.add(article);
     }
@@ -53,9 +55,37 @@ public class CollectedVolume extends PublicationWithPublisher {
         this.articles = new ArrayList<>(articles);
     }
 
+    
+    @Override
+    public int hashCode() {
+        int hash = super.hashCode();
+        hash = 29 * hash;
+        return hash;
+    }
+    
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof CollectedVolume)) {
+            return false;
+        }
+        final CollectedVolume other = (CollectedVolume) obj;
+        return other.canEqual(this);
+    }
+    
     @Override
     public boolean canEqual(final Object obj) {
         return obj instanceof CollectedVolume;
     }
+    
+    
 
 }

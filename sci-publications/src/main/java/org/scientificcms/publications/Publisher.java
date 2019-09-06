@@ -121,7 +121,7 @@ public class Publisher implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = super.hashCode();
+        int hash = 7;
         hash = 29 * hash + (int) (publisherId ^ (publisherId >>> 32));
         hash = 29 * hash + Objects.hashCode(uuid);
         hash = 29 * hash + Objects.hashCode(name);
@@ -135,9 +135,6 @@ public class Publisher implements Serializable {
             return true;
         }
         if (obj == null) {
-            return false;
-        }
-        if (!super.equals(obj)) {
             return false;
         }
         if (!(obj instanceof Publisher)) {

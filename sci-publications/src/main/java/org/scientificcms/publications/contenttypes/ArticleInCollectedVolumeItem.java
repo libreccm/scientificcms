@@ -46,7 +46,7 @@ public class ArticleInCollectedVolumeItem
     @Override
     public int hashCode() {
         int hash = super.hashCode();
-        hash = 67 * hash + Objects.hashCode(this.article);
+        hash = 67 * hash + Objects.hashCode(article);
         return hash;
     }
 
@@ -69,7 +69,7 @@ public class ArticleInCollectedVolumeItem
         if (!other.canEqual(this)) {
             return false;
         }
-        return Objects.equals(this.article, other.getPublication());
+        return Objects.equals(article, other.getPublication());
     }
 
     @Override

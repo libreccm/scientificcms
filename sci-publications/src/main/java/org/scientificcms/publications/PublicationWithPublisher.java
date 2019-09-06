@@ -8,18 +8,15 @@ package org.scientificcms.publications;
 import org.hibernate.envers.Audited;
 import org.libreccm.l10n.LocalizedString;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 import javax.persistence.AssociationOverride;
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import static org.scientificcms.publications.SciPublicationsConstants.*;
@@ -122,7 +119,7 @@ public class PublicationWithPublisher extends Publication {
 
     @Override
     public int hashCode() {
-        int hash = 7;
+        int hash = super.hashCode();
         hash = 47 * hash + Objects.hashCode(publisher);
         hash = 47 * hash + Objects.hashCode(isbn10);
         hash = 47 * hash + Objects.hashCode(isbn13);

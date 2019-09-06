@@ -5,7 +5,7 @@
  */
 package org.libreccm.security;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.EqualsVerifierApi;
 
 /**
  *
@@ -17,7 +17,7 @@ public final class SecurityEntitiesPrefabProvider {
         // Nothing
     }
 
-    public static void addPrefabEntities(final EqualsVerifier<?> verifier) {
+    public static void addPrefabEntities(final EqualsVerifierApi<?> verifier) {
 
         final Role role1 = new Role();
         role1.setRoleId(2001);
@@ -48,6 +48,18 @@ public final class SecurityEntitiesPrefabProvider {
         user2.setName("user2");
 
         verifier.withPrefabValues(User.class, user1, user2);
+    }
+
+    public static final void addPrefabPermissions(
+        final EqualsVerifierApi<?> verifierApi) {
+
+        final Permission permission1 = new Permission();
+        permission1.setGrantedPrivilege("privilege1");
+        final Permission permission2 = new Permission();
+        permission2.setGrantedPrivilege("privilege2");
+        verifierApi.withPrefabValues(Permission.class,
+                                     permission1,
+                                     permission2);
     }
 
 }

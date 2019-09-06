@@ -168,18 +168,18 @@ public class Journal implements Serializable {
     protected void addArticle(final ArticleInJournal article) {
         articles.add(article);
     }
-    
+
     protected void removeArticle(final ArticleInJournal article) {
         articles.remove(article);
     }
-    
+
     protected void setArticles(final List<ArticleInJournal> articles) {
         this.articles = new ArrayList<>(articles);
     }
 
     @Override
     public int hashCode() {
-        int hash = super.hashCode();
+        int hash = 7;
         hash = 73 * hash + Objects.hashCode(firstYear);
         hash = 73 * hash + Objects.hashCode(lastYear);
         hash = 73 * hash + Objects.hashCode(issn);
@@ -195,9 +195,6 @@ public class Journal implements Serializable {
             return true;
         }
         if (obj == null) {
-            return false;
-        }
-        if (!super.equals(obj)) {
             return false;
         }
         if (!(obj instanceof Journal)) {

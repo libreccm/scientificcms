@@ -62,14 +62,14 @@ public class CollectedVolumeItem
         if (!super.equals(obj)) {
             return false;
         }
-        if (!(obj instanceof CollectedVolume)) {
+        if (!(obj instanceof CollectedVolumeItem)) {
             return false;
         }
         final CollectedVolumeItem other = (CollectedVolumeItem) obj;
         if (!other.canEqual(this)) {
             return false;
         }
-        return Objects.equals(this.collectedVolume, other.getPublication());
+        return Objects.equals(collectedVolume, other.getPublication());
     }
 
     @Override
