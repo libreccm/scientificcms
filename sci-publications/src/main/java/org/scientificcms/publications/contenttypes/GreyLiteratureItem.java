@@ -5,7 +5,8 @@
  */
 package org.scientificcms.publications.contenttypes;
 
-import org.scientificcms.publications.Proceedings;
+import org.hibernate.envers.Audited;
+import org.scientificcms.publications.GreyLiterature;
 
 import java.util.Objects;
 
@@ -21,30 +22,31 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
  * @author <a href="mailto:jens.pelzetter@googlemail.com">Jens Pelzetter</a>
  */
 @Entity
-@Table(name = "PROCEEDINGS_ITEMS", schema = DB_SCHEMA)
-public class ProceedingsItem
-    extends AbstractPublicationWithPublisherItem<Proceedings> {
+@Table(name = "GREY_LITERATURE_ITEMS", schema = DB_SCHEMA)
+@Audited
+public class GreyLiteratureItem 
+    extends AbstractPublicationItem<GreyLiterature> {
 
     private static final long serialVersionUID = 1L;
 
     @OneToOne
-    @JoinColumn(name = "PROCEEDINGS_ID")
-    private Proceedings article;
+    @JoinColumn(name = "GREY_LITERATURE_ID")
+    private GreyLiterature greyLiterature;
 
     @Override
-    public Proceedings getPublication() {
-        return article;
+    public GreyLiterature getPublication() {
+        return greyLiterature;
     }
 
     @Override
-    protected void setPublication(final Proceedings article) {
-        this.article = article;
+    protected void setPublication(final GreyLiterature greyLiterature) {
+        this.greyLiterature = greyLiterature;
     }
 
     @Override
     public int hashCode() {
         int hash = super.hashCode();
-        hash = 67 * hash + Objects.hashCode(article);
+        hash = 67 * hash + Objects.hashCode(greyLiterature);
         return hash;
     }
 
@@ -59,26 +61,26 @@ public class ProceedingsItem
         if (!super.equals(obj)) {
             return false;
         }
-        if (!(obj instanceof ProceedingsItem)) {
+        if (!(obj instanceof GreyLiteratureItem)) {
             return false;
         }
-        final ProceedingsItem other
-                                  = (ProceedingsItem) obj;
+        final GreyLiteratureItem other
+                                   = (GreyLiteratureItem) obj;
         if (!other.canEqual(this)) {
             return false;
         }
-        return Objects.equals(this.article, other.getPublication());
+        return Objects.equals(this.greyLiterature, other.getPublication());
     }
 
     @Override
     public boolean canEqual(final Object obj) {
-        return obj instanceof ProceedingsItem;
+        return obj instanceof GreyLiteratureItem;
     }
 
     @Override
     public String toString(final String data) {
-        return super.toString(String.format(", proceedings = %s%s",
-                                            Objects.toString(article),
+        return super.toString(String.format(", greyLiterature = %s%s",
+                                            Objects.toString(greyLiterature),
                                             data));
     }
 

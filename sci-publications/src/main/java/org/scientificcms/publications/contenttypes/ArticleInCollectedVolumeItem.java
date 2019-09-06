@@ -5,7 +5,8 @@
  */
 package org.scientificcms.publications.contenttypes;
 
-import org.scientificcms.publications.Proceedings;
+import org.hibernate.envers.Audited;
+import org.scientificcms.publications.ArticleInCollectedVolume;
 
 import java.util.Objects;
 
@@ -21,30 +22,31 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
  * @author <a href="mailto:jens.pelzetter@googlemail.com">Jens Pelzetter</a>
  */
 @Entity
-@Table(name = "PROCEEDINGS_ITEMS", schema = DB_SCHEMA)
-public class ProceedingsItem
-    extends AbstractPublicationWithPublisherItem<Proceedings> {
+@Table(name = "ARTICLE_IN_COLLECTED_VOLUME_ITEMS", schema = DB_SCHEMA)
+@Audited
+public class ArticleInCollectedVolumeItem
+    extends AbstractPublicationItem<ArticleInCollectedVolume> {
 
     private static final long serialVersionUID = 1L;
 
     @OneToOne
-    @JoinColumn(name = "PROCEEDINGS_ID")
-    private Proceedings article;
+    @JoinColumn(name = "ARTICLE_ID")
+    private ArticleInCollectedVolume article;
 
     @Override
-    public Proceedings getPublication() {
+    public ArticleInCollectedVolume getPublication() {
         return article;
     }
 
     @Override
-    protected void setPublication(final Proceedings article) {
+    protected void setPublication(final ArticleInCollectedVolume article) {
         this.article = article;
     }
 
     @Override
     public int hashCode() {
         int hash = super.hashCode();
-        hash = 67 * hash + Objects.hashCode(article);
+        hash = 67 * hash + Objects.hashCode(this.article);
         return hash;
     }
 
@@ -59,11 +61,11 @@ public class ProceedingsItem
         if (!super.equals(obj)) {
             return false;
         }
-        if (!(obj instanceof ProceedingsItem)) {
+        if (!(obj instanceof ArticleInCollectedVolumeItem)) {
             return false;
         }
-        final ProceedingsItem other
-                                  = (ProceedingsItem) obj;
+        final ArticleInCollectedVolumeItem other
+                                               = (ArticleInCollectedVolumeItem) obj;
         if (!other.canEqual(this)) {
             return false;
         }
@@ -72,12 +74,12 @@ public class ProceedingsItem
 
     @Override
     public boolean canEqual(final Object obj) {
-        return obj instanceof ProceedingsItem;
+        return obj instanceof ArticleInCollectedVolumeItem;
     }
 
     @Override
     public String toString(final String data) {
-        return super.toString(String.format(", proceedings = %s%s",
+        return super.toString(String.format(", article = %s%s",
                                             Objects.toString(article),
                                             data));
     }
