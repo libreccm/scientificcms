@@ -7,13 +7,15 @@ package org.scientificcms.publications;
 
 import org.libreccm.core.AbstractEntityRepository;
 
+import javax.enterprise.context.RequestScoped;
+
 /**
  *
  * @author <a href="mailto:jens.pelzetter@googlemail.com">Jens Pelzetter</a>
- * @param <T>
  */
-public abstract class AbstractPublicationRepository<T extends Publication>
-    extends AbstractEntityRepository<Long, T> {
+@RequestScoped
+public class PublicationRepository 
+    extends AbstractEntityRepository<Long, Publication> {
 
     private static final long serialVersionUID = 1L;
 
@@ -23,13 +25,18 @@ public abstract class AbstractPublicationRepository<T extends Publication>
     }
 
     @Override
-    public Long getIdOfEntity(final T entity) {
+    public Long getIdOfEntity(final Publication entity) {
         return entity.getPublicationId();
     }
 
     @Override
-    public boolean isNew(final T entity) {
+    public boolean isNew(final Publication entity) {
         return entity.getPublicationId() == 0;
+    }
+
+    @Override
+    public Class<Publication> getEntityClass() {
+        return Publication.class;
     }
 
 }

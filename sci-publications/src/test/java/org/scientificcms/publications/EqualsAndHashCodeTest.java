@@ -32,6 +32,7 @@ public class EqualsAndHashCodeTest extends EqualsVerifier {
         return Arrays.asList(new Class<?>[]{
             ArticleInCollectedVolume.class,
             ArticleInJournal.class,
+            Authorship.class,
             CollectedVolume.class,
             Expertise.class,
             GreyLiterature.class,

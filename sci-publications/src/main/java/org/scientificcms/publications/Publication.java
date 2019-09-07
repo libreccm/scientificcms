@@ -9,13 +9,18 @@ import org.hibernate.envers.Audited;
 import org.libreccm.l10n.LocalizedString;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
 import javax.persistence.AssociationOverride;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,6 +28,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import static org.scientificcms.publications.SciPublicationsConstants.*;
@@ -50,6 +57,13 @@ public class Publication implements Serializable {
 
     @Column(name = "YEAR_OF_PUBLICATION")
     private Integer yearOfPublication;
+
+    @OneToMany(cascade = CascadeType.ALL, 
+               fetch = FetchType.LAZY,
+               mappedBy = "author",
+               orphanRemoval = true)
+    @OrderBy("authorOrder")
+    private List<Authorship> authorships;
 
     @Embedded
     @AssociationOverride(
@@ -103,8 +117,9 @@ public class Publication implements Serializable {
 
     @Column(name = "LANGUAGE_OF_PUBLICATION")
     private Locale languageOfPublication;
-    
+
     public Publication() {
+        authorships = new ArrayList<>();
         title = new LocalizedString();
         shortDescription = new LocalizedString();
         publicationAbstract = new LocalizedString();
@@ -133,6 +148,30 @@ public class Publication implements Serializable {
 
     public void setYearOfPublication(final Integer yearOfPublication) {
         this.yearOfPublication = yearOfPublication;
+    }
+
+    public List<Authorship> getAuthorships() {
+        if (authorships == null) {
+            return null;
+        } else {
+            return Collections.unmodifiableList(authorships);
+        }
+    }
+
+    protected void addAuthorship(final Authorship authorship) {
+        authorships.add(authorship);
+    }
+
+    protected void removeAuthorship(final Authorship authorship) {
+        authorships.remove(authorship);
+    }
+
+    protected void setAuthorships(final List<Authorship> authorships) {
+        if (authorships == null) {
+            this.authorships = null;
+        } else {
+            this.authorships = new ArrayList<>(authorships);
+        }
     }
 
     public LocalizedString getTitle() {
@@ -197,6 +236,7 @@ public class Publication implements Serializable {
         hash = 97 * hash + (int) (publicationId ^ (publicationId >>> 32));
         hash = 97 * hash + Objects.hashCode(uuid);
         hash = 97 * hash + Objects.hashCode(yearOfPublication);
+        hash = 97 * hash + Objects.hashCode(authorships);
         hash = 97 * hash + Objects.hashCode(title);
         hash = 97 * hash + Objects.hashCode(shortDescription);
         hash = 97 * hash + Objects.hashCode(publicationAbstract);
@@ -230,6 +270,9 @@ public class Publication implements Serializable {
             return false;
         }
         if (!Objects.equals(yearOfPublication, other.getYearOfPublication())) {
+            return false;
+        }
+        if (!Objects.equals(authorships, other.getAuthorships())) {
             return false;
         }
         if (!Objects.equals(title, other.getTitle())) {
@@ -266,6 +309,7 @@ public class Publication implements Serializable {
                                  + "publicationId = %d, "
                                  + "uuid = \"%s\""
                                  + "yearOfPublication = %d, "
+                                 + "authorships = %s, "
                                  + "title = %s, "
                                  + "shortDescription = %s, "
                                  + "publicationAbstract = %s, "
@@ -278,6 +322,7 @@ public class Publication implements Serializable {
                              publicationId,
                              uuid,
                              yearOfPublication,
+                             authorships,
                              Objects.toString(title),
                              Objects.toString(shortDescription),
                              Objects.toString(publicationAbstract),
