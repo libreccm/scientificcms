@@ -65,7 +65,7 @@ public class PublicationWithPublisher extends Publication {
         return publisher;
     }
 
-    public void setPublisher(final Publisher publisher) {
+    protected void setPublisher(final Publisher publisher) {
         this.publisher = publisher;
     }
 
