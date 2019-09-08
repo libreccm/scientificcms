@@ -11,6 +11,7 @@ import org.scientificcms.publications.CollectedVolume;
 
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -29,7 +30,11 @@ public class CollectedVolumeAsset extends Asset {
 
     private static final long serialVersionUID = 1L;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.DETACH, 
+                         CascadeType.MERGE, 
+                         CascadeType.PERSIST, 
+                         CascadeType.REFRESH
+    })
     @JoinColumn(name = "COLLECTED_VOLUME_ID")
     private CollectedVolume collectedVolume;
 

@@ -10,6 +10,7 @@ import org.scientificcms.publications.Talk;
 
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -24,12 +25,16 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
 @Entity
 @Table(name = "TALK_ITEMS", schema = DB_SCHEMA)
 @Audited
-public class TalkItem 
+public class TalkItem
     extends AbstractPublicationItem<Talk> {
 
     private static final long serialVersionUID = 1L;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.DETACH,
+                         CascadeType.MERGE,
+                         CascadeType.PERSIST,
+                         CascadeType.REFRESH
+    })
     @JoinColumn(name = "TALK_ID")
     private Talk talk;
 
@@ -65,7 +70,7 @@ public class TalkItem
             return false;
         }
         final TalkItem other
-                                   = (TalkItem) obj;
+                           = (TalkItem) obj;
         if (!other.canEqual(this)) {
             return false;
         }

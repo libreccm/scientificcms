@@ -10,6 +10,7 @@ import org.scientificcms.publications.Expertise;
 
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -24,12 +25,16 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
 @Entity
 @Table(name = "EXPERTISE_ITEMS", schema = DB_SCHEMA)
 @Audited
-public class ExpertiseItem 
+public class ExpertiseItem
     extends AbstractPublicationItem<Expertise> {
 
     private static final long serialVersionUID = 1L;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.DETACH,
+                         CascadeType.MERGE,
+                         CascadeType.PERSIST,
+                         CascadeType.REFRESH
+    })
     @JoinColumn(name = "EXPERTISE_ID")
     private Expertise expertise;
 
@@ -65,7 +70,7 @@ public class ExpertiseItem
             return false;
         }
         final ExpertiseItem other
-                                   = (ExpertiseItem) obj;
+                                = (ExpertiseItem) obj;
         if (!other.canEqual(this)) {
             return false;
         }

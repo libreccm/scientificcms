@@ -11,6 +11,7 @@ import org.scientificcms.publications.Publisher;
 
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -31,7 +32,11 @@ public class PublisherAsset extends Asset {
 
     private static final long serialVersionUID = 1L;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.DETACH, 
+                         CascadeType.MERGE, 
+                         CascadeType.PERSIST, 
+                         CascadeType.REFRESH
+    })
     @JoinColumn(name = "PUBLISHER_ID")
     private Publisher publisher;
 

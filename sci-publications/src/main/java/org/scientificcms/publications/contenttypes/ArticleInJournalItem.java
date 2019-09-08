@@ -10,6 +10,7 @@ import org.scientificcms.publications.ArticleInJournal;
 
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -29,7 +30,11 @@ public class ArticleInJournalItem
 
     private static final long serialVersionUID = 1L;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.DETACH, 
+                         CascadeType.MERGE, 
+                         CascadeType.PERSIST, 
+                         CascadeType.REFRESH
+    })
     @JoinColumn(name = "ARTICLE_ID")
     private ArticleInJournal article;
 

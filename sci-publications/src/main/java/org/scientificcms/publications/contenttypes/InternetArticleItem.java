@@ -10,6 +10,7 @@ import org.scientificcms.publications.InternetArticle;
 
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -24,12 +25,16 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
 @Entity
 @Table(name = "INTERNET_ARTICLE_ITEMS", schema = DB_SCHEMA)
 @Audited
-public class InternetArticleItem 
+public class InternetArticleItem
     extends AbstractPublicationItem<InternetArticle> {
 
     private static final long serialVersionUID = 1L;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.DETACH,
+                         CascadeType.MERGE,
+                         CascadeType.PERSIST,
+                         CascadeType.REFRESH
+    })
     @JoinColumn(name = "EXPERTISE_ID")
     private InternetArticle expertise;
 
@@ -65,7 +70,7 @@ public class InternetArticleItem
             return false;
         }
         final InternetArticleItem other
-                                   = (InternetArticleItem) obj;
+                                      = (InternetArticleItem) obj;
         if (!other.canEqual(this)) {
             return false;
         }
