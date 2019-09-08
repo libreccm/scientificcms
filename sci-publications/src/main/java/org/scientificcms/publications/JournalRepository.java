@@ -7,13 +7,18 @@ package org.scientificcms.publications;
 
 import org.libreccm.core.AbstractEntityRepository;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+
+import javax.persistence.NoResultException;
+import javax.transaction.Transactional;
 
 /**
  *
  * @author <a href="mailto:jens.pelzetter@googlemail.com">Jens Pelzetter</a>
  */
-public class JournalRepository extends AbstractEntityRepository<Long, Journal>{
+public class JournalRepository extends AbstractEntityRepository<Long, Journal> {
 
     private static final long serialVersionUID = 1L;
 
@@ -41,6 +46,28 @@ public class JournalRepository extends AbstractEntityRepository<Long, Journal>{
     protected void initNewEntity(final Journal entity) {
         entity.setUuid(UUID.randomUUID().toString());
     }
-    
-    
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public Optional<Journal> findByUuid(final String uuid) {
+
+        try {
+            return Optional.of(
+                getEntityManager()
+                    .createNamedQuery("Journal.findByUuid", Journal.class)
+                    .setParameter("uuid", uuid)
+                    .getSingleResult()
+            );
+        } catch (NoResultException ex) {
+            return Optional.empty();
+        }
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public List<Journal> findByTitle(final String title) {
+        return getEntityManager()
+            .createNamedQuery("Journal.findByTitle", Journal.class)
+            .setParameter("title", title)
+            .getResultList();
+    }
+
 }

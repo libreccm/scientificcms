@@ -23,6 +23,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -35,6 +37,17 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
 @Entity
 @Table(name = "JOURNALS", schema = DB_SCHEMA)
 @Audited
+@NamedQueries({
+    @NamedQuery(
+        name = "Journal.findByUuid",
+        query = "SELECT j FROM Journal j WHERE j.uuid = :uuid"
+    ),
+    @NamedQuery(
+        name = "Journal.findByTitle",
+        query = "SELECT j FROM Journal j "
+                    + "WHERE LOWER(j.title) LIKE CONCAT('%', :title, '%')"
+    )
+})
 public class Journal implements Serializable {
 
     private static final long serialVersionUID = 1L;

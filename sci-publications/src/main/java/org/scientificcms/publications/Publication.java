@@ -5,6 +5,8 @@
  */
 package org.scientificcms.publications;
 
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
 import org.hibernate.envers.Audited;
 import org.libreccm.l10n.LocalizedString;
 
@@ -43,6 +45,50 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
 @Table(name = "PUBLICATIONS", schema = DB_SCHEMA)
 @Inheritance(strategy = InheritanceType.JOINED)
 @Audited
+@NamedQueries({
+    @NamedQuery(
+        name = "Publication.findByIdAndType",
+        query = "SELECT p FROM Publication p "
+                    + "WHERE p.publicationId = :publicationId "
+                    + "AND TYPE(p) = :type"
+    ),
+    @NamedQuery(
+        name = "Publication.findByUuid",
+        query = "SELECT p FROM Publication p WHERE p.uuid = :uuid"
+    ),
+    @NamedQuery(
+        name = "Publication.findByUuidAndType",
+        query = "SELECT p FROM Publication p "
+                    + "WHERE p.uuid = :uuid "
+                    + "AND TYPE(p) = :type"
+    ),
+    @NamedQuery(
+        name = "Publication.findByTitle",
+        query = "SELECT DISTINCT p "
+                    + "FROM Publication p JOIN p.title.values t "
+                    + "WHERE LOWER(t) LIKE CONCAT('%', :title, '%')"
+    ),
+    @NamedQuery(
+        name = "Publication.findByTitleAndType",
+        query = "SELECT DISTINCT p "
+                    + "FROM Publication p JOIN p.title.values t "
+                    + "WHERE LOWER(t) LIKE CONCAT('%', :title, '%') "
+                    + "AND TYPE(p) = :type"
+    ),
+    @NamedQuery(
+        name = "Publication.findByAuthor",
+        query = "SELECT DISTINCT p "
+                    + "FROM Publication p JOIN p.authorships a "
+                    + "WHERE a.author = :author"
+    ),
+    @NamedQuery(
+        name = "Publication.findByAuthorAndType",
+        query = "SELECT DISTINCT p "
+                    + "FROM Publication p JOIN p.authorships a "
+                    + "WHERE a.author = :author "
+                    + "AND TYPE(p) = :type"
+    )
+})
 public class Publication implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -58,7 +104,7 @@ public class Publication implements Serializable {
     @Column(name = "YEAR_OF_PUBLICATION")
     private Integer yearOfPublication;
 
-    @OneToMany(cascade = CascadeType.ALL, 
+    @OneToMany(cascade = CascadeType.ALL,
                fetch = FetchType.LAZY,
                mappedBy = "author",
                orphanRemoval = true)

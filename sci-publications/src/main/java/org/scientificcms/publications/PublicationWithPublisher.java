@@ -17,6 +17,8 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import static org.scientificcms.publications.SciPublicationsConstants.*;
@@ -28,6 +30,29 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
 @Entity
 @Table(name = "PUBLICATIONS_WITH_PUBLISHER")
 @Audited
+@NamedQueries({
+    @NamedQuery(
+        name = "PublicationWithPublisher.findByPublisher",
+        query = "SELECT p FROM PublicationWithPublisher p "
+                    + "WHERE p.publisher = :publisher"
+    ),
+    @NamedQuery(
+        name = "PublicationWithPublisher.findByPublisherAndType",
+        query = "SELECT p FROM PublicationWithPublisher p "
+                    + "WHERE p.publisher = :publisher "
+                    + "AND TYPE(p) = :type"
+    ),
+    @NamedQuery(
+        name = "PublicationWithPublisher.findByISBN10",
+        query = "SELECT p FROM PublicationWithPublisher p "
+                    + "WHERE p.isbn10 = :isbn"
+    ),
+    @NamedQuery(
+        name = "PublicationWithPublisher.findByISBN13",
+        query = "SELECT p FROM PublicationWithPublisher p "
+                    + "WHERE p.isbn13 = :isbn"
+    )
+})
 public class PublicationWithPublisher extends Publication {
 
     private static final long serialVersionUID = 1L;

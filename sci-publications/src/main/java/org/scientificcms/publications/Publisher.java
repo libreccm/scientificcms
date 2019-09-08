@@ -18,6 +18,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -30,6 +32,17 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
 @Entity
 @Table(name = "PUBLISHERS", schema = DB_SCHEMA)
 @Audited
+@NamedQueries({
+    @NamedQuery(
+        name = "Publisher.findByUuid",
+        query = "SELECT p FROM Publisher p WHERE p.uuid = :uuid"
+    ),
+    @NamedQuery(
+        name = "Publisher.findByName",
+        query = "SELECT p FROM Publisher p "
+                    + "WHERE p.name LIKE CONCAT('%', :name, '%')"
+    )
+})
 public class Publisher implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -7,7 +7,12 @@ package org.scientificcms.publications;
 
 import org.libreccm.core.AbstractEntityRepository;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+
+import javax.persistence.NoResultException;
+import javax.transaction.Transactional;
 
 /**
  *
@@ -41,6 +46,28 @@ public class PublisherRepository
     @Override
     protected void initNewEntity(final Publisher entity) {
         entity.setUuid(UUID.randomUUID().toString());
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public Optional<Publisher> findByUuid(final String uuid) {
+        try {
+            return Optional.of(
+                getEntityManager()
+                    .createNamedQuery("Publisher.findByUuid", Publisher.class)
+                    .setParameter("uuid", uuid)
+                    .getSingleResult()
+            );
+        } catch (NoResultException ex) {
+            return Optional.empty();
+        }
+    }
+    
+    @Transactional(Transactional.TxType.REQUIRED)
+    public List<Publisher> findByName(final String name) {
+        return getEntityManager()
+            .createNamedQuery("Publisher.findByName", Publisher.class)
+            .setParameter("name", name)
+            .getResultList();
     }
 
 }
