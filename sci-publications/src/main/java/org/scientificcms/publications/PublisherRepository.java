@@ -7,12 +7,14 @@ package org.scientificcms.publications;
 
 import org.libreccm.core.AbstractEntityRepository;
 
+import java.util.UUID;
+
 /**
  *
  * @author <a href="mailto:jens.pelzetter@googlemail.com">Jens Pelzetter</a>
  */
-public class PublisherRepository 
-    extends AbstractEntityRepository<Long, Publisher>{
+public class PublisherRepository
+    extends AbstractEntityRepository<Long, Publisher> {
 
     private static final long serialVersionUID = 1L;
 
@@ -35,5 +37,10 @@ public class PublisherRepository
     public boolean isNew(final Publisher entity) {
         return entity.getPublisherId() == 0;
     }
-    
+
+    @Override
+    protected void initNewEntity(final Publisher entity) {
+        entity.setUuid(UUID.randomUUID().toString());
+    }
+
 }

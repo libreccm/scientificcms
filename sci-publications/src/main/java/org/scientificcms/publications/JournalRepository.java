@@ -7,6 +7,8 @@ package org.scientificcms.publications;
 
 import org.libreccm.core.AbstractEntityRepository;
 
+import java.util.UUID;
+
 /**
  *
  * @author <a href="mailto:jens.pelzetter@googlemail.com">Jens Pelzetter</a>
@@ -34,5 +36,11 @@ public class JournalRepository extends AbstractEntityRepository<Long, Journal>{
     public boolean isNew(final Journal entity) {
         return entity.getJournalId() == 0;
     }
+
+    @Override
+    protected void initNewEntity(final Journal entity) {
+        entity.setUuid(UUID.randomUUID().toString());
+    }
+    
     
 }

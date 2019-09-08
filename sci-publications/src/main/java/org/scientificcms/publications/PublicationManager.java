@@ -27,10 +27,13 @@ public class PublicationManager {
 
     @Inject
     private PublicationRepository publicationRepository;
-    
+
     @Inject
     private EntityManager entityManager;
 
+    @AuthorizationRequired
+    @RequiresPrivilege(ItemPrivileges.EDIT)
+    @Transactional(Transactional.TxType.REQUIRED)
     public void addAuthor(final Person person,
                           final Publication toPublication) {
 
@@ -43,6 +46,9 @@ public class PublicationManager {
                   toPublication.getAuthorships().size());
     }
 
+    @AuthorizationRequired
+    @RequiresPrivilege(ItemPrivileges.EDIT)
+    @Transactional(Transactional.TxType.REQUIRED)
     public void addAuthor(final Person person,
                           final Publication toPublication,
                           final boolean asEditor) {
@@ -69,7 +75,7 @@ public class PublicationManager {
     public void addAuthor(final Person person,
                           final Publication toPublication,
                           final boolean asEditor,
-                          final long atPosition) {
+                          final int atPosition) {
 
         Objects.requireNonNull(person);
         Objects.requireNonNull(toPublication);
@@ -115,27 +121,192 @@ public class PublicationManager {
         publicationRepository.save(toPublication);
     }
 
-    public void removeAuthor(final Person author, 
+    @AuthorizationRequired
+    @RequiresPrivilege(ItemPrivileges.EDIT)
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void removeAuthor(final Person author,
                              final Publication fromPublication) {
-        
+
         final Optional<Authorship> result = fromPublication
-        .getAuthorships()
-        .stream()
-        .filter(authorship -> authorship.getAuthor().equals(author))
-        .findAny();
-        
+            .getAuthorships()
+            .stream()
+            .filter(authorship -> authorship.getAuthor().equals(author))
+            .findAny();
+
         if (!result.isPresent()) {
-            return ;
+            return;
         }
-        
+
         final Authorship remove = result.get();
         fromPublication.removeAuthorship(remove);
-        
-        for(int i = 0; i < fromPublication.getAuthorships().size(); i++) {
+
+        for (int i = 0; i < fromPublication.getAuthorships().size(); i++) {
             fromPublication.getAuthorships().get(i).setAuthorOrder(i);
         }
-        
+
         entityManager.remove(remove);
         publicationRepository.save(fromPublication);
     }
+
+    @AuthorizationRequired
+    @RequiresPrivilege(ItemPrivileges.EDIT)
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void moveAuthorToPosition(final Publication ofPublication,
+                                     final Person author,
+                                     final int toPosition) {
+
+        Objects.requireNonNull(ofPublication);
+        Objects.requireNonNull(author);
+        if (toPosition < 0) {
+            throw new IllegalArgumentException(
+                "Can't move author to a negative position."
+            );
+        }
+
+        final Optional<Authorship> result = ofPublication
+            .getAuthorships()
+            .stream()
+            .filter(authorship -> authorship.getAuthor().equals(author))
+            .findAny();
+
+        if (result.isEmpty()) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Person %s is not an author of the publication %s.",
+                    Objects.toString(author),
+                    Objects.toString(ofPublication)
+                )
+            );
+        }
+
+        moveAuthorshipToPosition(ofPublication, result.get(), toPosition);
+    }
+
+    @AuthorizationRequired
+    @RequiresPrivilege(ItemPrivileges.EDIT)
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void moveAuthorshipToPosition(final Publication ofPublication,
+                                         final Authorship moving,
+                                         final int toPosition) {
+
+        Objects.requireNonNull(ofPublication);
+        Objects.requireNonNull(moving);
+        if (toPosition < 0) {
+            throw new IllegalArgumentException(
+                "Can't move author to a negative position."
+            );
+        }
+
+        if (toPosition < moving.getAuthorOrder()) {
+            ofPublication
+                .getAuthorships()
+                .stream()
+                .filter(
+                    authorship -> authorship.getAuthorOrder() >= toPosition
+                                      && authorship.getAuthorOrder()
+                                             < moving.getAuthorOrder()
+                )
+                .forEach(
+                    authorship -> authorship.setAuthorOrder(
+                        authorship.getAuthorOrder() + 1
+                    )
+                );
+            moving.setAuthorOrder(toPosition);
+
+        } else if (toPosition > moving.getAuthorOrder()) {
+            ofPublication
+                .getAuthorships()
+                .stream()
+                .filter(
+                    authorship -> authorship.getAuthorOrder() > moving
+                    .getAuthorOrder()
+                                      && authorship.getAuthorOrder()
+                                             <= toPosition
+                )
+                .forEach(
+                    authorship -> authorship.setAuthorOrder(
+                        authorship.getAuthorOrder() - 1
+                    )
+                );
+        } else {
+            // Nothing to do
+            return;
+        }
+
+        publicationRepository.save(ofPublication);
+    }
+
+    @AuthorizationRequired
+    @RequiresPrivilege(ItemPrivileges.EDIT)
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void swapWithPrevious(final Publication publication,
+                                 final Authorship authorship) {
+
+        Objects.requireNonNull(publication);
+        Objects.requireNonNull(authorship);
+
+        if (!publication.getAuthorships().contains(authorship)) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Provided Authorship entity %s is not part of "
+                        + "the provided Publication entity %s.",
+                    Objects.toString(authorship),
+                    Objects.toString(publication)
+                )
+            );
+        }
+
+        if (authorship.getAuthorOrder() == 0) {
+            return;
+        }
+
+        final Authorship previous = publication
+            .getAuthorships()
+            .get((int) authorship.getAuthorOrder() - 1);
+        final long previousOrder = previous.getAuthorOrder();
+        final long movingOrder = authorship.getAuthorOrder();
+
+        previous.setAuthorOrder(movingOrder);
+        authorship.setAuthorOrder(previousOrder);
+
+        publicationRepository.save(publication);
+    }
+
+    @AuthorizationRequired
+    @RequiresPrivilege(ItemPrivileges.EDIT)
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void swapWithNext(final Publication publication,
+                             final Authorship authorship) {
+
+        Objects.requireNonNull(publication);
+        Objects.requireNonNull(authorship);
+
+        if (!publication.getAuthorships().contains(authorship)) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Provided Authorship entity %s is not part of "
+                        + "the provided Publication entity %s.",
+                    Objects.toString(authorship),
+                    Objects.toString(publication)
+                )
+            );
+        }
+
+        if (authorship.getAuthorOrder() > publication
+            .getAuthorships().size() - 1) {
+            return;
+        }
+
+        final Authorship next = publication
+            .getAuthorships()
+            .get((int) authorship.getAuthorOrder() + 1);
+        final long nextOrder = next.getAuthorOrder();
+        final long movingOrder = authorship.getAuthorOrder();
+
+        next.setAuthorOrder(movingOrder);
+        authorship.setAuthorOrder(nextOrder);
+
+        publicationRepository.save(publication);
+    }
+
 }

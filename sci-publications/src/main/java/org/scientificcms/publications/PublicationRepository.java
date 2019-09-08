@@ -7,6 +7,8 @@ package org.scientificcms.publications;
 
 import org.libreccm.core.AbstractEntityRepository;
 
+import java.util.UUID;
+
 import javax.enterprise.context.RequestScoped;
 
 /**
@@ -37,6 +39,12 @@ public class PublicationRepository
     @Override
     public Class<Publication> getEntityClass() {
         return Publication.class;
+    }
+    
+    @Override
+    public void initNewEntity(final Publication entity) {
+        final String uuid = UUID.randomUUID().toString();
+        entity.setUuid(uuid);
     }
 
 }
