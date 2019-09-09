@@ -25,33 +25,32 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
 @Entity
 @Table(name = "EXPERTISE_ITEMS", schema = DB_SCHEMA)
 @Audited
-public class ExpertiseItem
-    extends AbstractPublicationItem<Expertise> {
+public class ExpertiseItem extends PublicationItem<Expertise> {
 
     private static final long serialVersionUID = 1L;
 
-    @OneToOne(cascade = {CascadeType.DETACH,
-                         CascadeType.MERGE,
-                         CascadeType.PERSIST,
-                         CascadeType.REFRESH
-    })
-    @JoinColumn(name = "EXPERTISE_ID")
-    private Expertise expertise;
-
-    @Override
-    public Expertise getPublication() {
-        return expertise;
-    }
-
-    @Override
-    protected void setPublication(final Expertise expertise) {
-        this.expertise = expertise;
-    }
+//    @OneToOne(cascade = {CascadeType.DETACH,
+//                         CascadeType.MERGE,
+//                         CascadeType.PERSIST,
+//                         CascadeType.REFRESH
+//    })
+//    @JoinColumn(name = "EXPERTISE_ID")
+//    private Expertise expertise;
+//
+//    @Override
+//    public Expertise getPublication() {
+//        return expertise;
+//    }
+//
+//    @Override
+//    protected void setPublication(final Expertise expertise) {
+//        this.expertise = expertise;
+//    }
 
     @Override
     public int hashCode() {
         int hash = super.hashCode();
-        hash = 67 * hash + Objects.hashCode(expertise);
+//        hash = 67 * hash + Objects.hashCode(expertise);
         return hash;
     }
 
@@ -71,10 +70,11 @@ public class ExpertiseItem
         }
         final ExpertiseItem other
                                 = (ExpertiseItem) obj;
-        if (!other.canEqual(this)) {
-            return false;
-        }
-        return Objects.equals(this.expertise, other.getPublication());
+//        if (!other.canEqual(this)) {
+//            return false;
+//        }
+//        return Objects.equals(this.expertise, other.getPublication());
+return other.canEqual(this);
     }
 
     @Override
@@ -82,11 +82,11 @@ public class ExpertiseItem
         return obj instanceof ExpertiseItem;
     }
 
-    @Override
-    public String toString(final String data) {
-        return super.toString(String.format(", expertise = %s%s",
-                                            Objects.toString(expertise),
-                                            data));
-    }
+//    @Override
+//    public String toString(final String data) {
+//        return super.toString(String.format(", expertise = %s%s",
+//                                            Objects.toString(expertise),
+//                                            data));
+//    }
 
 }

@@ -25,33 +25,33 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
 @Entity
 @Table(name = "ARTICLE_IN_COLLECTED_VOLUME_ITEMS", schema = DB_SCHEMA)
 @Audited
-public class ArticleInCollectedVolumeItem
-    extends AbstractPublicationItem<ArticleInCollectedVolume> {
+public class ArticleInCollectedVolumeItem 
+    extends PublicationItem<ArticleInCollectedVolume> {
 
     private static final long serialVersionUID = 1L;
 
-    @OneToOne(cascade = {CascadeType.DETACH, 
-                         CascadeType.MERGE, 
-                         CascadeType.PERSIST, 
-                         CascadeType.REFRESH
-    })
-    @JoinColumn(name = "ARTICLE_ID")
-    private ArticleInCollectedVolume article;
-
-    @Override
-    public ArticleInCollectedVolume getPublication() {
-        return article;
-    }
-
-    @Override
-    protected void setPublication(final ArticleInCollectedVolume article) {
-        this.article = article;
-    }
+//    @OneToOne(cascade = {CascadeType.DETACH,
+//                         CascadeType.MERGE,
+//                         CascadeType.PERSIST,
+//                         CascadeType.REFRESH
+//    })
+//    @JoinColumn(name = "ARTICLE_ID")
+//    private ArticleInCollectedVolume article;
+//
+//    @Override
+//    public ArticleInCollectedVolume getPublication() {
+//        return article;
+//    }
+//
+//    @Override
+//    protected void setPublication(final ArticleInCollectedVolume article) {
+//        this.article = article;
+//    }
 
     @Override
     public int hashCode() {
         int hash = super.hashCode();
-        hash = 67 * hash + Objects.hashCode(article);
+//        hash = 67 * hash + Objects.hashCode(article);
         return hash;
     }
 
@@ -71,10 +71,11 @@ public class ArticleInCollectedVolumeItem
         }
         final ArticleInCollectedVolumeItem other
                                                = (ArticleInCollectedVolumeItem) obj;
-        if (!other.canEqual(this)) {
-            return false;
-        }
-        return Objects.equals(article, other.getPublication());
+//        if (!other.canEqual(this)) {
+//            return false;
+//        }
+//        return Objects.equals(article, other.getPublication());
+return other.canEqual(this);
     }
 
     @Override
@@ -82,11 +83,11 @@ public class ArticleInCollectedVolumeItem
         return obj instanceof ArticleInCollectedVolumeItem;
     }
 
-    @Override
-    public String toString(final String data) {
-        return super.toString(String.format(", article = %s%s",
-                                            Objects.toString(article),
-                                            data));
-    }
+//    @Override
+//    public String toString(final String data) {
+//        return super.toString(String.format(", article = %s%s",
+//                                            Objects.toString(article),
+//                                            data));
+//    }
 
 }

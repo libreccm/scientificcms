@@ -25,33 +25,31 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
 @Entity
 @Table(name = "INTERNET_ARTICLE_ITEMS", schema = DB_SCHEMA)
 @Audited
-public class InternetArticleItem
-    extends AbstractPublicationItem<InternetArticle> {
+public class InternetArticleItem extends PublicationItem<InternetArticle> {
 
     private static final long serialVersionUID = 1L;
 
-    @OneToOne(cascade = {CascadeType.DETACH,
-                         CascadeType.MERGE,
-                         CascadeType.PERSIST,
-                         CascadeType.REFRESH
-    })
-    @JoinColumn(name = "EXPERTISE_ID")
-    private InternetArticle expertise;
-
-    @Override
-    public InternetArticle getPublication() {
-        return expertise;
-    }
-
-    @Override
-    protected void setPublication(final InternetArticle internetArticle) {
-        this.expertise = internetArticle;
-    }
-
+//    @OneToOne(cascade = {CascadeType.DETACH,
+//                         CascadeType.MERGE,
+//                         CascadeType.PERSIST,
+//                         CascadeType.REFRESH
+//    })
+//    @JoinColumn(name = "EXPERTISE_ID")
+//    private InternetArticle expertise;
+//
+//    @Override
+//    public InternetArticle getPublication() {
+//        return expertise;
+//    }
+//
+//    @Override
+//    protected void setPublication(final InternetArticle internetArticle) {
+//        this.expertise = internetArticle;
+//    }
     @Override
     public int hashCode() {
         int hash = super.hashCode();
-        hash = 67 * hash + Objects.hashCode(expertise);
+//        hash = 67 * hash + Objects.hashCode(expertise);
         return hash;
     }
 
@@ -71,10 +69,11 @@ public class InternetArticleItem
         }
         final InternetArticleItem other
                                       = (InternetArticleItem) obj;
-        if (!other.canEqual(this)) {
-            return false;
-        }
-        return Objects.equals(this.expertise, other.getPublication());
+//        if (!other.canEqual(this)) {
+//            return false;
+//        }
+//        return Objects.equals(this.expertise, other.getPublication());
+        return other.canEqual(this);
     }
 
     @Override
@@ -82,11 +81,11 @@ public class InternetArticleItem
         return obj instanceof InternetArticleItem;
     }
 
-    @Override
-    public String toString(final String data) {
-        return super.toString(String.format(", internetArticle = %s%s",
-                                            Objects.toString(expertise),
-                                            data));
-    }
+//    @Override
+//    public String toString(final String data) {
+//        return super.toString(String.format(", internetArticle = %s%s",
+//                                            Objects.toString(expertise),
+//                                            data));
+//    }
 
 }

@@ -42,7 +42,7 @@ public class CollectedVolumeAsset extends Asset {
         return collectedVolume;
     }
 
-    protected void setCollectedVolume(final CollectedVolume collectedVolume) {
+    public void setCollectedVolume(final CollectedVolume collectedVolume) {
         this.collectedVolume = collectedVolume;
     }
 

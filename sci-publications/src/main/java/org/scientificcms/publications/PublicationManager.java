@@ -169,7 +169,7 @@ public class PublicationManager {
             .filter(authorship -> authorship.getAuthor().equals(author))
             .findAny();
 
-        if (result.isEmpty()) {
+        if (!result.isPresent()) {
             throw new IllegalArgumentException(
                 String.format(
                     "Person %s is not an author of the publication %s.",

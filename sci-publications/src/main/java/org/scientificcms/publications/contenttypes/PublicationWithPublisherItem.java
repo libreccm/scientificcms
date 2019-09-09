@@ -21,8 +21,8 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
 @Entity
 @Table(name = "PUBLICATION_WITH_PUBLISHER_ITEMS", schema = DB_SCHEMA)
 @Audited
-public abstract class AbstractPublicationWithPublisherItem<T extends PublicationWithPublisher>
-    extends AbstractPublicationItem<T> {
+public class PublicationWithPublisherItem<T extends PublicationWithPublisher>
+    extends PublicationItem<T> {
 
     private static final long serialVersionUID = 1L;
 
@@ -44,17 +44,17 @@ public abstract class AbstractPublicationWithPublisherItem<T extends Publication
         if (!super.equals(obj)) {
             return false;
         }
-        if (!(obj instanceof AbstractPublicationWithPublisherItem)) {
+        if (!(obj instanceof PublicationWithPublisherItem)) {
             return false;
         }
-        final AbstractPublicationWithPublisherItem<?> other
-                                                          = (AbstractPublicationWithPublisherItem<?>) obj;
+        final PublicationWithPublisherItem<?> other
+                                                          = (PublicationWithPublisherItem<?>) obj;
         return other.canEqual(this);
     }
 
     @Override
     public boolean canEqual(final Object obj) {
-        return obj instanceof AbstractPublicationWithPublisherItem;
+        return obj instanceof PublicationWithPublisherItem;
     }
 
 }

@@ -8,12 +8,7 @@ package org.scientificcms.publications.contenttypes;
 import org.hibernate.envers.Audited;
 import org.scientificcms.publications.ArticleInJournal;
 
-import java.util.Objects;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import static org.scientificcms.publications.SciPublicationsConstants.*;
@@ -25,33 +20,30 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
 @Entity
 @Table(name = "ARTICLE_IN_COLLECTED_VOLUME_ITEMS", schema = DB_SCHEMA)
 @Audited
-public class ArticleInJournalItem 
-    extends AbstractPublicationItem<ArticleInJournal> {
+public class ArticleInJournalItem extends PublicationItem<ArticleInJournal> {
 
     private static final long serialVersionUID = 1L;
 
-    @OneToOne(cascade = {CascadeType.DETACH, 
-                         CascadeType.MERGE, 
-                         CascadeType.PERSIST, 
-                         CascadeType.REFRESH
-    })
-    @JoinColumn(name = "ARTICLE_ID")
-    private ArticleInJournal article;
-
-    @Override
-    public ArticleInJournal getPublication() {
-        return article;
-    }
-
-    @Override
-    protected void setPublication(final ArticleInJournal article) {
-        this.article = article;
-    }
-
+//    @OneToOne(cascade = {CascadeType.DETACH, 
+//                         CascadeType.MERGE, 
+//                         CascadeType.PERSIST, 
+//                         CascadeType.REFRESH
+//    })
+//    @JoinColumn(name = "ARTICLE_ID")
+//    private ArticleInJournal article;
+//    @Override
+//    public ArticleInJournal getPublication() {
+//        return article;
+//    }
+//
+//    @Override
+//    protected void setPublication(final ArticleInJournal article) {
+//        this.article = article;
+//    }
     @Override
     public int hashCode() {
         int hash = super.hashCode();
-        hash = 67 * hash + Objects.hashCode(this.article);
+//        hash = 67 * hash + Objects.hashCode(this.article);
         return hash;
     }
 
@@ -70,11 +62,12 @@ public class ArticleInJournalItem
             return false;
         }
         final ArticleInJournalItem other
-                                   = (ArticleInJournalItem) obj;
-        if (!other.canEqual(this)) {
-            return false;
-        }
-        return Objects.equals(this.article, other.getPublication());
+                                       = (ArticleInJournalItem) obj;
+//        if (!other.canEqual(this)) {
+//            return false;
+//        }
+//        return Objects.equals(this.article, other.getPublication());
+        return other.canEqual(this);
     }
 
     @Override
@@ -82,11 +75,11 @@ public class ArticleInJournalItem
         return obj instanceof ArticleInJournalItem;
     }
 
-    @Override
-    public String toString(final String data) {
-        return super.toString(String.format(", article = %s%s",
-                                            Objects.toString(article),
-                                            data));
-    }
+//    @Override
+//    public String toString(final String data) {
+//        return super.toString(String.format(", article = %s%s",
+//                                            Objects.toString(article),
+//                                            data));
+//    }
 
 }

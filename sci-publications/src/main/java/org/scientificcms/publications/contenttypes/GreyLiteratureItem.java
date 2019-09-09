@@ -25,33 +25,31 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
 @Entity
 @Table(name = "GREY_LITERATURE_ITEMS", schema = DB_SCHEMA)
 @Audited
-public class GreyLiteratureItem 
-    extends AbstractPublicationItem<GreyLiterature> {
+public class GreyLiteratureItem extends PublicationItem<GreyLiterature> {
 
     private static final long serialVersionUID = 1L;
 
-    @OneToOne(cascade = {CascadeType.DETACH, 
-                         CascadeType.MERGE, 
-                         CascadeType.PERSIST, 
-                         CascadeType.REFRESH
-    })
-    @JoinColumn(name = "GREY_LITERATURE_ID")
-    private GreyLiterature greyLiterature;
-
-    @Override
-    public GreyLiterature getPublication() {
-        return greyLiterature;
-    }
-
-    @Override
-    protected void setPublication(final GreyLiterature greyLiterature) {
-        this.greyLiterature = greyLiterature;
-    }
-
+//    @OneToOne(cascade = {CascadeType.DETACH,
+//                         CascadeType.MERGE,
+//                         CascadeType.PERSIST,
+//                         CascadeType.REFRESH
+//    })
+//    @JoinColumn(name = "GREY_LITERATURE_ID")
+//    private GreyLiterature greyLiterature;
+//
+//    @Override
+//    public GreyLiterature getPublication() {
+//        return greyLiterature;
+//    }
+//
+//    @Override
+//    protected void setPublication(final GreyLiterature greyLiterature) {
+//        this.greyLiterature = greyLiterature;
+//    }
     @Override
     public int hashCode() {
         int hash = super.hashCode();
-        hash = 67 * hash + Objects.hashCode(greyLiterature);
+//        hash = 67 * hash + Objects.hashCode(greyLiterature);
         return hash;
     }
 
@@ -70,11 +68,12 @@ public class GreyLiteratureItem
             return false;
         }
         final GreyLiteratureItem other
-                                   = (GreyLiteratureItem) obj;
-        if (!other.canEqual(this)) {
-            return false;
-        }
-        return Objects.equals(this.greyLiterature, other.getPublication());
+                                     = (GreyLiteratureItem) obj;
+//        if (!other.canEqual(this)) {
+//            return false;
+//        }
+//        return Objects.equals(this.greyLiterature, other.getPublication());
+        return other.canEqual(this);
     }
 
     @Override
@@ -82,11 +81,11 @@ public class GreyLiteratureItem
         return obj instanceof GreyLiteratureItem;
     }
 
-    @Override
-    public String toString(final String data) {
-        return super.toString(String.format(", greyLiterature = %s%s",
-                                            Objects.toString(greyLiterature),
-                                            data));
-    }
+//    @Override
+//    public String toString(final String data) {
+//        return super.toString(String.format(", greyLiterature = %s%s",
+//                                            Objects.toString(greyLiterature),
+//                                            data));
+//    }
 
 }

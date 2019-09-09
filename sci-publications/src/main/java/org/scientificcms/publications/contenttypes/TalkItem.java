@@ -25,33 +25,31 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
 @Entity
 @Table(name = "TALK_ITEMS", schema = DB_SCHEMA)
 @Audited
-public class TalkItem
-    extends AbstractPublicationItem<Talk> {
+public class TalkItem extends PublicationItem<Talk> {
 
     private static final long serialVersionUID = 1L;
 
-    @OneToOne(cascade = {CascadeType.DETACH,
-                         CascadeType.MERGE,
-                         CascadeType.PERSIST,
-                         CascadeType.REFRESH
-    })
-    @JoinColumn(name = "TALK_ID")
-    private Talk talk;
-
-    @Override
-    public Talk getPublication() {
-        return talk;
-    }
-
-    @Override
-    protected void setPublication(final Talk talk) {
-        this.talk = talk;
-    }
-
+//    @OneToOne(cascade = {CascadeType.DETACH,
+//                         CascadeType.MERGE,
+//                         CascadeType.PERSIST,
+//                         CascadeType.REFRESH
+//    })
+//    @JoinColumn(name = "TALK_ID")
+//    private Talk talk;
+//
+//    @Override
+//    public Talk getPublication() {
+//        return talk;
+//    }
+//
+//    @Override
+//    protected void setPublication(final Talk talk) {
+//        this.talk = talk;
+//    }
     @Override
     public int hashCode() {
         int hash = super.hashCode();
-        hash = 67 * hash + Objects.hashCode(talk);
+//        hash = 67 * hash + Objects.hashCode(talk);
         return hash;
     }
 
@@ -71,10 +69,11 @@ public class TalkItem
         }
         final TalkItem other
                            = (TalkItem) obj;
-        if (!other.canEqual(this)) {
-            return false;
-        }
-        return Objects.equals(this.talk, other.getPublication());
+//        if (!other.canEqual(this)) {
+//            return false;
+//        }
+//        return Objects.equals(this.talk, other.getPublication());
+        return other.canEqual(this);
     }
 
     @Override
@@ -82,11 +81,11 @@ public class TalkItem
         return obj instanceof TalkItem;
     }
 
-    @Override
-    public String toString(final String data) {
-        return super.toString(String.format(", talk = %s%s",
-                                            Objects.toString(talk),
-                                            data));
-    }
+//    @Override
+//    public String toString(final String data) {
+//        return super.toString(String.format(", talk = %s%s",
+//                                            Objects.toString(talk),
+//                                            data));
+//    }
 
 }

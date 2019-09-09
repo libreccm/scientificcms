@@ -7,12 +7,7 @@ package org.scientificcms.publications.contenttypes;
 
 import org.scientificcms.publications.Proceedings;
 
-import java.util.Objects;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import static org.scientificcms.publications.SciPublicationsConstants.*;
@@ -23,33 +18,31 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
  */
 @Entity
 @Table(name = "PROCEEDINGS_ITEMS", schema = DB_SCHEMA)
-public class ProceedingsItem
-    extends AbstractPublicationWithPublisherItem<Proceedings> {
+public class ProceedingsItem extends PublicationWithPublisherItem<Proceedings> {
 
     private static final long serialVersionUID = 1L;
 
-    @OneToOne(cascade = {CascadeType.DETACH, 
-                         CascadeType.MERGE, 
-                         CascadeType.PERSIST, 
-                         CascadeType.REFRESH
-    })
-    @JoinColumn(name = "PROCEEDINGS_ID")
-    private Proceedings article;
-
-    @Override
-    public Proceedings getPublication() {
-        return article;
-    }
-
-    @Override
-    protected void setPublication(final Proceedings article) {
-        this.article = article;
-    }
-
+//    @OneToOne(cascade = {CascadeType.DETACH, 
+//                         CascadeType.MERGE, 
+//                         CascadeType.PERSIST, 
+//                         CascadeType.REFRESH
+//    })
+//    @JoinColumn(name = "PROCEEDINGS_ID")
+//    private Proceedings article;
+//
+//    @Override
+//    public Proceedings getPublication() {
+//        return article;
+//    }
+//
+//    @Override
+//    protected void setPublication(final Proceedings article) {
+//        this.article = article;
+//    }
     @Override
     public int hashCode() {
         int hash = super.hashCode();
-        hash = 67 * hash + Objects.hashCode(article);
+//        hash = 67 * hash + Objects.hashCode(article);
         return hash;
     }
 
@@ -69,10 +62,11 @@ public class ProceedingsItem
         }
         final ProceedingsItem other
                                   = (ProceedingsItem) obj;
-        if (!other.canEqual(this)) {
-            return false;
-        }
-        return Objects.equals(this.article, other.getPublication());
+//        if (!other.canEqual(this)) {
+//            return false;
+//        }
+//        return Objects.equals(this.article, other.getPublication());
+        return other.canEqual(this);
     }
 
     @Override
@@ -80,11 +74,11 @@ public class ProceedingsItem
         return obj instanceof ProceedingsItem;
     }
 
-    @Override
-    public String toString(final String data) {
-        return super.toString(String.format(", proceedings = %s%s",
-                                            Objects.toString(article),
-                                            data));
-    }
+//    @Override
+//    public String toString(final String data) {
+//        return super.toString(String.format(", proceedings = %s%s",
+//                                            Objects.toString(article),
+//                                            data));
+//    }
 
 }

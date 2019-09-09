@@ -43,7 +43,7 @@ public class JournalAsset extends Asset {
         return journal;
     }
 
-    protected void setJournal(final Journal journal) {
+    public void setJournal(final Journal journal) {
         this.journal = journal;
     }
 

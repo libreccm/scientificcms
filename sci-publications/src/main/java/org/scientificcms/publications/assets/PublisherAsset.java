@@ -44,7 +44,7 @@ public class PublisherAsset extends Asset {
         return publisher;
     }
 
-    protected void setPublisher(final Publisher publisher) {
+    public void setPublisher(final Publisher publisher) {
         this.publisher = publisher;
     }
 

@@ -25,33 +25,32 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
 @Entity
 @Table(name = "INPROCEEDINGS_ITEMS", schema = DB_SCHEMA)
 @Audited
-public class InProceedingsItem 
-    extends AbstractPublicationItem<InProceedings> {
+public class InProceedingsItem extends PublicationItem<InProceedings> {
 
     private static final long serialVersionUID = 1L;
 
-    @OneToOne(cascade = {CascadeType.DETACH, 
-                         CascadeType.MERGE, 
-                         CascadeType.PERSIST, 
-                         CascadeType.REFRESH
-    })
-    @JoinColumn(name = "INPROCEEDINGS_ID")
-    private InProceedings inProcedings;
-
-    @Override
-    public InProceedings getPublication() {
-        return inProcedings;
-    }
-
-    @Override
-    protected void setPublication(final InProceedings inProceedings) {
-        this.inProcedings = inProceedings;
-    }
+//    @OneToOne(cascade = {CascadeType.DETACH,
+//                         CascadeType.MERGE,
+//                         CascadeType.PERSIST,
+//                         CascadeType.REFRESH
+//    })
+//    @JoinColumn(name = "INPROCEEDINGS_ID")
+//    private InProceedings inProcedings;
+//
+//    @Override
+//    public InProceedings getPublication() {
+//        return inProcedings;
+//    }
+//
+//    @Override
+//    protected void setPublication(final InProceedings inProceedings) {
+//        this.inProcedings = inProceedings;
+//    }
 
     @Override
     public int hashCode() {
         int hash = super.hashCode();
-        hash = 67 * hash + Objects.hashCode(inProcedings);
+//        hash = 67 * hash + Objects.hashCode(inProcedings);
         return hash;
     }
 
@@ -70,11 +69,12 @@ public class InProceedingsItem
             return false;
         }
         final InProceedingsItem other
-                                   = (InProceedingsItem) obj;
-        if (!other.canEqual(this)) {
-            return false;
-        }
-        return Objects.equals(this.inProcedings, other.getPublication());
+                                    = (InProceedingsItem) obj;
+//        if (!other.canEqual(this)) {
+//            return false;
+//        }
+//        return Objects.equals(this.inProcedings, other.getPublication());
+return other.canEqual(this);
     }
 
     @Override
@@ -82,11 +82,11 @@ public class InProceedingsItem
         return obj instanceof InProceedingsItem;
     }
 
-    @Override
-    public String toString(final String data) {
-        return super.toString(String.format(", inProceedings = %s%s",
-                                            Objects.toString(inProcedings),
-                                            data));
-    }
+//    @Override
+//    public String toString(final String data) {
+//        return super.toString(String.format(", inProceedings = %s%s",
+//                                            Objects.toString(inProcedings),
+//                                            data));
+//    }
 
 }

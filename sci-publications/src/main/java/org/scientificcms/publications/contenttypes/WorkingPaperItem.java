@@ -8,12 +8,7 @@ package org.scientificcms.publications.contenttypes;
 import org.hibernate.envers.Audited;
 import org.scientificcms.publications.WorkingPaper;
 
-import java.util.Objects;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import static org.scientificcms.publications.SciPublicationsConstants.*;
@@ -25,33 +20,31 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
 @Entity
 @Table(name = "WORKING_PAPER_ITEMS", schema = DB_SCHEMA)
 @Audited
-public class WorkingPaperItem 
-    extends AbstractPublicationItem<WorkingPaper> {
+public class WorkingPaperItem extends PublicationItem<WorkingPaper> {
 
     private static final long serialVersionUID = 1L;
 
-    @OneToOne(cascade = {CascadeType.DETACH, 
-                         CascadeType.MERGE, 
-                         CascadeType.PERSIST, 
-                         CascadeType.REFRESH
-    })
-    @JoinColumn(name = "EXPERTISE_ID")
-    private WorkingPaper workingPaper;
-
-    @Override
-    public WorkingPaper getPublication() {
-        return workingPaper;
-    }
-
-    @Override
-    protected void setPublication(final WorkingPaper workingPaper) {
-        this.workingPaper = workingPaper;
-    }
-
+//    @OneToOne(cascade = {CascadeType.DETACH, 
+//                         CascadeType.MERGE, 
+//                         CascadeType.PERSIST, 
+//                         CascadeType.REFRESH
+//    })
+//    @JoinColumn(name = "EXPERTISE_ID")
+//    private WorkingPaper workingPaper;
+//
+//    @Override
+//    public WorkingPaper getPublication() {
+//        return workingPaper;
+//    }
+//
+//    @Override
+//    protected void setPublication(final WorkingPaper workingPaper) {
+//        this.workingPaper = workingPaper;
+//    }
     @Override
     public int hashCode() {
         int hash = super.hashCode();
-        hash = 67 * hash + Objects.hashCode(workingPaper);
+//        hash = 67 * hash + Objects.hashCode(workingPaper);
         return hash;
     }
 
@@ -71,10 +64,11 @@ public class WorkingPaperItem
         }
         final WorkingPaperItem other
                                    = (WorkingPaperItem) obj;
-        if (!other.canEqual(this)) {
-            return false;
-        }
-        return Objects.equals(this.workingPaper, other.getPublication());
+//        if (!other.canEqual(this)) {
+//            return false;
+//        }
+//        return Objects.equals(this.workingPaper, other.getPublication());
+        return other.canEqual(this);
     }
 
     @Override
@@ -82,11 +76,11 @@ public class WorkingPaperItem
         return obj instanceof WorkingPaperItem;
     }
 
-    @Override
-    public String toString(final String data) {
-        return super.toString(String.format(", workingPaper = %s%s",
-                                            Objects.toString(workingPaper),
-                                            data));
-    }
+//    @Override
+//    public String toString(final String data) {
+//        return super.toString(String.format(", workingPaper = %s%s",
+//                                            Objects.toString(workingPaper),
+//                                            data));
+//    }
 
 }

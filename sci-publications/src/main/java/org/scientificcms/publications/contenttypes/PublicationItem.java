@@ -9,27 +9,51 @@ import org.hibernate.envers.Audited;
 import org.librecms.contentsection.ContentItem;
 import org.scientificcms.publications.Publication;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import static org.scientificcms.publications.SciPublicationsConstants.*;
 
 /**
- *
+ * Base Item for Publications.
+ * 
  * @author <a href="mailto:jens.pelzetter@googlemail.com">Jens Pelzetter</a>
  * @param <T>
  */
 @Entity
 @Table(name = "PUBLICATION_ITEMS", schema = DB_SCHEMA)
 @Audited
-public abstract class AbstractPublicationItem<T extends Publication>
-    extends ContentItem {
+@NamedQueries({
+    @NamedQuery(
+        name = "PublicationItem.findForPublication",
+        query = "SELECT i FROM PublicationItem i WHERE i.publication = :publication"
+    )
+})
+public class PublicationItem<T extends Publication> extends ContentItem {
 
     private static final long serialVersionUID = 1L;
 
-    public abstract T getPublication();
+    @OneToOne(cascade = {CascadeType.DETACH,
+                         CascadeType.MERGE,
+                         CascadeType.PERSIST,
+                         CascadeType.REFRESH},
+              fetch = FetchType.LAZY,
+              targetEntity = Publication.class
+    )
+    private T publication;
 
-    protected abstract void setPublication(T publication);
+    public T getPublication() {
+        return publication;
+    }
+
+    public void setPublication(final T publication) {
+        this.publication = publication;
+    }
 
     @Override
     public int hashCode() {
@@ -49,18 +73,17 @@ public abstract class AbstractPublicationItem<T extends Publication>
         if (!super.equals(obj)) {
             return false;
         }
-        if (!(obj instanceof AbstractPublicationItem)) {
+        if (!(obj instanceof PublicationItem)) {
             return false;
         }
-        final AbstractPublicationItem<?> other
-                                             = (AbstractPublicationItem<?>) obj;
+        final PublicationItem<?> other = (PublicationItem<?>) obj;
         return other.canEqual(this);
     }
 
     @Override
     public boolean canEqual(final Object obj) {
 
-        return obj instanceof AbstractPublicationItem;
+        return obj instanceof PublicationItem;
     }
 
 }
