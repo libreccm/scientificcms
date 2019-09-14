@@ -26,6 +26,7 @@ import org.libreccm.cdi.utils.CdiUtil;
 import org.scientificcms.contenttypes.sciproject.SciProject;
 import org.scientificcms.contenttypes.sciproject.SciProjectConstants;
 
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -88,8 +89,27 @@ public class SciProjectPropertyForm
         final FormData data = event.getFormData();
         final SciProject project = (SciProject) super.initBasicWidgets(event);
 
-        throw new UnsupportedOperationException("ToDo");
-
+        data.put(
+            SciProjectUiConstants.BEGIN,
+            java.util.Date.from(
+                project.getBegin().atStartOfDay().atZone(
+                    ZoneId.systemDefault()).toInstant()
+            )
+        );
+        data.put(
+            SciProjectUiConstants.END,
+            java.util.Date.from(
+                project.getEnd().atStartOfDay().atZone(
+                    ZoneId.systemDefault()).toInstant()
+            )
+        );
+         final Locale selectedLangauge = SelectedLanguageUtil.selectedLocale(
+             event.getPageState(), selectedLanguageParameter
+         );
+         data.put(
+             SciProjectUiConstants.PROJECT_SHORT_DESCRIPTION,
+             project.getShortDescription().getValue(selectedLangauge)
+         );
     }
 
     @Override

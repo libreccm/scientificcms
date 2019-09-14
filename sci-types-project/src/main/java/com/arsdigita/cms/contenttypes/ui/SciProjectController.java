@@ -341,8 +341,8 @@ class SciProjectController {
     }
 
     private Map<String, Object> buildMembershipEntry(
-        final Membership membership) {
-
+        final Membership membership
+    ) {
         Objects.requireNonNull(membership);
 
         final Map<String, Object> result = new HashMap<>();
@@ -401,8 +401,9 @@ class SciProjectController {
             .findById(memberId)
             .orElseThrow(
                 () -> new IllegalArgumentException(
-                    String.format("No Person with ID %d found.",
-                                  memberId)
+                    String.format(
+                        "No Person with ID %d found.",
+                        memberId)
                 )
             );
 
@@ -435,8 +436,9 @@ class SciProjectController {
                 )
             );
 
-        final MembershipStatus membershipStatus = MembershipStatus
-            .valueOf(status);
+        final MembershipStatus membershipStatus = MembershipStatus.valueOf(
+            status
+        );
 
         final Optional<Membership> membership = project
             .getMembers()
@@ -469,15 +471,14 @@ class SciProjectController {
             .stream()
             .filter(current -> current.getMembershipId() == membershipId)
             .findAny();
-        
+
         if (membership.isPresent()) {
             projectMananger.removeMember(membership.get().getMember(), project);
         }
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public boolean hasMember(final long projectId,
-                             final long memberId) {
+    public boolean hasMember(final long projectId, final long memberId) {
 
         final SciProject project = projectRepository
             .findById(projectId, SciProject.class)
@@ -724,7 +725,7 @@ class SciProjectController {
             }
         }
 
-        if (index > 0 && sponsoring != null) {
+        if (index < sponsoringList.size() && sponsoring != null) {
             final long order = sponsoring.getOrder();
             final Sponsoring nextSponsoring = sponsoringList.get(index + 1);
             final long nextOrder = nextSponsoring.getOrder();
@@ -776,8 +777,10 @@ class SciProjectController {
             .findById(projectId, SciProject.class)
             .orElseThrow(
                 () -> new IllegalArgumentException(
-                    String.format("No SciProject with ID %d found.",
-                                  projectId))
+                    String.format(
+                        "No SciProject with ID %d found.", projectId
+                    )
+                )
             );
 
         final Date begin = (Date) data.get(SciProjectUiConstants.BEGIN);
