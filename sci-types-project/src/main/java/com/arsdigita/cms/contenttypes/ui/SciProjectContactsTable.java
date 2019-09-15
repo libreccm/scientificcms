@@ -140,8 +140,7 @@ public class SciProjectContactsTable
                                                        event.getRowKey())
             .get();
 
-        final TableColumn column = getColumnModel()
-            .get(event.getColumn().intValue());
+        final TableColumn column = getColumnModel().get(event.getColumn());
 
         if (TABLE_COL_EDIT_ASSOC.equals(column.getHeaderKey())) {
             editStep.setSelectedContact(contact.getContactable());
@@ -415,7 +414,7 @@ public class SciProjectContactsTable
             if (0 == row) {
                 return new Label();
             } else {
-                ControlLink link = new ControlLink("up");
+                final ControlLink link = new ControlLink("up");
                 return link;
             }
 
