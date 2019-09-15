@@ -309,4 +309,41 @@ public class PublicationManager {
         publicationRepository.save(publication);
     }
 
+    @AuthorizationRequired
+    @RequiresPrivilege(ItemPrivileges.EDIT)
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void addSeries(
+        final Series series,
+        final Publication publication,
+        final String volumeInSeries
+    ) {
+        Objects.requireNonNull(series);
+        Objects.requireNonNull(publication);
+        
+        final boolean alreadyAdded = publication
+        .getSeries()
+        .stream()
+        .map(VolumeInSeries::getSeries)
+        .anyMatch(obj -> obj.equals(series));
+        
+        if (alreadyAdded) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Publication %s is already a volume of series %s.",
+                    Objects.toString(publication),
+                    Objects.toString(series)
+                )
+            );
+        }
+        
+        final VolumeInSeries volume = new VolumeInSeries();
+        volume.setPublication(publication);
+        volume.setSeries(series);
+        volume.setVolumeOfSeries(volumeInSeries);
+        publication.addSeries(volume);
+        series.addVolume(volumeInSeries);
+        seriesRepository.save(series);
+        publicationRepository.save(publication);
+    }
+
 }

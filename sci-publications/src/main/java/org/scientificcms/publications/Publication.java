@@ -117,7 +117,7 @@ public class Publication implements Serializable {
         joinTable = @JoinTable(name = "PUBLICATION_TITLES",
                                schema = DB_SCHEMA,
                                joinColumns = {
-                                   @JoinColumn(name = "OBJECT_ID")
+                                   @JoinColumn(name = "PUBLICATION_ID")
                                })
     )
     private LocalizedString title;
@@ -128,7 +128,7 @@ public class Publication implements Serializable {
         joinTable = @JoinTable(name = "PUBLICATION_SHORT_DESCS",
                                schema = DB_SCHEMA,
                                joinColumns = {
-                                   @JoinColumn(name = "OBJECT_ID")
+                                   @JoinColumn(name = "PUBLICATION_ID")
                                })
     )
     private LocalizedString shortDescription;
@@ -139,7 +139,7 @@ public class Publication implements Serializable {
         joinTable = @JoinTable(name = "PUBLICATION_ABSTRACTS",
                                schema = DB_SCHEMA,
                                joinColumns = {
-                                   @JoinColumn(name = "OBJECT_ID")
+                                   @JoinColumn(name = "PUBLICATION_ID")
                                })
     )
     private LocalizedString publicationAbstract;
@@ -150,7 +150,7 @@ public class Publication implements Serializable {
         joinTable = @JoinTable(name = "PUBLICATION_MISC",
                                schema = DB_SCHEMA,
                                joinColumns = {
-                                   @JoinColumn(name = "OBJECT_ID")
+                                   @JoinColumn(name = "PUBLICATION_ID")
                                })
     )
     private LocalizedString misc;
@@ -164,12 +164,16 @@ public class Publication implements Serializable {
     @Column(name = "LANGUAGE_OF_PUBLICATION")
     private Locale languageOfPublication;
 
+    @OneToMany(mappedBy = "publication")
+    private List<VolumeInSeries> series;
+
     public Publication() {
         authorships = new ArrayList<>();
         title = new LocalizedString();
         shortDescription = new LocalizedString();
         publicationAbstract = new LocalizedString();
         misc = new LocalizedString();
+        series = new ArrayList<>();
     }
 
     public long getPublicationId() {
@@ -276,6 +280,26 @@ public class Publication implements Serializable {
         this.languageOfPublication = languageOfPublication;
     }
 
+    public List<VolumeInSeries> getSeries() {
+        if (series == null) {
+            return null;
+        } else {
+            return Collections.unmodifiableList(series);
+        }
+    }
+    
+    protected void addSeries(final VolumeInSeries series) {
+        this.series.add(series);
+    }
+    
+    protected void removeSeries(final VolumeInSeries series) {
+        this.series.remove(series);
+    }
+    
+    protected void setSeries(final List<VolumeInSeries> series) {
+        this.series = series;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 5;
