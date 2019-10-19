@@ -24,6 +24,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -36,7 +37,19 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
 @Entity
 @Table(name = "SERIES", schema = DB_SCHEMA)
 @Audited
-@NamedQueries({})
+@NamedQueries({
+    @NamedQuery(
+        name = "Series.findByUuid",
+        query = "SELECT s FROM Series s WHERE s.uuid = :uuid"
+    ),
+    @NamedQuery(
+        name = "Series.findByTitle",
+        query = "SELECT DISTINCT s "
+                    + "FROM Series s "
+                    + "JOIN s.title.values t "
+                    + "WHERE lower(t) LIKE CONCAT ('%', :title, '%')"
+    )
+})
 public class Series implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -123,11 +136,11 @@ public class Series implements Serializable {
             return Collections.unmodifiableList(volumes);
         }
     }
-    
+
     protected void addVolume(final VolumeInSeries volume) {
         volumes.add(volume);
     }
-    
+
     protected void removeVolume(final VolumeInSeries volume) {
         volumes.remove(volume);
     }

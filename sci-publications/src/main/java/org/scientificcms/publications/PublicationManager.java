@@ -26,10 +26,13 @@ import javax.transaction.Transactional;
 public class PublicationManager {
 
     @Inject
+    private EntityManager entityManager;
+    
+    @Inject
     private PublicationRepository publicationRepository;
 
     @Inject
-    private EntityManager entityManager;
+    private SeriesRepository seriesRepository;
 
     @AuthorizationRequired
     @RequiresPrivilege(ItemPrivileges.EDIT)
@@ -341,7 +344,7 @@ public class PublicationManager {
         volume.setSeries(series);
         volume.setVolumeOfSeries(volumeInSeries);
         publication.addSeries(volume);
-        series.addVolume(volumeInSeries);
+        series.addVolume(volume);
         seriesRepository.save(series);
         publicationRepository.save(publication);
     }

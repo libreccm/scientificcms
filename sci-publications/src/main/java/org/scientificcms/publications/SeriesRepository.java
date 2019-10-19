@@ -20,55 +20,54 @@ import javax.transaction.Transactional;
  * @author <a href="mailto:jens.pelzetter@googlemail.com">Jens Pelzetter</a>
  */
 @RequestScoped
-public class PublisherRepository
-    extends AbstractEntityRepository<Long, Publisher> {
-
-    private static final long serialVersionUID = 1L;
+public class SeriesRepository
+    extends AbstractEntityRepository<Long, Series> {
 
     @Override
-    public Class<Publisher> getEntityClass() {
-        return Publisher.class;
+    public Class<Series> getEntityClass() {
+        return Series.class;
     }
 
     @Override
     public String getIdAttributeName() {
-        return "publisherId";
+        return "seriesId";
     }
 
     @Override
-    public Long getIdOfEntity(final Publisher entity) {
-        return entity.getPublisherId();
+    public Long getIdOfEntity(final Series entity) {
+        return entity.getSeriesId();
     }
 
     @Override
-    public boolean isNew(final Publisher entity) {
-        return entity.getPublisherId() == 0;
+    public boolean isNew(final Series entity) {
+        return entity.getSeriesId() == 0;
     }
 
     @Override
-    protected void initNewEntity(final Publisher entity) {
+    public void initNewEntity(final Series entity) {
         entity.setUuid(UUID.randomUUID().toString());
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public Optional<Publisher> findByUuid(final String uuid) {
+    public Optional<Series> findByUuid(final String uuid) {
         try {
             return Optional.of(
                 getEntityManager()
-                    .createNamedQuery("Publisher.findByUuid", Publisher.class)
+                    .createNamedQuery("Series.findByUuid", Series.class)
                     .setParameter("uuid", uuid)
                     .getSingleResult()
             );
         } catch (NoResultException ex) {
             return Optional.empty();
         }
+
     }
-    
+
     @Transactional(Transactional.TxType.REQUIRED)
-    public List<Publisher> findByName(final String name) {
+    public List<Series> findByTitle(final String title) {
         return getEntityManager()
-            .createNamedQuery("Publisher.findByName", Publisher.class)
-            .setParameter("name", name)
+            .createNamedQuery("Series.findByTitle", Series.class)
+            .setParameter("title", title)
             .getResultList();
     }
 
