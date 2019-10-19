@@ -50,7 +50,7 @@ public class PublicationSeriesPropertyStep extends SimpleEditStep {
             addSeriesSheet.getSaveCancelSection().getCancelButton());
 
         final PublicationSeriesTable seriesTable = new PublicationSeriesTable(
-            itemModel
+            itemModel, this, selectedLanguageParameter
         );
         setDisplayComponent(seriesTable);
     }
