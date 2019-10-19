@@ -76,7 +76,7 @@ public class PublicationSeriesAddForm
         add(seriesSearchWidget);
 
         final ParameterModel volumeOfSeriesParam = new StringParameter(
-            SciPublicationsController.VOLUME_OF_SERIES
+            SciPublicationsController.VOLUME_IN_SERIES
         );
         volumeOfSeries = new TextField(volumeOfSeriesParam);
         volumeOfSeries.setLabel(

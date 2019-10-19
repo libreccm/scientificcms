@@ -20,7 +20,6 @@ import com.arsdigita.bebop.table.TableColumnModel;
 import com.arsdigita.bebop.table.TableModel;
 import com.arsdigita.bebop.table.TableModelBuilder;
 import com.arsdigita.cms.ItemSelectionModel;
-import com.arsdigita.cms.ui.authoring.SimpleEditStep;
 import com.arsdigita.globalization.GlobalizedMessage;
 import com.arsdigita.util.LockableImpl;
 
@@ -28,7 +27,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.libreccm.cdi.utils.CdiUtil;
 import org.libreccm.security.PermissionChecker;
-import org.librecms.assets.Person;
 import org.librecms.contentsection.privileges.ItemPrivileges;
 import org.scientificcms.publications.Authorship;
 import org.scientificcms.publications.SciPublicationsConstants;
@@ -71,7 +69,7 @@ public class PublicationAuthorsTable
     private final PublicationAuthorsPropertyStep editStep;
 
     public PublicationAuthorsTable(
-        final ItemSelectionModel itemModel, 
+        final ItemSelectionModel itemModel,
         final PublicationAuthorsPropertyStep editStep
     ) {
         super();
@@ -159,6 +157,53 @@ public class PublicationAuthorsTable
         addTableActionListener(this);
     }
 
+    @Override
+    public void cellSelected(final TableActionEvent event)
+        throws FormProcessException {
+
+        final PageState state = event.getPageState();
+        final PublicationItem<?> selected = (PublicationItem<?>) itemModel
+            .getSelectedItem(state);
+        final SciPublicationsController controller = CdiUtil
+            .createCdiUtil()
+            .findBean(SciPublicationsController.class);
+        final Authorship authorship = controller.findAuthorship(
+            selected.getPublication().getPublicationId(), 
+            event.getRowKey()
+        ).get();
+
+        final TableColumn column = getColumnModel().get(event.getColumn());
+
+        if (TABLE_COL_EDIT_ASSOC.equals(column.getHeaderKey())) {
+            editStep.setSelectedAuthor(authorship.getAuthor());
+            editStep.setSelectedAuthorEditor(authorship.isEditor());
+
+            editStep.showComponent(state, "AuthorsEntryForm");
+        } else if (TABLE_COL_DEL.equals(column.getHeaderKey())) {
+            controller.removeAuthor(
+                selected.getPublication().getPublicationId(),
+                authorship.getAuthorshipId()
+            );
+        } else if (TABLE_COL_UP.equals(column.getHeaderKey())) {
+            controller.swapWithPrevAuthorship(
+                selected.getPublication().getPublicationId(),
+                authorship.getAuthorshipId()
+            );
+        } else if (TABLE_COL_DOWN.equals(column.getHeaderKey())) {
+            controller.swapWithNextAuthorship(
+                selected.getPublication().getPublicationId(),
+                authorship.getAuthorshipId()
+            );
+
+        }
+    }
+
+    @Override
+    public void headSelected(final TableActionEvent event) {
+
+        // Nothing
+    }
+
     private class PublicationAuthorsTableModelBuilder
         extends LockableImpl
         implements TableModelBuilder {
@@ -180,52 +225,6 @@ public class PublicationAuthorsTable
             return new PublicationAuthorsTableModel(table, state, publication);
         }
 
-    }
-
-    @Override
-    public void cellSelected(final TableActionEvent event)
-        throws FormProcessException {
-
-        final PageState state = event.getPageState();
-        final PublicationItem<?> selected = (PublicationItem<?>) itemModel
-            .getSelectedItem(state);
-        final SciPublicationsController controller = CdiUtil
-            .createCdiUtil()
-            .findBean(SciPublicationsController.class);
-        final Authorship authorship = controller.findAuthorship(
-            selected.getPublication().getPublicationId(), event.getRowKey()
-        ).get();
-
-        final TableColumn column = getColumnModel().get(event.getColumn());
-
-        if (TABLE_COL_EDIT_ASSOC.equals(column.getHeaderKey())) {
-            editStep.setSelectedAuthor(authorship.getAuthor());
-            editStep.setSelectedAuthorEditor(authorship.isEditor());
-            
-            editStep.showComponent(state, "AuthorsEntryForm");
-        } else if (TABLE_COL_DEL.equals(column.getHeaderKey())) {
-            controller.removeAuthor(
-                selected.getPublication().getPublicationId(), 
-                authorship.getAuthorshipId()
-            );
-        } else if (TABLE_COL_UP.equals(column.getHeaderKey())) {
-            controller.swapWithPrevAuthorship(
-                selected.getPublication().getPublicationId(), 
-                authorship.getAuthorshipId()
-            );
-        } else if (TABLE_COL_DOWN.equals(column.getHeaderKey())) {
-            controller.swapWithNextAuthorship(
-                selected.getPublication().getPublicationId(), 
-                authorship.getAuthorshipId()
-            );
-
-        }
-    }
-
-    @Override
-    public void headSelected(final TableActionEvent event) {
-
-        // Nothing
     }
 
     private class PublicationAuthorsTableModel implements TableModel {
@@ -260,9 +259,7 @@ public class PublicationAuthorsTable
 
         @Override
         public boolean nextRow() {
-
             if (iterator.hasNext()) {
-
                 currentRow = iterator.next();
                 return true;
             } else {

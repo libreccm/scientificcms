@@ -11,6 +11,7 @@ import org.scientificcms.publications.Authorship;
 import org.scientificcms.publications.Publication;
 import org.scientificcms.publications.PublicationManager;
 import org.scientificcms.publications.PublicationRepository;
+import org.scientificcms.publications.VolumeInSeries;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -59,8 +60,14 @@ class SciPublicationsController implements Serializable {
     public static final String AUTHORSHIP_IS_EDITOR = "isEditor";
 
     public static final String AUTHORSHIP_ORDER = "order";
+
+    public static final String VOLUME_IN_SERIES = "volumeInSeries";
+
+    public static final String VOLUME_IN_SERIES_ID = "volumeInSeriesId";
+
+    public static final String VOLUME_IN_SERIES_TITLE = "volumeInSeriesTitle";
     
-    public static final String VOLUME_OF_SERIES = "volumeOfSeries";
+    public static final String VOLUME_IN_SERIES_VOLUME = "volumeInSeriesVolume";
 
     @Inject
     private PersonRepository personRepository;
@@ -252,11 +259,8 @@ class SciPublicationsController implements Serializable {
                 )
             );
 
-        final Optional<Authorship> authorship = publication
-            .getAuthorships()
-            .stream()
-            .filter(current -> current.getAuthorshipId() == authorshipId)
-            .findAny();
+        final Optional<Authorship> authorship = findAuthorship(publicationId,
+                                                               authorshipId);
 
         if (authorship.isPresent()) {
             publicationManager.removeAuthor(
@@ -352,23 +356,107 @@ class SciPublicationsController implements Serializable {
         Authorship authorship = null;
         int index = -1;
         for (int i = 0; i < authorships.size(); i++) {
-            
+
             if (authorships.get(i).getAuthorshipId() == authorshipId) {
                 authorship = authorships.get(i);
                 index = i;
                 break;
             }
         }
-        
+
         if (index < authorships.size() && authorship != null) {
             final long order = authorship.getAuthorOrder();
             final Authorship nextAuthorship = authorships.get(index + 1);
             final long nextOrder = nextAuthorship.getAuthorOrder();
-            
+
             authorship.setAuthorOrder(nextOrder);
             nextAuthorship.setAuthorOrder(order);
-            
+
             publicationRepository.save(publication);
+        }
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public List<Map<String, Object>> getVolumesInSeries(
+        final long publicationId
+    ) {
+        final Publication publication = publicationRepository
+            .findById(publicationId)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format(
+                        "No Publication with ID %d found.", publicationId
+                    )
+                )
+            );
+
+        return publication
+            .getSeries()
+            .stream()
+            .map(this::buildVolumeInSeriesEntry)
+            .collect(Collectors.toList());
+    }
+
+    private Map<String, Object> buildVolumeInSeriesEntry(
+        final VolumeInSeries volumeInSeries
+    ) {
+        Objects.requireNonNull(volumeInSeries);
+
+        final Map<String, Object> result = new HashMap<>();
+        result.put(VOLUME_IN_SERIES_ID, volumeInSeries.getVolumeId());
+        result.put(
+            VOLUME_IN_SERIES_TITLE, volumeInSeries.getSeries().getTitle()
+        );
+        result.put(VOLUME_IN_SERIES_VOLUME, volumeInSeries.getVolumeOfSeries());
+
+        return result;
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public Optional<VolumeInSeries> findVolumeInSeries(
+        final long publicationId, final Object key
+    ) {
+        final Publication publication = publicationRepository
+            .findById(publicationId)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format(
+                        "No Publication with ID %d found.", publicationId
+                    )
+                )
+            );
+
+        final long volumeId = (long) key;
+
+        return publication
+            .getSeries()
+            .stream()
+            .filter(series -> series.getVolumeId() == volumeId)
+            .findAny();
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void removeSeries(final long publicationId,
+                             final long volumeInSeriesId) {
+
+        final Publication publication = publicationRepository
+            .findById(publicationId)
+            .orElseThrow(
+                () -> new IllegalArgumentException(
+                    String.format(
+                        "No Publication with ID %d found.", publicationId
+                    )
+                )
+            );
+
+        final Optional<VolumeInSeries> volumeInSeries = findVolumeInSeries(
+            publicationId, volumeInSeriesId);
+
+        if (volumeInSeries.isPresent()) {
+            publicationManager.removeSeries(
+                volumeInSeries.get().getSeries(),
+                publication
+            );
         }
     }
 

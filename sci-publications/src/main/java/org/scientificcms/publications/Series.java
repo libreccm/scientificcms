@@ -44,10 +44,7 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
     ),
     @NamedQuery(
         name = "Series.findByTitle",
-        query = "SELECT DISTINCT s "
-                    + "FROM Series s "
-                    + "JOIN s.title.values t "
-                    + "WHERE lower(t) LIKE CONCAT ('%', :title, '%')"
+        query = "SELECT DISTINCT s FROM Series s JOIN s.title.values t WHERE lower(t) LIKE CONCAT ('%', :title, '%')"
     )
 })
 public class Series implements Serializable {

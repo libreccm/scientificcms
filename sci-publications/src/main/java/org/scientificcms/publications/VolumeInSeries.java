@@ -5,6 +5,8 @@
  */
 package org.scientificcms.publications;
 
+import org.hibernate.envers.Audited;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -25,6 +27,7 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
  */
 @Entity
 @Table(name = "VOLUMES_IN_SERIES", schema = DB_SCHEMA)
+@Audited
 public class VolumeInSeries implements Serializable {
 
     private static final long serialVersionUID = 1L;

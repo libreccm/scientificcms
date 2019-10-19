@@ -27,7 +27,7 @@ public class PublicationManager {
 
     @Inject
     private EntityManager entityManager;
-    
+
     @Inject
     private PublicationRepository publicationRepository;
 
@@ -322,13 +322,13 @@ public class PublicationManager {
     ) {
         Objects.requireNonNull(series);
         Objects.requireNonNull(publication);
-        
+
         final boolean alreadyAdded = publication
-        .getSeries()
-        .stream()
-        .map(VolumeInSeries::getSeries)
-        .anyMatch(obj -> obj.equals(series));
-        
+            .getSeries()
+            .stream()
+            .map(VolumeInSeries::getSeries)
+            .anyMatch(obj -> obj.equals(series));
+
         if (alreadyAdded) {
             throw new IllegalArgumentException(
                 String.format(
@@ -338,7 +338,7 @@ public class PublicationManager {
                 )
             );
         }
-        
+
         final VolumeInSeries volume = new VolumeInSeries();
         volume.setPublication(publication);
         volume.setSeries(series);
@@ -347,6 +347,32 @@ public class PublicationManager {
         series.addVolume(volume);
         seriesRepository.save(series);
         publicationRepository.save(publication);
+    }
+
+    @AuthorizationRequired
+    @RequiresPrivilege(ItemPrivileges.EDIT)
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void removeSeries(
+        final Series series, final Publication fromPublication
+    ) {
+        Objects.requireNonNull(series);
+        Objects.requireNonNull(fromPublication);
+        
+        final Optional<VolumeInSeries> result = fromPublication
+        .getSeries()
+        .stream()
+        .filter(volume -> volume.getSeries().equals(series))
+        .findAny();
+        
+        if (!result.isPresent()) {
+            return;
+        }
+        
+        final VolumeInSeries remove = result.get();
+        fromPublication.removeSeries(remove);
+        
+        entityManager.remove(remove);
+        publicationRepository.save(fromPublication);
     }
 
 }
