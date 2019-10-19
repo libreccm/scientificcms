@@ -59,6 +59,8 @@ class SciPublicationsController implements Serializable {
     public static final String AUTHORSHIP_IS_EDITOR = "isEditor";
 
     public static final String AUTHORSHIP_ORDER = "order";
+    
+    public static final String VOLUME_OF_SERIES = "volumeOfSeries";
 
     @Inject
     private PersonRepository personRepository;

@@ -21,8 +21,12 @@ import com.arsdigita.globalization.GlobalizedMessage;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.libreccm.cdi.utils.CdiUtil;
+import org.scientificcms.publications.PublicationManager;
 import org.scientificcms.publications.SciPublicationsConfig;
 import org.scientificcms.publications.SciPublicationsConstants;
+import org.scientificcms.publications.Series;
+import org.scientificcms.publications.assets.SeriesAsset;
 import org.scientificcms.publications.contenttypes.PublicationItem;
 
 /**
@@ -61,7 +65,7 @@ public class PublicationSeriesAddForm
 
         seriesSearchWidget = new AssetSearchWidget(
             SERIES_SEARCH,
-            Series.class
+            SeriesAsset.class
         );
         seriesSearchWidget.setLabel(
             new GlobalizedMessage(
@@ -100,18 +104,20 @@ public class PublicationSeriesAddForm
         final PageState state = event.getPageState();
 
         final PublicationItem<?> item
-                                 = (PublicationItem<?>) getItemSelectionModel().
-                getSelectedObject(state);
+                                     = (PublicationItem<?>) getItemSelectionModel()
+                .getSelectedObject(state);
 
         if (!(getSaveCancelSection().getCancelButton().isSelected(state))) {
-            
-            Series series = (Series) data.get(ITEM_SEARCH);
-            series = (Series) series.getContentBundle().getInstance(item.
-                getLanguage());
 
-            item.addSeries(series, (String) data.get(
-                           VolumeInSeriesCollection.VOLUME_OF_SERIES));
-            m_itemSearch.publishCreatedItem(data, series);
+            Series series = (Series) data.get(SERIES_SEARCH);
+
+            final PublicationManager publicationManager = CdiUtil
+                .createCdiUtil().findBean(PublicationManager.class);
+            publicationManager.addSeries(
+                series,
+                item.getPublication(),
+                (String) volumeOfSeries.getValue(state)
+            );
         }
 
         init(event);
