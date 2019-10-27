@@ -109,6 +109,13 @@ public class PublicationRepository
             .setParameter("title", title)
             .getResultList();
     }
+    
+    public <T extends Publication> List<T> findByType(final Class<T> type) {
+        return getEntityManager()
+            .createNamedQuery("Publication.findByType", type)
+            .setParameter("type", type)
+            .getResultList();
+    }
 
     public <T extends Publication> List<T> findByTitleAndType(
         final String title, final Class<T> type

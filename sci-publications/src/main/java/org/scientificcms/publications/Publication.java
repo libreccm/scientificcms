@@ -76,6 +76,10 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
                     + "AND TYPE(p) = :type"
     ),
     @NamedQuery(
+        name = "Publication.findByType",
+        query = "SELECT DISTINCT p FROM Publication p WHERE TYPE(p) = :type"
+    ),
+    @NamedQuery(
         name = "Publication.findByAuthor",
         query = "SELECT DISTINCT p "
                     + "FROM Publication p JOIN p.authorships a "
