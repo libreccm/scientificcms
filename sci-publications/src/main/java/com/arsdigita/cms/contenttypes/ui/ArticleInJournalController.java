@@ -5,11 +5,13 @@
  */
 package com.arsdigita.cms.contenttypes.ui;
 
-import org.scientificcms.publications.ArticleInCollectedVolume;
-import org.scientificcms.publications.ArticleInCollectedVolumeManager;
-import org.scientificcms.publications.CollectedVolume;
+import org.scientificcms.publications.ArticleInJournal;
+import org.scientificcms.publications.ArticleInJournalManager;
+import org.scientificcms.publications.Journal;
+import org.scientificcms.publications.JournalRepository;
 import org.scientificcms.publications.PublicationRepository;
 
+import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Map;
 
@@ -22,26 +24,33 @@ import javax.transaction.Transactional;
  * @author <a href="mailto:jens.pelzetter@googlemail.com">Jens Pelzetter</a>
  */
 @RequestScoped
-public class ArticleInCollectedVolumeController {
+public class ArticleInJournalController {
+
+    public static final String VOLUME = "volume";
+
+    public static final String ISSUE = "issue";
 
     public static final String START_PAGE = "startPage";
 
     public static final String END_PAGE = "endPage";
 
-    public static final String CHAPTER = "chapter";
+    public static final String PUBLICATION_DATE = "publicationDate";
 
-    public static final String PEER_REVIEWED = "peerReviewed";
+    public static final String PEER_REVIEWED = "reviewed";
 
     @Inject
-    private ArticleInCollectedVolumeManager articleManager;
+    private ArticleInJournalManager articleManager;
+
+    @Inject
+    private JournalRepository journalRepository;
 
     @Inject
     private PublicationRepository publicationRepository;
 
     /**
-     * Save a changed {@link ArticleInCollectedVolume}.
+     * Save a changed {@link ArticleInJournal}.
      *
-     * @param articleId  The ID of the article.
+     * @param articleId      The ID of the article.
      * @param selectedLocale The locale selected in the UI.
      * @param data           The data to set on the article.
      */
@@ -51,28 +60,38 @@ public class ArticleInCollectedVolumeController {
         final Locale selectedLocale,
         final Map<String, Object> data
     ) {
-        final ArticleInCollectedVolume article = publicationRepository
-            .findByIdAndType(articleId, ArticleInCollectedVolume.class)
+        final ArticleInJournal article = publicationRepository
+            .findByIdAndType(articleId, ArticleInJournal.class)
             .orElseThrow(
                 () -> new IllegalArgumentException(
                     String.format(
-                        "No ArticleInCollectedVolume with ID %d found.",
+                        "No ArticleInJournal with ID %d found.",
                         articleId
                     )
                 )
             );
 
+        if (data.get(VOLUME) != null) {
+            final Integer volume = (Integer) data.get(VOLUME);
+            article.setVolume(volume);
+        }
+        if (data.get(ISSUE) != null) {
+            final String issue = (String) data.get(ISSUE);
+            article.setIssue(issue);
+        }
         if (data.get(START_PAGE) != null) {
             final Integer startPage = (Integer) data.get(START_PAGE);
             article.setStartPage(startPage);
         }
         if (data.get(END_PAGE) != null) {
             final Integer endPage = (Integer) data.get(END_PAGE);
-            article.setEndPage(endPage);
+            article.setStartPage(endPage);
         }
-        if (data.get(CHAPTER) != null) {
-            final String chapter = (String) data.get(CHAPTER);
-            article.setChapter(chapter);
+        if (data.get(PUBLICATION_DATE) != null) {
+            final LocalDate publicationDate = (LocalDate) data.get(
+                PUBLICATION_DATE
+            );
+            article.setPublicationDate(publicationDate);
         }
         if (data.get(PEER_REVIEWED) != null) {
             final Boolean peerReviewed = (Boolean) data.get(PEER_REVIEWED);
@@ -83,57 +102,56 @@ public class ArticleInCollectedVolumeController {
     }
 
     /**
-     * Set the value of the {@link ArticleInCollectedVolume#collectedVolume}
-     * property to a {@link CollectedVolume}.
+     * Set the value of the {@link ArticleInJournal#journal} property to a
+     * {@link Journal}.
      *
-     * @param articleId         The ID of the article to use.
-     * @param collectedVolumeId The ID of the collected volume to use.
+     * @param articleId The ID of the article to use.
+     * @param journalId The ID of the journal to use.
      */
     @Transactional(Transactional.TxType.REQUIRED)
-    public void setCollectedVolume(
-        final long articleId, final long collectedVolumeId
+    public void setJournal(
+        final long articleId, final long journalId
     ) {
-        final ArticleInCollectedVolume article = publicationRepository
-            .findByIdAndType(articleId, ArticleInCollectedVolume.class)
+        final ArticleInJournal article = publicationRepository
+            .findByIdAndType(articleId, ArticleInJournal.class)
             .orElseThrow(
                 () -> new IllegalArgumentException(
                     String.format(
-                        "No ArticleInCollectedVolume with ID %d found",
+                        "No ArticleInJournal with ID %d found.",
                         articleId
                     )
                 )
             );
-
-        final CollectedVolume collectedVolume = publicationRepository
-            .findByIdAndType(collectedVolumeId, CollectedVolume.class)
+        final Journal journal = journalRepository
+            .findById(journalId)
             .orElseThrow(
                 () -> new IllegalArgumentException(
                     String.format(
-                        "No CollectedVolume with ID %d found.",
-                        collectedVolumeId
+                        "No Journal with ID %d found",
+                        journalId
                     )
                 )
             );
 
-        articleManager.setCollectedVolume(article, collectedVolume);
+        articleManager.setJournal(article, journal);
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public void unsetCollectedVolume(
-        final long articleId
+    public void unsetJournal(
+        final long articleId, final long journalId
     ) {
-        final ArticleInCollectedVolume article = publicationRepository
-            .findByIdAndType(articleId, ArticleInCollectedVolume.class)
+        final ArticleInJournal article = publicationRepository
+            .findByIdAndType(articleId, ArticleInJournal.class)
             .orElseThrow(
                 () -> new IllegalArgumentException(
                     String.format(
-                        "No ArticleInCollectedVolume with ID %d found",
+                        "No ArticleInJournal with ID %d found.",
                         articleId
                     )
                 )
             );
 
-        articleManager.unsetCollectedVolume(article);
+        articleManager.unsetJournal(article);
     }
 
 }

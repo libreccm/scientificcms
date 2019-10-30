@@ -163,10 +163,11 @@ public class PublicationPropertiesStep extends SimpleEditStep {
         return segmentedPanel;
     }
 
-    protected void addBasicProperties(final ItemSelectionModel itemModel,
-                                      final AuthoringKitWizard parent) {
+    protected void addBasicProperties(
+        final ItemSelectionModel itemModel, final AuthoringKitWizard parent
+    ) {
 
-        SimpleEditStep basicProperties = new SimpleEditStep(
+        final SimpleEditStep basicProperties = new SimpleEditStep(
             itemModel,
             parent,
             selectedLangParameter,

@@ -180,15 +180,15 @@ public class ArticleInCollectedVolumePropertyForm
 
             data.put(
                 ArticleInCollectedVolumeController.START_PAGE,
-                data.get(ArticleInCollectedVolumeController.START_PAGE)
+                formData.get(ArticleInCollectedVolumeController.START_PAGE)
             );
             data.put(
                 ArticleInCollectedVolumeController.END_PAGE,
-                data.get(ArticleInCollectedVolumeController.END_PAGE)
+                formData.get(ArticleInCollectedVolumeController.END_PAGE)
             );
             data.put(
                 ArticleInCollectedVolumeController.CHAPTER,
-                data.get(ArticleInCollectedVolumeController.CHAPTER)
+                formData.get(ArticleInCollectedVolumeController.CHAPTER)
             );
 
             if (reviewed.getValue(event.getPageState()) == null) {
@@ -203,20 +203,19 @@ public class ArticleInCollectedVolumePropertyForm
                 );
             }
 
-             final Locale selectedLocale = SelectedLanguageUtil.selectedLocale(
+            final Locale selectedLocale = SelectedLanguageUtil.selectedLocale(
                 state, selectedLangParam
             );
-            
-            final ArticleInCollectedVolumeController controller  = CdiUtil
-            .createCdiUtil()
-            .findBean(ArticleInCollectedVolumeController.class);
+
+            final ArticleInCollectedVolumeController controller = CdiUtil
+                .createCdiUtil()
+                .findBean(ArticleInCollectedVolumeController.class);
             controller.saveArticle(
                 articleItem.getPublication().getPublicationId(),
                 selectedLocale,
                 data
             );
         }
-
     }
 
 }
