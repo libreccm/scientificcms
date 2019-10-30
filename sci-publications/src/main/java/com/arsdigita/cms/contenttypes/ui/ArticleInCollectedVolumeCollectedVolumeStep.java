@@ -25,7 +25,7 @@ import org.scientificcms.publications.SciPublicationsConstants;
 public class ArticleInCollectedVolumeCollectedVolumeStep
     extends SimpleEditStep {
 
-    private String ADD_COLLECTED_VOLUME_STEP = "addCollectedVolume";
+    private final static String ADD_COLLECTED_VOLUME_STEP = "addCollectedVolume";
 
     public ArticleInCollectedVolumeCollectedVolumeStep(
         final ItemSelectionModel itemModel,
