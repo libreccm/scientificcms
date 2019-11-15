@@ -16,9 +16,10 @@ import com.arsdigita.cms.ItemSelectionModel;
 import com.arsdigita.cms.ui.authoring.BasicItemForm;
 import com.arsdigita.globalization.GlobalizedMessage;
 
+import org.libreccm.cdi.utils.CdiUtil;
 import org.scientificcms.publications.SciPublicationsConstants;
-
-import java.util.concurrent.Flow.Publisher;
+import org.scientificcms.publications.contenttypes.PublicationWithPublisherItem;
+import org.scientificcms.publications.Publisher;
 
 
 /**
@@ -68,15 +69,20 @@ public class PublicationWithPublisherSetPublisherForm
         throws FormProcessException {
         final FormData data = fse.getFormData();
         final PageState state = fse.getPageState();
-        final PublicationWithPublisherItem publication =
+        final PublicationWithPublisherItem<?> publicationItem =
                                  (PublicationWithPublisherItem) getItemSelectionModel().
                 getSelectedObject(state);
 
         if (this.getSaveCancelSection().getSaveButton().isSelected(state)) {
             final Publisher publisher = (Publisher) data.get(PUBLISHER_SEARCH);
             
-            publication.setPublisher(publisher);
-            itemSearch.publishCreatedItem(data, publisher);
+            final SciPublicationsWithPublisherController controller = CdiUtil
+            .createCdiUtil()
+            .findBean(SciPublicationsWithPublisherController.class);
+            controller.setPublisher(
+                publicationItem.getPublication().getPublicationId(), 
+                publisher.getPublisherId()
+            );
         }
 
         init(fse);
