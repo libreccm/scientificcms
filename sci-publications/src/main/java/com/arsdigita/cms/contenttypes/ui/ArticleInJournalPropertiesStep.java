@@ -113,7 +113,8 @@ public class ArticleInJournalPropertiesStep extends PublicationPropertiesStep {
         );
 
         final BasicPageForm editBasicSheet = new ArticleInJournalPropertyForm(
-            itemModel, this);
+            itemModel, this, selectedLanguageParam
+        );
 
         basicProperties.add(
             EDIT_SHEET_NAME,
@@ -152,7 +153,9 @@ public class ArticleInJournalPropertiesStep extends PublicationPropertiesStep {
         super.addSteps(itemModel, parent);
 
         addStep(
-            new ArticleInJournalJournalStep(itemModel, parent),
+            new ArticleInJournalJournalStep(
+                itemModel, parent, selectedLanguageParam
+            ),
             new GlobalizedMessage(
                 "publication.ui.articleInJournal.journal",
                 SciPublicationsConstants.BUNDLE

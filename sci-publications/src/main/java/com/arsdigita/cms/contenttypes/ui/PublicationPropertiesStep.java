@@ -166,7 +166,6 @@ public class PublicationPropertiesStep extends SimpleEditStep {
     protected void addBasicProperties(
         final ItemSelectionModel itemModel, final AuthoringKitWizard parent
     ) {
-
         final SimpleEditStep basicProperties = new SimpleEditStep(
             itemModel,
             parent,

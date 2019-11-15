@@ -114,9 +114,7 @@ public class ArticleInCollectedVolumeCollectedVolumeSheet
                                                = (ArticleInCollectedVolumeItem) itemModel
                 .getSelectedObject(state);
 
-        final TableColumn column = getColumnModel().get(
-            event.getColumn().intValue()
-        );
+        final TableColumn column = getColumnModel().get(event.getColumn());
 
         if (column.getHeaderKey().toString().equals(TABLE_COL_EDIT)) {
             // Nothing
@@ -160,7 +158,6 @@ public class ArticleInCollectedVolumeCollectedVolumeSheet
             return new ArticleInCollectedVolumeCollectedVolumeSheetModel(
                 table, state, article, selectedLangParam
             );
-
         }
 
     }

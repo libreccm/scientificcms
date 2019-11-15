@@ -41,10 +41,12 @@ public class ArticleInCollectedVolumeCollectedVolumeStep
         final StringParameter selectedLanguageParam,
         final String parameterSuffix
     ) {
-        super(itemSelectionModel,
-              authoringKitWizard,
-              selectedLanguageParam,
-              parameterSuffix);
+        super(
+            itemSelectionModel,
+            authoringKitWizard,
+            selectedLanguageParam,
+            parameterSuffix
+        );
 
         final BasicItemForm addCollectedVolumeForm
                                 = new ArticleInCollectedVolumeCollectedVolumeForm(
@@ -52,22 +54,22 @@ public class ArticleInCollectedVolumeCollectedVolumeStep
                 selectedLanguageParam
             );
 
-        add(ADD_COLLECTED_VOLUME_STEP,
+        add(
+            ADD_COLLECTED_VOLUME_STEP,
             new GlobalizedMessage(
                 "publications.ui.collectedVolume.addCollectedVolume",
                 SciPublicationsConstants.BUNDLE
             ),
             new WorkflowLockedComponentAccess(
-                addCollectedVolumeForm,
-                itemSelectionModel
+                addCollectedVolumeForm, itemSelectionModel
             ),
-            addCollectedVolumeForm.getSaveCancelSection().getCancelButton());
+            addCollectedVolumeForm.getSaveCancelSection().getCancelButton()
+        );
 
         final ArticleInCollectedVolumeCollectedVolumeSheet sheet
-                                                     = new ArticleInCollectedVolumeCollectedVolumeSheet(
+                                                               = new ArticleInCollectedVolumeCollectedVolumeSheet(
                 itemSelectionModel, selectedLanguageParam);
         setDisplayComponent(sheet);
-
     }
 
 }

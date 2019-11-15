@@ -138,8 +138,7 @@ public class ArticleInJournalController {
 
     @Transactional(Transactional.TxType.REQUIRED)
     public void unsetJournal(
-        final long articleId, final long journalId
-    ) {
+        final long articleId) {
         final ArticleInJournal article = publicationRepository
             .findByIdAndType(articleId, ArticleInJournal.class)
             .orElseThrow(
