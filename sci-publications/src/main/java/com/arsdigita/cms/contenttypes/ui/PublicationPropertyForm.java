@@ -33,9 +33,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.libreccm.cdi.utils.CdiUtil;
 import org.libreccm.l10n.GlobalizationHelper;
-import org.scientificcms.publications.Publication;
 import org.scientificcms.publications.SciPublicationsConfig;
 import org.scientificcms.publications.SciPublicationsConstants;
+ 
 import org.scientificcms.publications.contenttypes.PublicationItem;
 
 import java.text.Collator;

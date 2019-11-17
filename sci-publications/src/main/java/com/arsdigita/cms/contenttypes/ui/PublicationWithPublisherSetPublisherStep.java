@@ -21,7 +21,7 @@ import org.scientificcms.publications.SciPublicationsConstants;
 public class PublicationWithPublisherSetPublisherStep extends SimpleEditStep {
 
     private String SET_PUBLICATION_PUBLISHER_STEP
-                   = "setPublicationPublisherStep";
+                       = "setPublicationPublisherStep";
 
     public PublicationWithPublisherSetPublisherStep(
         final ItemSelectionModel itemModel,
@@ -39,8 +39,8 @@ public class PublicationWithPublisherSetPublisherStep extends SimpleEditStep {
         super(itemModel, parent, selectedLangParameter, prefix);
 
         final BasicItemForm setPublisherForm
-                      = new PublicationWithPublisherSetPublisherForm(
-                itemModel);
+                                = new PublicationWithPublisherSetPublisherForm(
+                itemModel, selectedLangParameter);
         add(SET_PUBLICATION_PUBLISHER_STEP,
             new GlobalizedMessage(
                 "publications.ui.with_publisher.setPublisher",
@@ -50,8 +50,9 @@ public class PublicationWithPublisherSetPublisherStep extends SimpleEditStep {
             setPublisherForm.getSaveCancelSection().getCancelButton());
 
         final PublicationWithPublisherSetPublisherSheet sheet
-                                                  = new PublicationWithPublisherSetPublisherSheet(
-                itemModel);
+                                                            = new PublicationWithPublisherSetPublisherSheet(
+                itemModel, selectedLangParameter
+            );
         setDisplayComponent(sheet);
     }
 
