@@ -73,5 +73,5 @@ public class CollectedVolumeManager implements Serializable {
         publicationRepository.save(article);
         publicationRepository.save(collectedVolume);
     }
-
+   
 }

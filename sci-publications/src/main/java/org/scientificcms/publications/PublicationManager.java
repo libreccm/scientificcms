@@ -154,10 +154,11 @@ public class PublicationManager {
     @AuthorizationRequired
     @RequiresPrivilege(ItemPrivileges.EDIT)
     @Transactional(Transactional.TxType.REQUIRED)
-    public void moveAuthorToPosition(final Publication ofPublication,
-                                     final Person author,
-                                     final int toPosition) {
-
+    public void moveAuthorToPosition(
+        final Publication ofPublication, 
+        final Person author,
+        final int toPosition
+    ) {
         Objects.requireNonNull(ofPublication);
         Objects.requireNonNull(author);
         if (toPosition < 0) {
@@ -357,20 +358,20 @@ public class PublicationManager {
     ) {
         Objects.requireNonNull(series);
         Objects.requireNonNull(fromPublication);
-        
+
         final Optional<VolumeInSeries> result = fromPublication
-        .getSeries()
-        .stream()
-        .filter(volume -> volume.getSeries().equals(series))
-        .findAny();
-        
+            .getSeries()
+            .stream()
+            .filter(volume -> volume.getSeries().equals(series))
+            .findAny();
+
         if (!result.isPresent()) {
             return;
         }
-        
+
         final VolumeInSeries remove = result.get();
         fromPublication.removeSeries(remove);
-        
+
         entityManager.remove(remove);
         publicationRepository.save(fromPublication);
     }
