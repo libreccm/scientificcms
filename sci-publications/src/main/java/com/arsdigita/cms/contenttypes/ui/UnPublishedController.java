@@ -21,7 +21,7 @@ import javax.transaction.Transactional;
  * @author <a href="mailto:jens.pelzetter@googlemail.com">Jens Pelzetter</a>
  */
 @RequestScoped
-public class UnPublishedController extends PublicationPropertiesStep {
+public class UnPublishedController {
 
     public static final String PLACE = "place";
 

@@ -40,7 +40,7 @@ public class InProceedingsProceedingsStep extends SimpleEditStep {
 
         final BasicItemForm addProceedingsForm
                                 = new InProceedingsProceedingsForm(
-                itemModel
+                itemModel, selectedLangParam
             );
         add(
             ADD_PROCEEDINGS_STEP,

@@ -81,7 +81,7 @@ public class InProceedingsPropertiesStep
         );
 
         final BasicPageForm editBasicSheet = new InProceedingsPropertyForm(
-            itemModel, this
+            itemModel, this, selectedLangParam
         );
 
         basicProperties.add(
