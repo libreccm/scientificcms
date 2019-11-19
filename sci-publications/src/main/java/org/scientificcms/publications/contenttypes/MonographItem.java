@@ -5,6 +5,13 @@
  */
 package org.scientificcms.publications.contenttypes;
 
+import com.arsdigita.cms.contenttypes.ui.MonographCreateForm;
+import com.arsdigita.cms.contenttypes.ui.MonographPropertiesStep;
+
+import org.librecms.CmsConstants;
+import org.librecms.contenttypes.AuthoringKit;
+import org.librecms.contenttypes.AuthoringStep;
+import org.librecms.contenttypes.ContentTypeDescription;
 import org.scientificcms.publications.Monograph;
 
 import javax.persistence.Entity;
@@ -18,6 +25,24 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
  */
 @Entity
 @Table(name = "MONOGRAPH_ITEMS", schema = DB_SCHEMA)
+@ContentTypeDescription(
+    labelBundle = "org.scientificcms.publications.contenttypes.Monograph",
+    descriptionBundle = "org.scientificcms.publications.contenttypes.Monograph"
+)
+@AuthoringKit(
+    createComponent = MonographCreateForm.class,
+    steps = {
+        @AuthoringStep(
+            component = MonographPropertiesStep.class,
+            labelBundle = CmsConstants.CMS_BUNDLE,
+            labelKey = "cms.contenttypes.shared.basic_properties.title",
+            descriptionBundle = CmsConstants.CMS_BUNDLE,
+            descriptionKey = "cms.contenttypes.shared.basic_properties"
+                                 + ".description",
+            order = 1
+        )
+    }
+)
 public class MonographItem extends PublicationWithPublisherItem<Monograph> {
 
     private static final long serialVersionUID = 1L;
@@ -79,5 +104,4 @@ public class MonographItem extends PublicationWithPublisherItem<Monograph> {
 //                                            Objects.toString(monograph),
 //                                            data));
 //    }
-
 }

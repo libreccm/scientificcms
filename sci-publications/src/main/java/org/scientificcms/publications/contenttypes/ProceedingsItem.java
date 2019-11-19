@@ -5,6 +5,14 @@
  */
 package org.scientificcms.publications.contenttypes;
 
+import com.arsdigita.cms.contenttypes.ui.ProceedingsCreateForm;
+import com.arsdigita.cms.contenttypes.ui.ProceedingsPropertiesStep;
+
+import jdk.jfr.ContentType;
+import org.librecms.CmsConstants;
+import org.librecms.contenttypes.AuthoringKit;
+import org.librecms.contenttypes.AuthoringStep;
+import org.librecms.contenttypes.ContentTypeDescription;
 import org.scientificcms.publications.Proceedings;
 
 import javax.persistence.Entity;
@@ -18,6 +26,25 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
  */
 @Entity
 @Table(name = "PROCEEDINGS_ITEMS", schema = DB_SCHEMA)
+@ContentTypeDescription(
+    labelBundle = "org.scientificcms.publications.contenttypes.Proceedings",
+    descriptionBundle
+    = "org.scientificcms.publications.contenttypes.Proceedings"
+)
+@AuthoringKit(
+    createComponent = ProceedingsCreateForm.class,
+    steps = {
+        @AuthoringStep(
+            component = ProceedingsPropertiesStep.class,
+            labelBundle = CmsConstants.CMS_BUNDLE,
+            labelKey = "cms.contenttypes.shared.basic_properties.title",
+            descriptionBundle = CmsConstants.CMS_BUNDLE,
+            descriptionKey = "cms.contenttypes.shared.basic_properties"
+                                 + ".description",
+            order = 1
+        )
+    }
+)
 public class ProceedingsItem extends PublicationWithPublisherItem<Proceedings> {
 
     private static final long serialVersionUID = 1L;
@@ -80,5 +107,4 @@ public class ProceedingsItem extends PublicationWithPublisherItem<Proceedings> {
 //                                            Objects.toString(article),
 //                                            data));
 //    }
-
 }

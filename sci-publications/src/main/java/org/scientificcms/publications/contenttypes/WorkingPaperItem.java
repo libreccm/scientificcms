@@ -5,7 +5,14 @@
  */
 package org.scientificcms.publications.contenttypes;
 
+import com.arsdigita.cms.contenttypes.ui.WorkingPaperCreateForm;
+import com.arsdigita.cms.contenttypes.ui.WorkingPaperPropertiesStep;
+
 import org.hibernate.envers.Audited;
+import org.librecms.CmsConstants;
+import org.librecms.contenttypes.AuthoringKit;
+import org.librecms.contenttypes.AuthoringStep;
+import org.librecms.contenttypes.ContentTypeDescription;
 import org.scientificcms.publications.WorkingPaper;
 
 import javax.persistence.Entity;
@@ -20,6 +27,25 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
 @Entity
 @Table(name = "WORKING_PAPER_ITEMS", schema = DB_SCHEMA)
 @Audited
+@ContentTypeDescription(
+    labelBundle = "org.scientificcms.publications.contenttypes.WorkingPaper",
+    descriptionBundle
+    = "org.scientificcms.publications.contenttypes.WorkingPaper"
+)
+@AuthoringKit(
+    createComponent = WorkingPaperCreateForm.class,
+    steps = {
+        @AuthoringStep(
+            component = WorkingPaperPropertiesStep.class,
+            labelBundle = CmsConstants.CMS_BUNDLE,
+            labelKey = "cms.contenttypes.shared.basic_properties.title",
+            descriptionBundle = CmsConstants.CMS_BUNDLE,
+            descriptionKey = "cms.contenttypes.shared.basic_properties"
+                                 + ".description",
+            order = 1
+        )
+    }
+)
 public class WorkingPaperItem extends PublicationItem<WorkingPaper> {
 
     private static final long serialVersionUID = 1L;
@@ -82,5 +108,4 @@ public class WorkingPaperItem extends PublicationItem<WorkingPaper> {
 //                                            Objects.toString(workingPaper),
 //                                            data));
 //    }
-
 }

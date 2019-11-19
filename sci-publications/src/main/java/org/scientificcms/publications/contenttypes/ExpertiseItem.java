@@ -5,15 +5,18 @@
  */
 package org.scientificcms.publications.contenttypes;
 
+
+import com.arsdigita.cms.contenttypes.ui.ExpertiseCreateForm;
+import com.arsdigita.cms.contenttypes.ui.ExpertisePropertiesStep;
+
 import org.hibernate.envers.Audited;
+import org.librecms.CmsConstants;
+import org.librecms.contenttypes.AuthoringKit;
+import org.librecms.contenttypes.AuthoringStep;
+import org.librecms.contenttypes.ContentTypeDescription;
 import org.scientificcms.publications.Expertise;
 
-import java.util.Objects;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import static org.scientificcms.publications.SciPublicationsConstants.*;
@@ -25,6 +28,24 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
 @Entity
 @Table(name = "EXPERTISE_ITEMS", schema = DB_SCHEMA)
 @Audited
+@ContentTypeDescription(
+    labelBundle = "org.scientificcms.publications.contenttypes.Expertise",
+    descriptionBundle = "org.scientificcms.publications.contenttypes.Expertise"
+)
+@AuthoringKit(
+    createComponent = ExpertiseCreateForm.class,
+    steps = {
+        @AuthoringStep(
+            component = ExpertisePropertiesStep.class,
+            labelBundle = CmsConstants.CMS_BUNDLE,
+            labelKey = "cms.contenttypes.shared.basic_properties.title",
+            descriptionBundle = CmsConstants.CMS_BUNDLE,
+            descriptionKey = "cms.contenttypes.shared.basic_properties"
+                                 + ".description",
+            order = 1
+        )
+    }
+)
 public class ExpertiseItem extends PublicationItem<Expertise> {
 
     private static final long serialVersionUID = 1L;

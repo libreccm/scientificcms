@@ -5,15 +5,17 @@
  */
 package org.scientificcms.publications.contenttypes;
 
+import com.arsdigita.cms.contenttypes.ui.ArticleInCollectedVolumeCreateForm;
+import com.arsdigita.cms.contenttypes.ui.ArticleInCollectedVolumePropertiesStep;
+
 import org.hibernate.envers.Audited;
+import org.librecms.CmsConstants;
+import org.librecms.contenttypes.AuthoringKit;
+import org.librecms.contenttypes.AuthoringStep;
+import org.librecms.contenttypes.ContentTypeDescription;
 import org.scientificcms.publications.ArticleInCollectedVolume;
 
-import java.util.Objects;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import static org.scientificcms.publications.SciPublicationsConstants.*;
@@ -25,6 +27,24 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
 @Entity
 @Table(name = "ARTICLE_IN_COLLECTED_VOLUME_ITEMS", schema = DB_SCHEMA)
 @Audited
+@ContentTypeDescription(
+    labelBundle = "org.scientificcms.publications.contenttypes.ArticleInCollectedVolume",
+    descriptionBundle = "org.scientificcms.publications.contenttypes.ArticleInCollectedVolume"
+)
+@AuthoringKit(
+    createComponent = ArticleInCollectedVolumeCreateForm.class,
+    steps = {
+        @AuthoringStep(
+            component = ArticleInCollectedVolumePropertiesStep.class,
+            labelBundle = CmsConstants.CMS_BUNDLE,
+            labelKey = "cms.contenttypes.shared.basic_properties.title",
+            descriptionBundle = CmsConstants.CMS_BUNDLE,
+            descriptionKey = "cms.contenttypes.shared.basic_properties"
+                                 + ".description",
+            order = 1
+        )
+    }
+)
 public class ArticleInCollectedVolumeItem 
     extends PublicationItem<ArticleInCollectedVolume> {
 

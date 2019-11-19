@@ -5,15 +5,17 @@
  */
 package org.scientificcms.publications.contenttypes;
 
+import com.arsdigita.cms.contenttypes.ui.InProceedingsCreateForm;
+import com.arsdigita.cms.contenttypes.ui.InProceedingsPropertiesStep;
+
 import org.hibernate.envers.Audited;
+import org.librecms.CmsConstants;
+import org.librecms.contenttypes.AuthoringKit;
+import org.librecms.contenttypes.AuthoringStep;
+import org.librecms.contenttypes.ContentTypeDescription;
 import org.scientificcms.publications.InProceedings;
 
-import java.util.Objects;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import static org.scientificcms.publications.SciPublicationsConstants.*;
@@ -25,6 +27,25 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
 @Entity
 @Table(name = "INPROCEEDINGS_ITEMS", schema = DB_SCHEMA)
 @Audited
+@ContentTypeDescription(
+    labelBundle = "org.scientificcms.publications.contenttypes.InProceedings",
+    descriptionBundle
+    = "org.scientificcms.publications.contenttypes.InProceedings"
+)
+@AuthoringKit(
+    createComponent = InProceedingsCreateForm.class,
+    steps = {
+        @AuthoringStep(
+            component = InProceedingsPropertiesStep.class,
+            labelBundle = CmsConstants.CMS_BUNDLE,
+            labelKey = "cms.contenttypes.shared.basic_properties.title",
+            descriptionBundle = CmsConstants.CMS_BUNDLE,
+            descriptionKey = "cms.contenttypes.shared.basic_properties"
+                                 + ".description",
+            order = 1
+        )
+    }
+)
 public class InProceedingsItem extends PublicationItem<InProceedings> {
 
     private static final long serialVersionUID = 1L;
@@ -46,7 +67,6 @@ public class InProceedingsItem extends PublicationItem<InProceedings> {
 //    protected void setPublication(final InProceedings inProceedings) {
 //        this.inProcedings = inProceedings;
 //    }
-
     @Override
     public int hashCode() {
         int hash = super.hashCode();
@@ -74,7 +94,7 @@ public class InProceedingsItem extends PublicationItem<InProceedings> {
 //            return false;
 //        }
 //        return Objects.equals(this.inProcedings, other.getPublication());
-return other.canEqual(this);
+        return other.canEqual(this);
     }
 
     @Override
@@ -88,5 +108,4 @@ return other.canEqual(this);
 //                                            Objects.toString(inProcedings),
 //                                            data));
 //    }
-
 }
