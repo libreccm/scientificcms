@@ -27,6 +27,7 @@ import org.scientificcms.publications.Proceedings;
 import org.scientificcms.publications.SciPublicationsConstants;
 import org.scientificcms.publications.contenttypes.ProceedingsItem;
 
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -137,14 +138,18 @@ public class ProceedingsPropertyForm
             ProceedingsController.PLACE_OF_CONFERENCE,
             proceedings.getPlaceOfConference()
         );
-        data.put(
-            ProceedingsController.START_DATE,
-            proceedings.getStartDate()
-        );
-        data.put(
-            ProceedingsController.END_DATE,
-            proceedings.getEndDate()
-        );
+        final LocalDate localStartDate = proceedings.getStartDate();
+        final java.util.Date startDate = java.util.Date.from(
+            localStartDate.atStartOfDay().atZone(
+                ZoneId.systemDefault()
+            ).toInstant());
+        data.put(ProceedingsController.START_DATE, startDate);
+        final LocalDate localEndDate = proceedings.getEndDate();
+        final java.util.Date endDate = java.util.Date.from(
+            localEndDate.atStartOfDay().atZone(
+                ZoneId.systemDefault()
+            ).toInstant());
+        data.put(ProceedingsController.END_DATE, endDate);
     }
 
     @Override
@@ -189,8 +194,8 @@ public class ProceedingsPropertyForm
             );
 
             final ProceedingsController controller = CdiUtil
-            .createCdiUtil()
-            .findBean(ProceedingsController.class);
+                .createCdiUtil()
+                .findBean(ProceedingsController.class);
             controller.saveProceedings(
                 proceedingsItem.getPublication().getPublicationId(), data
             );
