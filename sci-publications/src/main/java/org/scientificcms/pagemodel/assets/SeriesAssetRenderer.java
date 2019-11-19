@@ -45,10 +45,11 @@ public class SeriesAssetRenderer extends AbstractAssetRenderer {
         seriesData.put(
             "description", series.getDescription().getValue(language)
         );
+
         seriesData.put("seriesId", series.getSeriesId());
         seriesData.put("title", series.getTitle().getValue(language));
         seriesData.put("uuid", series.getUuid());
-        
+
         result.put("series", seriesData);
     }
 

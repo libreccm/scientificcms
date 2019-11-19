@@ -5,7 +5,6 @@
  */
 package org.scientificcms.publications;
 
-import org.hibernate.annotations.CollectionId;
 import org.hibernate.envers.Audited;
 
 import java.time.LocalDate;
