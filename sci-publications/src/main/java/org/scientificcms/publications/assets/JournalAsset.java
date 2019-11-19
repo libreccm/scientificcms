@@ -5,9 +5,13 @@
  */
 package org.scientificcms.publications.assets;
 
+import org.scientificcms.publications.assets.ui.JournalForm;
+
 import org.hibernate.envers.Audited;
+import org.librecms.assets.AssetType;
 import org.librecms.contentsection.Asset;
 import org.scientificcms.publications.Journal;
+import org.scientificcms.publications.SciPublicationsConstants;
 
 import java.util.Objects;
 
@@ -27,6 +31,13 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
 @Entity
 @Table(name = "JOURNAL_ASSETS", schema = DB_SCHEMA)
 @Audited
+@AssetType(
+    assetForm = JournalForm.class,
+    labelBundle = SciPublicationsConstants.BUNDLE,
+    labelKey = "journal.label",
+    descriptionBundle = SciPublicationsConstants.BUNDLE,
+    descriptionKey = "journal.description"
+)
 public class JournalAsset extends Asset {
 
     private static final long serialVersionUID = 1L;
