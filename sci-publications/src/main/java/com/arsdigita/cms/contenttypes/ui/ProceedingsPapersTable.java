@@ -19,74 +19,82 @@ import com.arsdigita.bebop.table.TableColumnModel;
 import com.arsdigita.bebop.table.TableModel;
 import com.arsdigita.bebop.table.TableModelBuilder;
 import com.arsdigita.cms.ItemSelectionModel;
+import com.arsdigita.cms.dispatcher.Utilities;
 import com.arsdigita.globalization.GlobalizedMessage;
 import com.arsdigita.util.LockableImpl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.libreccm.cdi.utils.CdiUtil;
 import org.libreccm.security.PermissionChecker;
-import org.librecms.assets.Organization;
 import org.librecms.contentsection.privileges.ItemPrivileges;
-import org.scientificcms.publications.Expertise;
+import org.scientificcms.publications.InProceedings;
+import org.scientificcms.publications.Proceedings;
 import org.scientificcms.publications.SciPublicationsConstants;
-import org.scientificcms.publications.contenttypes.ExpertiseItem;
+import org.scientificcms.publications.contenttypes.ProceedingsItem;
+
+import java.util.Iterator;
 
 /**
  *
  * @author <a href="mailto:jens.pelzetter@googlemail.com">Jens Pelzetter</a>
  */
-public class ExpertiseOrganizationSheet
+public class ProceedingsPapersTable
     extends Table
     implements TableActionListener {
 
-    private static final String TABLE_COL_EDIT = "table_col_edit";
+    private final Logger LOGGER = LogManager.getLogger(
+        ProceedingsPapersTable.class);
 
-    private static final String TABLE_COL_DEL = "table_col_del";
+    private final String TABLE_COL_EDIT = "table_col_edit";
+
+    private final String TABLE_COL_DEL = "table_col_del";
+
+    private final String TABLE_COL_UP = "table_col_up";
+
+    private final String TABLE_COL_DOWN = "table_col_down";
 
     private final ItemSelectionModel itemModel;
 
-    public ExpertiseOrganizationSheet(final ItemSelectionModel itemModel) {
+    public ProceedingsPapersTable(final ItemSelectionModel itemModel) {
         super();
-
         this.itemModel = itemModel;
 
         setEmptyView(
             new Label(
                 new GlobalizedMessage(
-                    "publications.ui.expertise.organization.none",
+                    "publications.ui.procreedings.no_papers",
                     SciPublicationsConstants.BUNDLE
                 )
             )
         );
 
-        final TableColumnModel columnModel = getColumnModel();
-        columnModel.add(
+        TableColumnModel colModel = getColumnModel();
+        colModel.add(
             new TableColumn(
                 0,
-                new Label(
-                    new GlobalizedMessage(
-                        "publications.ui.expertise.organization",
-                        SciPublicationsConstants.BUNDLE
-                    )
+                new Label(new GlobalizedMessage(
+                    "publications.ui.proceedings.paper",
+                    SciPublicationsConstants.BUNDLE
+                )
                 ),
-                TABLE_COL_EDIT
-            )
-        );
-        columnModel.add(
+                TABLE_COL_EDIT));
+        colModel.add(
             new TableColumn(
                 1,
                 new Label(
                     new GlobalizedMessage(
-                        "publications.ui.expertise.organization.remove",
+                        "publications.ui.proceedings.paper.remove",
                         SciPublicationsConstants.BUNDLE
                     )
                 ),
-                TABLE_COL_DEL
-            )
-        );
+                TABLE_COL_DEL));
 
-        setModelBuilder(new ExpertiseOrganizationSheetModelBuilder(itemModel));
-        columnModel.get(0).setCellRenderer(new EditCellRenderer());
-        columnModel.get(1).setCellRenderer(new DeleteCellRenderer());
+        setModelBuilder(
+            new ProceedingsPapersTableModelBuilder(itemModel));
+
+        colModel.get(0).setCellRenderer(new EditCellRenderer());
+        colModel.get(1).setCellRenderer(new DeleteCellRenderer());
 
         addTableActionListener(this);
     }
@@ -95,70 +103,73 @@ public class ExpertiseOrganizationSheet
     public void cellSelected(final TableActionEvent event) {
         final PageState state = event.getPageState();
 
-        final ExpertiseItem expertiseItem = (ExpertiseItem) itemModel
-            .getSelectedItem(state);
+        final ProceedingsController controller = CdiUtil
+            .createCdiUtil()
+            .findBean(ProceedingsController.class);
 
-        final TableColumn column = getColumnModel().get(event.getColumn());
+        final InProceedings paper = controller
+            .findPaper((Long) event.getRowKey());
+
+        final ProceedingsItem proceedingsItem = (ProceedingsItem) itemModel
+            .getSelectedItem(state);
+        final Proceedings proceedings = proceedingsItem.getPublication();
+
+        TableColumn column = getColumnModel().get(event.getColumn());
 
         if (column.getHeaderKey().toString().equals(TABLE_COL_EDIT)) {
             // Nothing
         } else if (column.getHeaderKey().toString().equals(TABLE_COL_DEL)) {
-            final ExpertiseController controller = CdiUtil
-                .createCdiUtil()
-                .findBean(ExpertiseController.class);
-            controller.unsetOrganization(
-                expertiseItem.getPublication().getPublicationId()
+            controller.removePaper(
+                proceedings.getPublicationId(),
+                paper.getPublicationId()
             );
         }
     }
 
     @Override
-    public void headSelected(final TableActionEvent event) {
-        //Nothing to do
+    public void headSelected(TableActionEvent event) {
+        //Noting to do
     }
 
-    private class ExpertiseOrganizationSheetModelBuilder
+    private class ProceedingsPapersTableModelBuilder
         extends LockableImpl
         implements TableModelBuilder {
 
         private final ItemSelectionModel itemModel;
 
-        public ExpertiseOrganizationSheetModelBuilder(
+        public ProceedingsPapersTableModelBuilder(
             final ItemSelectionModel itemModel
         ) {
             this.itemModel = itemModel;
         }
 
         @Override
-        public final TableModel makeModel(
-            final Table table, final PageState state
-        ) {
+        public TableModel makeModel(final Table table, final PageState state) {
             table.getRowSelectionModel().clearSelection(state);
-            final ExpertiseItem expertiseItem = (ExpertiseItem) itemModel
-                .getSelectedItem(state);
-            return new ExpertiseOrganizationSheetModel(
-                table, state, expertiseItem.getPublication()
+            final ProceedingsItem proceedings = (ProceedingsItem) itemModel
+                .getSelectedObject(state);
+            return new ProceedingsPapersTableModel(
+                table, state, proceedings.getPublication()
             );
         }
 
     }
 
-    private class ExpertiseOrganizationSheetModel implements TableModel {
+    private class ProceedingsPapersTableModel implements TableModel {
 
         private final Table table;
 
-        private final Organization organization;
+        private final Iterator<InProceedings> papers;
 
-        private boolean done;
+        private InProceedings paper;
 
-        public ExpertiseOrganizationSheetModel(
+        private ProceedingsPapersTableModel(
             final Table table,
             final PageState state,
-            final Expertise expertise
+            final Proceedings proceedings
         ) {
             this.table = table;
-            organization = expertise.getOrganization();
-            done = organization != null;
+            papers = proceedings.getPapers().iterator();
         }
 
         @Override
@@ -168,27 +179,23 @@ public class ExpertiseOrganizationSheet
 
         @Override
         public boolean nextRow() {
-            boolean ret;
-
-            if (done) {
-                ret = true;
-                done = false;
+            if (papers != null && papers.hasNext()) {
+                paper = papers.next();
+                return true;
             } else {
-                ret = false;
+                return false;
             }
-
-            return ret;
         }
 
         @Override
         public Object getElementAt(final int columnIndex) {
             switch (columnIndex) {
                 case 0:
-                    return organization.getTitle();
+                    return paper.getTitle();
                 case 1:
                     return new Label(
                         new GlobalizedMessage(
-                            "publications.ui.expertise.organization.remove",
+                            "publications.ui.proceedings.paper.remove",
                             SciPublicationsConstants.BUNDLE
                         )
                     );
@@ -199,7 +206,7 @@ public class ExpertiseOrganizationSheet
 
         @Override
         public Object getKeyAt(final int columnIndex) {
-            return organization.getObjectId();
+            return paper.getPublicationId();
         }
 
     }
@@ -209,14 +216,14 @@ public class ExpertiseOrganizationSheet
         implements TableCellRenderer {
 
         @Override
-        public final Component getComponent(
+        public Component getComponent(
             final Table table,
             final PageState state,
             final Object value,
             final boolean isSelected,
             final Object key,
             final int row,
-            final int column
+            final int col
         ) {
             return new Text((String) value);
         }
@@ -235,25 +242,24 @@ public class ExpertiseOrganizationSheet
             final boolean isSelected,
             final Object key,
             final int row,
-            final int col
+            final int column
         ) {
             final CdiUtil cdiUtil = CdiUtil.createCdiUtil();
-
             final PermissionChecker permissionChecker = cdiUtil
                 .findBean(PermissionChecker.class);
 
-            final ExpertiseItem expertiseItem = (ExpertiseItem) itemModel
+            final ProceedingsItem proceedingsItem = (ProceedingsItem) itemModel
                 .getSelectedItem(state);
 
-            final boolean canEdit = permissionChecker.isPermitted(
-                ItemPrivileges.DELETE, expertiseItem
-            );
+            final boolean canEdit = permissionChecker
+                .isPermitted(ItemPrivileges.EDIT, proceedingsItem
+                );
 
             if (canEdit) {
                 final ControlLink link = new ControlLink((Component) value);
                 link.setConfirmation(
                     new GlobalizedMessage(
-                        "publication.ui.expertise.organization.remove.confirm",
+                        "publications.ui.proceedings.paper.confirm_remove",
                         SciPublicationsConstants.BUNDLE
                     )
                 );

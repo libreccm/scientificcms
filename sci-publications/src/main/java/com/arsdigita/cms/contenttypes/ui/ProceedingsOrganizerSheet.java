@@ -26,15 +26,15 @@ import org.libreccm.cdi.utils.CdiUtil;
 import org.libreccm.security.PermissionChecker;
 import org.librecms.assets.Organization;
 import org.librecms.contentsection.privileges.ItemPrivileges;
-import org.scientificcms.publications.Expertise;
+import org.scientificcms.publications.Proceedings;
 import org.scientificcms.publications.SciPublicationsConstants;
-import org.scientificcms.publications.contenttypes.ExpertiseItem;
+import org.scientificcms.publications.contenttypes.ProceedingsItem;
 
 /**
  *
  * @author <a href="mailto:jens.pelzetter@googlemail.com">Jens Pelzetter</a>
  */
-public class ExpertiseOrganizationSheet
+public class ProceedingsOrganizerSheet
     extends Table
     implements TableActionListener {
 
@@ -44,7 +44,7 @@ public class ExpertiseOrganizationSheet
 
     private final ItemSelectionModel itemModel;
 
-    public ExpertiseOrganizationSheet(final ItemSelectionModel itemModel) {
+    public ProceedingsOrganizerSheet(final ItemSelectionModel itemModel) {
         super();
 
         this.itemModel = itemModel;
@@ -52,7 +52,7 @@ public class ExpertiseOrganizationSheet
         setEmptyView(
             new Label(
                 new GlobalizedMessage(
-                    "publications.ui.expertise.organization.none",
+                    "publications.ui.proceedings.organizer.none",
                     SciPublicationsConstants.BUNDLE
                 )
             )
@@ -64,7 +64,7 @@ public class ExpertiseOrganizationSheet
                 0,
                 new Label(
                     new GlobalizedMessage(
-                        "publications.ui.expertise.organization",
+                        "publications.ui.proceedings.organizer",
                         SciPublicationsConstants.BUNDLE
                     )
                 ),
@@ -76,7 +76,7 @@ public class ExpertiseOrganizationSheet
                 1,
                 new Label(
                     new GlobalizedMessage(
-                        "publications.ui.expertise.organization.remove",
+                        "publications.ui.proceedings.organizer.remove",
                         SciPublicationsConstants.BUNDLE
                     )
                 ),
@@ -84,7 +84,7 @@ public class ExpertiseOrganizationSheet
             )
         );
 
-        setModelBuilder(new ExpertiseOrganizationSheetModelBuilder(itemModel));
+        setModelBuilder(new ProceedingsOrganizerSheetModelBuilder(itemModel));
         columnModel.get(0).setCellRenderer(new EditCellRenderer());
         columnModel.get(1).setCellRenderer(new DeleteCellRenderer());
 
@@ -95,7 +95,7 @@ public class ExpertiseOrganizationSheet
     public void cellSelected(final TableActionEvent event) {
         final PageState state = event.getPageState();
 
-        final ExpertiseItem expertiseItem = (ExpertiseItem) itemModel
+        final ProceedingsItem proceedingsItem = (ProceedingsItem) itemModel
             .getSelectedItem(state);
 
         final TableColumn column = getColumnModel().get(event.getColumn());
@@ -103,11 +103,11 @@ public class ExpertiseOrganizationSheet
         if (column.getHeaderKey().toString().equals(TABLE_COL_EDIT)) {
             // Nothing
         } else if (column.getHeaderKey().toString().equals(TABLE_COL_DEL)) {
-            final ExpertiseController controller = CdiUtil
+            final ProceedingsController controller = CdiUtil
                 .createCdiUtil()
-                .findBean(ExpertiseController.class);
-            controller.unsetOrganization(
-                expertiseItem.getPublication().getPublicationId()
+                .findBean(ProceedingsController.class);
+            controller.unsetOrganizier(
+                proceedingsItem.getPublication().getPublicationId()
             );
         }
     }
@@ -116,14 +116,14 @@ public class ExpertiseOrganizationSheet
     public void headSelected(final TableActionEvent event) {
         //Nothing to do
     }
-
-    private class ExpertiseOrganizationSheetModelBuilder
+    
+    private class ProceedingsOrganizerSheetModelBuilder
         extends LockableImpl
         implements TableModelBuilder {
 
         private final ItemSelectionModel itemModel;
 
-        public ExpertiseOrganizationSheetModelBuilder(
+        public ProceedingsOrganizerSheetModelBuilder(
             final ItemSelectionModel itemModel
         ) {
             this.itemModel = itemModel;
@@ -134,31 +134,31 @@ public class ExpertiseOrganizationSheet
             final Table table, final PageState state
         ) {
             table.getRowSelectionModel().clearSelection(state);
-            final ExpertiseItem expertiseItem = (ExpertiseItem) itemModel
+            final ProceedingsItem proceedingsItem = (ProceedingsItem) itemModel
                 .getSelectedItem(state);
-            return new ExpertiseOrganizationSheetModel(
-                table, state, expertiseItem.getPublication()
+            return new ProceedingsOrganizerSheetModel(
+                table, state, proceedingsItem.getPublication()
             );
         }
 
     }
 
-    private class ExpertiseOrganizationSheetModel implements TableModel {
+    private class ProceedingsOrganizerSheetModel implements TableModel {
 
         private final Table table;
 
-        private final Organization organization;
+        private final Organization organizer;
 
         private boolean done;
 
-        public ExpertiseOrganizationSheetModel(
+        public ProceedingsOrganizerSheetModel(
             final Table table,
             final PageState state,
-            final Expertise expertise
+            final Proceedings proceedings
         ) {
             this.table = table;
-            organization = expertise.getOrganization();
-            done = organization != null;
+            organizer = proceedings.getOrganizer();
+            done = organizer != null;
         }
 
         @Override
@@ -184,11 +184,11 @@ public class ExpertiseOrganizationSheet
         public Object getElementAt(final int columnIndex) {
             switch (columnIndex) {
                 case 0:
-                    return organization.getTitle();
+                    return organizer.getTitle();
                 case 1:
                     return new Label(
                         new GlobalizedMessage(
-                            "publications.ui.expertise.organization.remove",
+                            "publications.ui.proceedings.organizer.remove",
                             SciPublicationsConstants.BUNDLE
                         )
                     );
@@ -199,7 +199,7 @@ public class ExpertiseOrganizationSheet
 
         @Override
         public Object getKeyAt(final int columnIndex) {
-            return organization.getObjectId();
+            return organizer.getObjectId();
         }
 
     }
@@ -242,18 +242,18 @@ public class ExpertiseOrganizationSheet
             final PermissionChecker permissionChecker = cdiUtil
                 .findBean(PermissionChecker.class);
 
-            final ExpertiseItem expertiseItem = (ExpertiseItem) itemModel
+            final ProceedingsItem proceedingsItem = (ProceedingsItem) itemModel
                 .getSelectedItem(state);
 
             final boolean canEdit = permissionChecker.isPermitted(
-                ItemPrivileges.DELETE, expertiseItem
+                ItemPrivileges.DELETE, proceedingsItem
             );
 
             if (canEdit) {
                 final ControlLink link = new ControlLink((Component) value);
                 link.setConfirmation(
                     new GlobalizedMessage(
-                        "publication.ui.expertise.organization.remove.confirm",
+                        "publication.ui.proceedings.organizer.remove.confirm",
                         SciPublicationsConstants.BUNDLE
                     )
                 );
@@ -264,5 +264,6 @@ public class ExpertiseOrganizationSheet
         }
 
     }
+
 
 }

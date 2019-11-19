@@ -49,6 +49,7 @@ public class CollectedVolumeArticlesTable
     );
 
     private final String TABLE_COL_EDIT = "table_col_edit";
+
     private final String TABLE_COL_DEL = "table_col_del";
 
     private final ItemSelectionModel itemModel;
@@ -114,9 +115,6 @@ public class CollectedVolumeArticlesTable
         final CollectedVolume collectedVolume = collectedVolumeItem
             .getPublication();
 
-        final List<ArticleInCollectedVolume> articles = collectedVolume
-            .getArticles();
-
         final TableColumn column = getColumnModel().get(event.getColumn());
 
         if (column.getHeaderKey().toString().equals(TABLE_COL_EDIT)) {
@@ -173,7 +171,9 @@ public class CollectedVolumeArticlesTable
     private class CollectedVolumeArticlesTableModel implements TableModel {
 
         private final Table table;
+
         private final Iterator<ArticleInCollectedVolume> articles;
+
         private ArticleInCollectedVolume article;
 
         private CollectedVolumeArticlesTableModel(
@@ -192,7 +192,12 @@ public class CollectedVolumeArticlesTable
 
         @Override
         public boolean nextRow() {
-            return articles != null && articles.hasNext();
+            if (articles != null && articles.hasNext()) {
+                article = articles.next();
+                return true;
+            } else {
+                return false;
+            }
         }
 
         @Override
