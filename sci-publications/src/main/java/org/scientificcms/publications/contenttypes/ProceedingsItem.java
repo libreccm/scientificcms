@@ -8,7 +8,6 @@ package org.scientificcms.publications.contenttypes;
 import com.arsdigita.cms.contenttypes.ui.ProceedingsCreateForm;
 import com.arsdigita.cms.contenttypes.ui.ProceedingsPropertiesStep;
 
-import jdk.jfr.ContentType;
 import org.librecms.CmsConstants;
 import org.librecms.contenttypes.AuthoringKit;
 import org.librecms.contenttypes.AuthoringStep;

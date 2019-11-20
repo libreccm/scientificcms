@@ -23,6 +23,7 @@ import org.librecms.lifecycle.LifecycleDefinition;
 import org.scientificcms.publications.CollectedVolume;
 import org.scientificcms.publications.Journal;
 import org.scientificcms.publications.Proceedings;
+import org.scientificcms.publications.Publication;
 import org.scientificcms.publications.assets.PrefabAssetsProvider;
 
 import java.util.Arrays;
@@ -58,7 +59,7 @@ public class EqualsAndHashCodeTest extends EqualsVerifier {
     public EqualsAndHashCodeTest(final Class<?> clazz) {
         super(clazz);
     }
-    
+
     @Override
     protected void addSuppressWarnings(final EqualsVerifierApi<?> verifier) {
         super.addSuppressWarnings(verifier);
@@ -154,8 +155,12 @@ public class EqualsAndHashCodeTest extends EqualsVerifier {
         lifecycle2.setDefinition(lifecycleDef2);
         lifecycle2.setStarted(false);
         verifier.withPrefabValues(Lifecycle.class, lifecycle1, lifecycle2);
+
+        final Publication publication1 = new Publication();
+        publication1.getTitle().addValue(Locale.ENGLISH, "Alpha");
+        final Publication publication2 = new Publication();
+        publication2.getTitle().addValue(Locale.ENGLISH, "Bravo");
+        verifier.withPrefabValues(Publication.class, publication1, publication2);
     }
-    
-    
 
 }

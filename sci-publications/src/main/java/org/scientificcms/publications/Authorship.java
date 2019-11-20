@@ -131,6 +131,9 @@ public class Authorship implements Serializable, Comparable<Authorship> {
         if (authorshipId != other.getAuthorshipId()) {
             return false;
         }
+        if (!Objects.equals(uuid, other.getUuid())) {
+            return false;
+        }
         if (editor != other.isEditor()) {
             return false;
         }
@@ -156,8 +159,8 @@ public class Authorship implements Serializable, Comparable<Authorship> {
         return String.format("%s{ "
                                  + "authorshipId = %d, "
                                  + "uuid = %s, "
-                                 + "author = %s"
-                                 + "editor = %b,"
+                                 + "author = %s " 
+                                 + "editor = %b, "
                                  + "authorOrder = %d%s "
                                  + "}",
                              super.toString(),
