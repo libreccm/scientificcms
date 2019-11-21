@@ -18,7 +18,6 @@ import java.util.Map;
 /**
  *
  * @author Jens Pelzetter <jens@jp-digital.de>
- * @version $Id: SciProjectFundingUploadForm.java 2334 2013-10-03 07:51:31Z
  * jensp $
  */
 public class SciProjectFundingUploadForm extends AbstractTextUploadForm {
