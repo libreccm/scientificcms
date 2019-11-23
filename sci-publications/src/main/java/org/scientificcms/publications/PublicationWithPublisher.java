@@ -28,7 +28,7 @@ import static org.scientificcms.publications.SciPublicationsConstants.*;
  * @author <a href="mailto:jens.pelzetter@googlemail.com">Jens Pelzetter</a>
  */
 @Entity
-@Table(name = "PUBLICATIONS_WITH_PUBLISHER")
+@Table(name = "PUBLICATIONS_WITH_PUBLISHER", schema = DB_SCHEMA)
 @Audited
 @NamedQueries({
     @NamedQuery(
