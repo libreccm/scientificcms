@@ -10,12 +10,18 @@ import org.libreccm.modules.Module;
 import org.libreccm.modules.RequiredModule;
 import org.libreccm.modules.ShutdownEvent;
 import org.libreccm.modules.UnInstallEvent;
+import org.librecms.contenttypes.ContentTypes;
 
-@Module(packageName = "org.scientificcms.contenttypes",
-        requiredModules = {
-            @RequiredModule(module = org.libreccm.core.CcmCore.class),
-            @RequiredModule(module = org.librecms.Cms.class)
-        })
+@Module(
+    packageName = "org.scientificcms.contenttypes",
+    requiredModules = {
+        @RequiredModule(module = org.libreccm.core.CcmCore.class),
+        @RequiredModule(module = org.librecms.Cms.class)
+    }
+)
+@ContentTypes({
+    SciProject.class
+})
 public class SciProjectModule implements CcmModule {
 
     @Override
