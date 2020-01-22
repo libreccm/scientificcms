@@ -42,9 +42,12 @@
 
     <modules>
         <module>sci-types-project</module>
-    <module>scientificcms</module>
-    <module>sci-publications</module>
-  </modules>
+        <module>scientificcms</module>
+        <module>sci-publications</module>
+        
+        <module>scicms-bundle-devel</module>
+        <module>scicms-bundle-devel-wildfly</module>
+    </modules>
 
     <reporting>
         <excludeDefaults>true</excludeDefaults>

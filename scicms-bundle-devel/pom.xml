@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.scientificcms</groupId>
+        <artifactId>scientificcms-parent</artifactId>
+        <version>7.0.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>org.scientificcms</groupId>
+    <artifactId>scientificcms-bundle-devel</artifactId>
+    <packaging>pom</packaging>
+
+    <name>ScientificCMS Devel Bundle</name>
+
+    <dependencies>
+        
+        <dependency>
+            <groupId>org.libreccm</groupId>
+            <artifactId>ccm-core</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.libreccm</groupId>
+            <artifactId>ccm-editor</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.libreccm</groupId>
+            <artifactId>ccm-pagemodelseditor</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.libreccm</groupId>
+            <artifactId>ccm-theme-foundry</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.librecms</groupId>
+            <artifactId>ccm-theme-ftllibs-devel</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
+        </dependency>
+
+        <!-- CCM modules -->
+        <dependency>
+            <groupId>org.libreccm</groupId>
+            <artifactId>ccm-shortcuts</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.librecms</groupId>
+            <artifactId>ccm-cms</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <!-- CCM Modules end -->
+        
+        <!-- ScientificCMS Modules -->
+        <dependency>
+            <groupId>org.scientificcms</groupId>
+            <artifactId>scientificcms</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scientificcms</groupId>
+            <artifactId>sci-publications</artifactId>
+            <version>7.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scientificcms</groupId>
+            <artifactId>sci-types-project</artifactId>
+            <version>7.0.0-SNAPSHOT</version>
+        </dependency>
+        <!-- ScientificCMS Modules end -->
+        
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+        </dependency>
+        
+        
+    </dependencies>
+    
+    <reporting>
+        <excludeDefaults>true</excludeDefaults>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>summary</report>
+                            <report>licenses</report>
+                            <report>scm</report>
+                            <report>dependency-management</report>
+                            <report>plugin-management</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
+
+</project>

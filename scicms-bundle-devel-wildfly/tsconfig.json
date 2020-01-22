@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "rootDir": "src/main/typescript",
+    "sourceMap": true,
+    "strict": true,
+    "target": "es6"
+  },
+  "include": ["src/main/typescript/*"]
+}

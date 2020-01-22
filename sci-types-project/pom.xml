@@ -19,6 +19,7 @@
 
     <groupId>org.scientificcms</groupId>
     <artifactId>sci-types-project</artifactId>
+    <version>7.0.0-SNAPSHOT</version>
 
     <name>ScientificCMS SciProject Content Type</name>
 

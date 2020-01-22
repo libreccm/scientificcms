@@ -1,6 +1,9 @@
 .project
 .settings
+node
+node_modules
 /sci-types-project/target/
 /scientificcms/target/
 /sci-publications/nbproject/
 /sci-publications/target/
+/scicms-bundle-devel-wildfly/target/
