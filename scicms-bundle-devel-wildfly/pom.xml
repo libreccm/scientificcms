@@ -61,7 +61,7 @@
     </dependencies>
 
     <build>
-        <finalName>scientificcms-bundle-devel-wildfly</finalName>
+        <finalName>scientificcms-bundle-devel-wildfly-${project.version}</finalName>
         
         <resources>
             <resource>
@@ -164,7 +164,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
-
+                    
                     <webResources>
                         <resource>
                             <directory>src/main/resources</directory>

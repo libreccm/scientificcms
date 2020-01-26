@@ -32,7 +32,7 @@ public class UnPublished extends Publication {
     @Column(name = "PLACE", length = 2048)
     private String place;
 
-    @Column(name = "PLACE", length = 512)
+    @Column(name = "NUMBER", length = 512)
     private String number;
 
     @Column(name = "NUMBER_OF_PAGES")

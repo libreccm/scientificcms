@@ -21,10 +21,11 @@
 
         <jta-data-source>java:/comp/env/jdbc/scientificcms/db</jta-data-source>
 
-<!--        <jar-file>lib/ccm-core-7.0.0-SNAPSHOT.jar</jar-file>
+        <jar-file>lib/ccm-core-7.0.0-SNAPSHOT.jar</jar-file>
         <jar-file>lib/ccm-cms-7.0.0-SNAPSHOT.jar</jar-file>
-        <jar-file>lib/ccm-shortcuts-7.0.0-SNAPSHOT.jar</jar-file>-->
-
+        <jar-file>lib/ccm-shortcuts-7.0.0-SNAPSHOT.jar</jar-file>
+        <jar-file>lib/sci-publications-7.0.0-SNAPSHOT.jar</jar-file>
+        <jar-file>lib/sci-types-project-7.0.0-SNAPSHOT.jar</jar-file>
 
         <properties>
             <!-- Properties for Hibernate -->
